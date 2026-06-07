@@ -151,10 +151,6 @@ export default function BurobigProductDetail({ product }) {
           ))}
         </div>
         <div className="product-hero-premium__container">
-          <div className="product-hero-premium__caption">
-            <h1 className="hero-premium-title">{product.title}</h1>
-            <p className="hero-premium-subtitle">{product.category}</p>
-          </div>
           <div className="product-hero-designer">
             {translate('Tasarım A. Baki Çelik', 'Design by A. Baki Çelik')}
           </div>
