@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
+import BurobigEcoBanner from './BurobigEcoBanner';
+
 
 export default function BurobigProductList({ products }) {
   const { tenantMapping, activeLang } = useSite();
@@ -173,6 +175,8 @@ export default function BurobigProductList({ products }) {
           )}
         </div>
       </section>
+
+      <BurobigEcoBanner />
     </main>
   );
 }

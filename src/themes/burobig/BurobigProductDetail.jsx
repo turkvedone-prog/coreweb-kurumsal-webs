@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
+import BurobigEcoBanner from './BurobigEcoBanner';
+
 import { getActiveProducts } from '../../services/publicContentService';
 import { getLocalizedContent } from '../../utils/i18nContent';
 
@@ -375,6 +377,8 @@ export default function BurobigProductDetail({ product }) {
           </section>
         )}
       </div>
+
+      <BurobigEcoBanner />
     </main>
   );
 }
