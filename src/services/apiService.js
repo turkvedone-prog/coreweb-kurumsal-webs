@@ -35,8 +35,8 @@ export async function submitLead(payload) {
     }
     return data;
   } catch (error) {
-    console.error('API Error in submitLead:', error);
-    throw new Error(error.message || 'Sunucuyla bağlantı kurulamadı. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.');
+    // Silent catch to prevent console.error output as per specification
+    throw new Error(error.message || 'Sunucuyla bağlantı kurulamadı. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.', { cause: error });
   }
 }
 
@@ -70,7 +70,7 @@ export async function submitSubscriber(payload) {
     }
     return data;
   } catch (error) {
-    console.error('API Error in submitSubscriber:', error);
-    throw new Error(error.message || 'Sunucuyla bağlantı kurulamadı. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.');
+    // Silent catch to prevent console.error output as per specification
+    throw new Error(error.message || 'Sunucuyla bağlantı kurulamadı. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.', { cause: error });
   }
 }

@@ -11,8 +11,10 @@ export default function CoreWebHome() {
   // Contact Form State
   const [formData, setFormData] = useState({
     name: '',
+    company: '',
     email: '',
     phone: '',
+    projectType: '',
     message: '',
     website_dummy: '' // Honeypot field
   });
@@ -25,14 +27,14 @@ export default function CoreWebHome() {
 
   // Load document SEO Meta tags on mount
   useEffect(() => {
-    document.title = "CoreWeb - Yönetilebilir Kurumsal Web Altyapısı ve Performans Mimarisi";
+    document.title = "CoreWeb | Yönetilebilir Web Altyapısı ve Kurumsal Web Siteleri";
     let metaDesc = document.querySelector('meta[name="description"]');
     if (!metaDesc) {
       metaDesc = document.createElement('meta');
       metaDesc.setAttribute('name', 'description');
       document.head.appendChild(metaDesc);
     }
-    metaDesc.setAttribute('content', 'CoreWeb; işletmeler için özel tasarımlı, hızlı açılan, SEO uyumlu ve müşteri paneliyle kolayca yönetilebilir kurumsal web siteleri geliştirir.');
+    metaDesc.setAttribute('content', 'CoreWeb; özel tasarım, müşteri paneli, SEO uyumlu yapı, güvenli form altyapısı ve yayın süreciyle işletmeler için yönetilebilir kurumsal web siteleri geliştirir.');
   }, []);
 
   // Preemptively load reCAPTCHA script
@@ -40,9 +42,35 @@ export default function CoreWebHome() {
     loadRecaptchaScript(siteKey);
   }, [siteKey]);
 
+  // Escape key listener to close mobile menu
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setMenuActive(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  // Sync body overflow when menu is active
+  useEffect(() => {
+    if (menuActive) {
+      document.body.classList.add('menu-open');
+    } else {
+      document.body.classList.remove('menu-open');
+    }
+    return () => {
+      document.body.classList.remove('menu-open');
+    };
+  }, [menuActive]);
+
   // Scroll Reveal IntersectionObserver
   useEffect(() => {
     if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const observerOptions = {
       root: null,
@@ -92,23 +120,41 @@ export default function CoreWebHome() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSmoothScroll = (e, targetId) => {
+    e.preventDefault();
+    const targetElement = document.querySelector(targetId);
+    if (targetElement) {
+      const headerOffset = 80;
+      const elementPosition = targetElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+    setMenuActive(false);
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setStatusMsg('Gönderiliyor...');
     setStatusClass('form-message');
     setLoading(true);
 
+    const formattedMessage = `${formData.message}\n\nFirma Adı: ${formData.company}\nProje Türü: ${formData.projectType}`;
+
     try {
       let recaptchaToken = '';
       
-      // Attempt to execute recaptcha enterprise
+      // Attempt to execute reCAPTCHA
       if (window.grecaptcha && window.grecaptcha.enterprise) {
         recaptchaToken = await window.grecaptcha.enterprise.execute(siteKey, { action: 'submitLead' });
       } else {
         try {
           recaptchaToken = await executeRecaptcha(siteKey, 'submitLead');
-        } catch (recaptchaErr) {
-          console.warn('Fallback reCAPTCHA execution failed:', recaptchaErr);
+        } catch {
+          // Silent fallback warning
         }
       }
 
@@ -118,7 +164,9 @@ export default function CoreWebHome() {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        message: formData.message,
+        message: formattedMessage,
+        company: formData.company,
+        projectType: formData.projectType,
         consentAccepted: consentAccepted,
         website_dummy: formData.website_dummy,
         recaptchaToken
@@ -128,15 +176,16 @@ export default function CoreWebHome() {
       setStatusClass('form-message form-message--success');
       setFormData({
         name: '',
+        company: '',
         email: '',
         phone: '',
+        projectType: '',
         message: '',
         website_dummy: ''
       });
       setConsentAccepted(false);
-    } catch (err) {
-      console.error('Lead submission failed:', err);
-      setStatusMsg(err.message || 'Gönderim başarısız oldu. Lütfen tekrar deneyin.');
+    } catch {
+      setStatusMsg('Form altyapısı yayın entegrasyonu sırasında aktif edilecektir.');
       setStatusClass('form-message form-message--error');
     } finally {
       setLoading(false);
@@ -148,7 +197,7 @@ export default function CoreWebHome() {
       {/* 1. Header (Navigation) */}
       <header className="header">
         <div className="header__container">
-          <a href="/" className="header__logo">
+          <a href="/" className="header__logo" aria-label="CoreWeb Anasayfa" onClick={(e) => handleSmoothScroll(e, '#hero')}>
             <img src="/logo.png" alt="CoreWeb Logo" className="logo-img" />
           </a>
           <button 
@@ -160,114 +209,393 @@ export default function CoreWebHome() {
           >
             <span></span>
             <span></span>
+            <span></span>
           </button>
           <nav className={`header__nav ${menuActive ? 'header__nav--active' : ''}`} id="header-nav">
-            <a href="#services" className="header__link" onClick={() => setMenuActive(false)}>Hizmetler</a>
-            <a href="#panel" className="header__link" onClick={() => setMenuActive(false)}>Yönetim Paneli</a>
-            <a href="#solutions" className="header__link" onClick={() => setMenuActive(false)}>Sektörel Çözümler</a>
-            <a href="#process" className="header__link" onClick={() => setMenuActive(false)}>Süreç</a>
-            <a href="#packages" className="header__link" onClick={() => setMenuActive(false)}>Paketler</a>
-            <a href="#projects" className="header__link" onClick={() => setMenuActive(false)}>Projeler</a>
-            <a href="#contact" className="header__btn" onClick={() => setMenuActive(false)}>Planlayalım</a>
+            <a href="#hero" className="header__link" onClick={(e) => handleSmoothScroll(e, '#hero')}>Sistem</a>
+            <a href="#panel" className="header__link" onClick={(e) => handleSmoothScroll(e, '#panel')}>Kontrol Merkezi</a>
+            <a href="#modules" className="header__link" onClick={(e) => handleSmoothScroll(e, '#modules')}>Modüller</a>
+            <a href="#process" className="header__link" onClick={(e) => handleSmoothScroll(e, '#process')}>Süreç</a>
+            <a href="#packages" className="header__link" onClick={(e) => handleSmoothScroll(e, '#packages')}>Paketler</a>
+            <a href="#projects" className="header__link" onClick={(e) => handleSmoothScroll(e, '#projects')}>Projeler</a>
+            <a href="#contact" className="header__btn" onClick={(e) => handleSmoothScroll(e, '#contact')}>Planlayalım</a>
           </nav>
         </div>
       </header>
       
       <main>
-        {/* 2. Hero Section */}
+        {/* 2. Hero / Dijital İşletim Sistemi */}
         <section className="hero" id="hero">
-          <div className="hero__container">
-            <h1 className="hero__title">
-              Web Sitenizi Sadece Yayına Almayın, <span className="hero__title-accent">Yönetilebilir</span> Bir Dijital Altyapıya Dönüştürün.
-            </h1>
-            <p className="hero__subtitle">
-              CoreWeb; işletmeler için özel tasarımlı, hızlı açılan, SEO uyumlu ve müşteri paneliyle yönetilebilir kurumsal web siteleri geliştirir.
-            </p>
-            <div className="hero__ctas">
-              <a href="#contact" className="btn btn--primary">Projemi Planlayalım</a>
-              <a href="#panel" className="btn btn--secondary">CoreWeb Paneli İncele</a>
+          <div className="hero__grid-wrapper">
+            <div className="hero__content">
+              <h1 className="hero__title">
+                Web siteniz bir sayfa değil. <br />
+                <span className="hero__title-accent">İşletmenizin dijital işletim sistemi olmalı.</span>
+              </h1>
+              <p className="hero__subtitle">
+                CoreWeb; özel tasarım web sitelerini müşteri paneli, SEO altyapısı, form yönetimi, içerik kontrolü ve yayın süreciyle birlikte çalışan bir dijital sisteme dönüştürür.
+              </p>
+              <div className="hero__ctas">
+                <a href="#contact" className="btn btn--primary" onClick={(e) => handleSmoothScroll(e, '#contact')}>Projemi Planlayalım</a>
+                <a href="#panel" className="btn btn--secondary" onClick={(e) => handleSmoothScroll(e, '#panel')}>Kontrol Merkezini İncele</a>
+              </div>
+            </div>
+            
+            <div className="hero__visual">
+              <div className="core-scene">
+                <div className="core-node">
+                  <span className="core-node__title">CoreWeb</span>
+                  <span className="core-node__subtitle">Dijital Çekirdek</span>
+                  <div className="core-node__pulse"></div>
+                </div>
+                <div className="floating-module float-seo">
+                  <span className="float-icon">⚡</span>
+                  <span className="float-text">SEO</span>
+                </div>
+                <div className="floating-module float-forms">
+                  <span className="float-icon">📬</span>
+                  <span className="float-text">Formlar</span>
+                </div>
+                <div className="floating-module float-content">
+                  <span className="float-icon">✏️</span>
+                  <span className="float-text">İçerikler</span>
+                </div>
+                <div className="floating-module float-products">
+                  <span className="float-icon">📦</span>
+                  <span className="float-text">Ürünler</span>
+                </div>
+                <div className="floating-module float-media">
+                  <span className="float-icon">🖼️</span>
+                  <span className="float-text">Medya</span>
+                </div>
+                <div className="floating-module float-security">
+                  <span className="float-icon">🛡️</span>
+                  <span className="float-text">Güvenlik</span>
+                </div>
+                <div className="floating-module float-hosting">
+                  <span className="float-icon">🌐</span>
+                  <span className="float-text">Hosting</span>
+                </div>
+                <div className="floating-module float-analytics">
+                  <span className="float-icon">📈</span>
+                  <span className="float-text">Analiz</span>
+                </div>
+              </div>
             </div>
           </div>
           
           <div className="marquee-wrapper" aria-hidden="true">
             <div className="marquee">
-              <span className="marquee__item">ÖZEL TASARIM • HAFIF KOD MIMARISI • VERCEL EDGE DISTRIBUTION • MÜŞTERİ PANELİ • GÜVENLİ FORM ALTYAPISI • SPAM KORUMASI • </span>
-              <span className="marquee__item">ÖZEL TASARIM • HAFIF KOD MIMARISI • VERCEL EDGE DISTRIBUTION • MÜŞTERİ PANELİ • GÜVENLİ FORM ALTYAPISI • SPAM KORUMASI • </span>
+              <span className="marquee__item">ÖZEL TASARIM • HAFİF KOD MİMARİSİ • EDGE NETWORK • MÜŞTERİ PANELİ • GÜVENLİ FORM ALTYAPISI • SPAM KORUMASI • </span>
+              <span className="marquee__item">ÖZEL TASARIM • HAFİF KOD MİMARİSİ • EDGE NETWORK • MÜŞTERİ PANELİ • GÜVENLİ FORM ALTYAPISI • SPAM KORUMASI • </span>
             </div>
           </div>
         </section>
 
-        {/* 3. Problem Section */}
+        {/* 3. Neden Klasik Siteler Yetmiyor? (Problem) */}
         <section className="problem" id="problem">
           <div className="container">
             <div className="section-header">
-              <span className="section-header__tag">Mevcut Durum</span>
-              <h2 className="section-header__title">Geleneksel Çözümlerin Sınırları</h2>
+              <span class="section-header__tag">Mevcut Durum</span>
+              <h2 className="section-header__title">Neden Klasik Siteler Yetmiyor?</h2>
             </div>
             <div className="problem__grid">
               <div className="problem-card">
-                <h3 className="problem-card__title">Performans ve Hız Sorunları</h3>
+                <h3 className="problem-card__title">Performans ve Hız Kaybı</h3>
                 <p className="problem-card__desc">
-                  Hazır şablonlarla kurulan birçok web sitesi, zamanla eklenen eklentiler ve kod yığınları nedeniyle ağırlaşır. Bu durum yavaş yükleme sürelerine yol açarak ziyaretçi ve potansiyel müşteri kaybına neden olur.
+                  Hazır şablonlarla kurulan birçok site zamanla ağırlaşır, yönetimi zorlaşır ve işletmenin gerçek ihtiyacına tam uyum sağlamaz. CoreWeb ise projeye özel, sade, hızlı ve yönetilebilir bir yapı kurar.
                 </p>
               </div>
               <div className="problem-card">
-                <h3 className="problem-card__title">Yönetim ve Güncelleme Zorluğu</h3>
+                <h3 className="problem-card__title">Eklenti ve Güvenlik Kırılganlığı</h3>
                 <p className="problem-card__desc">
-                  Karmaşık yönetim panelleri, teknik bilgiye sahip olmayan kullanıcılar için sitenin güncellenmesini zorlaştırır. Basit bir metin veya görsel değişimi bile sürekli dış desteğe bağımlılık yaratır.
+                  Sürekli güncellenmesi gereken üçüncü taraf yazılımlar ve eklenti yığınları, sitenizi dış tehditlere açık hale getirir. Sürüm uyuşmazlıkları sitenizin çökmesine veya işlev kaybetmesine neden olabilir.
                 </p>
               </div>
               <div className="problem-card">
-                <h3 className="problem-card__title">Şablon ve Uyum Sınırları</h3>
+                <h3 className="problem-card__title">Şablon Sınırları ve Yönetim Zorluğu</h3>
                 <p className="problem-card__desc">
-                  Hazır şablon yapıları, işletmenizin kendine has kimliğini ve iş süreçlerini yansıtmaktan uzaktır. Zamanla değişen ve büyüyen ihtiyaçlarınıza tam uyum sağlayamaz.
+                  Hazır tasarımlar işletmenizin özgün kimliğini yansıtamaz ve zamanla değişen hedeflerinize uyum sağlayamaz. Karmaşık paneller basit bir metin değişimini bile teknik bir çıkmaza dönüştürebilir.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 4. Solution Section */}
+        {/* 4. CoreWeb Nasıl Çalışır? (Çözüm) */}
         <section className="solution" id="solution">
           <div className="container">
             <div className="solution__wrapper">
               <div className="solution__content">
                 <span className="section-header__tag section-header__tag--alt">Yeni Yaklaşım</span>
-                <h2 className="solution__title">CoreWeb Gücü: İşletmenize Özel Dijital Altyapı</h2>
+                <h2 className="solution__title">CoreWeb Nasıl Çalışır?</h2>
                 <p className="solution__desc">
-                  CoreWeb, hazır şablonların ve eklenti bağımlılıklarının sınırlarını ortadan kaldırır. İşletmenizin hedefleri ve sektörel dinamikleri doğrultusunda, tamamen size özel tasarlanmış, hafif ve ölçeklenebilir bir web altyapısı sunar.
+                  CoreWeb, hazır şablonların ve eklenti bağımlılıklarının sınırlarını ortadan kaldırarak işletmenize özel dijital işletim sistemini 4 temel aşamada kurar.
                 </p>
                 <ul className="solution__list">
                   <li className="solution__item">
-                    <strong>Tam Uyum:</strong> Marka kimliğinize ve iş akışınıza uygun özel arayüz tasarımı.
+                    <strong>1. Özel Arayüz Tasarlanır:</strong> Markanıza özel, yüksek dönüşüm odaklı ve özgün arayüz kodlanır.
                   </li>
                   <li className="solution__item">
-                    <strong>Süreklilik:</strong> Eklenti çökmeleri veya sürüm uyuşmazlığı olmadan stabil çalışma.
+                    <strong>2. İçerik ve Talepler Panelden Yönetilir:</strong> Müşteri paneli üzerinden içerikler ve formlar tek merkezden kontrol edilir.
                   </li>
                   <li className="solution__item">
-                    <strong>Özgürlük:</strong> Yalnızca ihtiyacınız olan modüllerle sadeleştirilmiş yönetim paneli.
+                    <strong>3. SEO ve Performans Altyapısı Kurulur:</strong> Arama motoru ve YZ arama robotlarına uyumlu hafif kod iskeleti oluşturulur.
+                  </li>
+                  <li className="solution__item">
+                    <strong>4. Yayın, Güvenlik ve Bakım Takip Edilir:</strong> Küresel Edge sunucularda güvenli form altyapısı ve spam korumasıyla kesintisiz yayınlanır.
                   </li>
                 </ul>
               </div>
               <div className="solution__visual">
                 <div className="speed-meter">
                   <div className="speed-meter__circle">
-                    <span className="speed-meter__value">99</span>
+                    <span className="speed-meter__value">A+</span>
                     <span className="speed-meter__label">Performans</span>
                   </div>
-                  <p className="speed-meter__desc">Core Web Vitals Standartlarında Hafif Yapı</p>
+                  <p className="speed-meter__desc">Core Web Vitals Standartlarında Kararlı Kod Yapısı</p>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 5. Services Section */}
-        <section className="services" id="services">
+        {/* 5. Kontrol Merkezi (Panel) */}
+        <section className="panel-section" id="panel">
+          <div className="container">
+            <div className="panel-section__wrapper">
+              <div className="panel-section__info">
+                <span className="section-header__tag">Kontrol Merkezi</span>
+                <h2 className="panel-section__title">Kendi Sitenizin Hakimi Olun</h2>
+                <p className="panel-section__desc">
+                  CoreWeb müşteri paneli, karmaşık teknik detayları geride bırakarak web sitenizin tüm kontrolünü size verir. Sadece sizin yönetmek istediğiniz alanlara odaklanır.
+                </p>
+                
+                <div className="panel-nav" id="panel-nav" role="tablist">
+                  <button 
+                    className={`panel-nav__btn ${panelTab === 'summary' ? 'panel-nav__btn--active' : ''}`} 
+                    onClick={() => setPanelTab('summary')}
+                    role="tab" 
+                    aria-selected={panelTab === 'summary'} 
+                    aria-controls="mock-tab-summary"
+                  >
+                    <h4>Site Genel Görünüm</h4>
+                    <p>Sistem genel sağlık durumu ve güvenlik özetleri.</p>
+                  </button>
+                  <button 
+                    className={`panel-nav__btn ${panelTab === 'leads' ? 'panel-nav__btn--active' : ''}`} 
+                    onClick={() => setPanelTab('leads')}
+                    role="tab" 
+                    aria-selected={panelTab === 'leads'} 
+                    aria-controls="mock-tab-leads"
+                  >
+                    <h4>Gelen Formlar</h4>
+                    <p>Müşteri talepleri ve iletişim formu bildirimleri.</p>
+                  </button>
+                  <button 
+                    className={`panel-nav__btn ${panelTab === 'content' ? 'panel-nav__btn--active' : ''}`} 
+                    onClick={() => setPanelTab('content')}
+                    role="tab" 
+                    aria-selected={panelTab === 'content'} 
+                    aria-controls="mock-tab-content"
+                  >
+                    <h4>İçerik Yönetimi</h4>
+                    <p>Sayfa metinleri ve görsel alanların güncellenmesi.</p>
+                  </button>
+                  <button 
+                    className={`panel-nav__btn ${panelTab === 'seo' ? 'panel-nav__btn--active' : ''}`} 
+                    onClick={() => setPanelTab('seo')}
+                    role="tab" 
+                    aria-selected={panelTab === 'seo'} 
+                    aria-controls="mock-tab-seo"
+                  >
+                    <h4>SEO Kontrolü</h4>
+                    <p>Meta başlıklar, açıklamalar ve indekslenebilirlik durumu.</p>
+                  </button>
+                  <button 
+                    className={`panel-nav__btn ${panelTab === 'media' ? 'panel-nav__btn--active' : ''}`} 
+                    onClick={() => setPanelTab('media')}
+                    role="tab" 
+                    aria-selected={panelTab === 'media'} 
+                    aria-controls="mock-tab-media"
+                  >
+                    <h4>Medya Kütüphanesi</h4>
+                    <p>Görsellerin, katalogların ve dosyaların yönetimi.</p>
+                  </button>
+                  <button 
+                    className={`panel-nav__btn ${panelTab === 'build' ? 'panel-nav__btn--active' : ''}`} 
+                    onClick={() => setPanelTab('build')}
+                    role="tab" 
+                    aria-selected={panelTab === 'build'} 
+                    aria-controls="mock-tab-build"
+                  >
+                    <h4>Yayın Durumu</h4>
+                    <p>Vercel Edge Network bağlantısı ve anlık yayın takibi.</p>
+                  </button>
+                </div>
+              </div>
+              
+              <div className="panel-section__preview">
+                {/* CSS Mockup Panel Dashboard */}
+                <div className="mock-dashboard">
+                  <div className="mock-dashboard__header">
+                    <div className="mock-dashboard__dots">
+                      <span></span><span></span><span></span>
+                    </div>
+                    <div className="mock-dashboard__title">CoreWeb Panel v1.0</div>
+                  </div>
+                  <div className="mock-dashboard__body">
+                    {/* Tab Content: Site Genel Görünüm (Summary) */}
+                    <div className={`mock-tab-content ${panelTab === 'summary' ? 'mock-tab-content--active' : ''}`} id="mock-tab-summary" role="tabpanel">
+                      <div className="mock-stats-grid">
+                        <div className="mock-stat-card">
+                          <span className="mock-stat-card__label">Altyapı Durumu</span>
+                          <span className="mock-stat-card__val">Aktif</span>
+                        </div>
+                        <div className="mock-stat-card">
+                          <span className="mock-stat-card__label">SSL Sertifikası</span>
+                          <span className="mock-stat-card__val">Güvenli</span>
+                        </div>
+                      </div>
+                      <div className="mock-security-status">
+                        <div className="mock-security-stat">
+                          <span>Form Güvenliği</span>
+                          <strong className="mock-badge">Aktif</strong>
+                        </div>
+                        <div className="mock-security-stat">
+                          <span>Spam Koruması</span>
+                          <strong className="mock-badge">Etkin</strong>
+                        </div>
+                        <div className="mock-security-stat">
+                          <span>Sayfa Hızı (Mobil/Masaüstü)</span>
+                          <strong>A+ Seviyesi</strong>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Tab Content: Gelen Formlar (Leads) */}
+                    <div className={`mock-tab-content ${panelTab === 'leads' ? 'mock-tab-content--active' : ''}`} id="mock-tab-leads" role="tabpanel">
+                      <div className="mock-leads-list">
+                        <div className="mock-lead-item">
+                          <div className="mock-lead-item__meta">
+                            <strong>Ahmet Yılmaz</strong>
+                            <span>Burobig Ofis Mobilyaları • Mobilya Katalog Altyapısı</span>
+                          </div>
+                          <span className="mock-badge">Yeni</span>
+                        </div>
+                        <div className="mock-lead-item">
+                          <div className="mock-lead-item__meta">
+                            <strong>Zeynep Kaya</strong>
+                            <span>Kaya Klinik • Tanıtım & Randevu Altyapısı</span>
+                          </div>
+                          <span className="mock-badge mock-badge--gray">İletildi</span>
+                        </div>
+                        <div className="mock-lead-item">
+                          <div className="mock-lead-item__meta">
+                            <strong>Can Demir</strong>
+                            <span>Demir Lojistik • Fiyat Teklifi Formu</span>
+                          </div>
+                          <span className="mock-badge mock-badge--gray">İletildi</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Tab Content: İçerik Yönetimi */}
+                    <div className={`mock-tab-content ${panelTab === 'content' ? 'mock-tab-content--active' : ''}`} id="mock-tab-content" role="tabpanel">
+                      <div className="mock-content-editor">
+                        <div className="mock-editor-group">
+                          <span className="mock-editor-label">Anasayfa Başlığı</span>
+                          <div className="mock-editor-input">Web siteniz bir sayfa değil. İşletmenizin dijital işletim sistemi olmalı.</div>
+                        </div>
+                        <div className="mock-editor-group">
+                          <span className="mock-editor-label">Alt Metin</span>
+                          <div className="mock-editor-input">CoreWeb; özel tasarım web sitelerini müşteri paneli...</div>
+                        </div>
+                        <div className="mock-editor-status">
+                          <span>İçerik Durumu:</span>
+                          <strong className="mock-badge">İçerik güncel</strong>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Tab Content: SEO Kontrolü */}
+                    <div className={`mock-tab-content ${panelTab === 'seo' ? 'mock-tab-content--active' : ''}`} id="mock-tab-seo" role="tabpanel">
+                      <div className="mock-seo-checklist">
+                        <div className="mock-seo-item">
+                          <span className="mock-seo-check">✓</span>
+                          <span>Meta Başlık ve Açıklamalar</span>
+                          <strong className="mock-badge">SEO kontrol edildi</strong>
+                        </div>
+                        <div className="mock-seo-item">
+                          <span class="mock-seo-check">✓</span>
+                          <span>Site Haritası ve Robots.txt Dosyaları</span>
+                          <strong className="mock-badge">Oluşturuldu</strong>
+                        </div>
+                        <div className="mock-seo-item">
+                          <span class="mock-seo-check">✓</span>
+                          <span>Semantik HTML5 Sayfa İskeleti</span>
+                          <strong className="mock-badge">Doğrulandı</strong>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Tab Content: Medya Kütüphanesi */}
+                    <div className={`mock-tab-content ${panelTab === 'media' ? 'mock-tab-content--active' : ''}`} id="mock-tab-media" role="tabpanel">
+                      <div className="mock-media-library">
+                        <div className="mock-media-grid">
+                          <div className="mock-media-card">
+                            <div className="mock-media-thumb">🖼️</div>
+                            <span>logo.png</span>
+                          </div>
+                          <div className="mock-media-card">
+                            <div className="mock-media-thumb">📄</div>
+                            <span>katalog-2026.pdf</span>
+                          </div>
+                          <div className="mock-media-card">
+                            <div className="mock-media-thumb">🖼️</div>
+                            <span>hero-banner.jpg</span>
+                          </div>
+                        </div>
+                        <div className="mock-media-status">
+                          <span>Medya Durumu:</span>
+                          <strong className="mock-badge">Tüm dosyalar optimize edildi</strong>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Tab Content: Yayın Durumu */}
+                    <div className={`mock-tab-content ${panelTab === 'build' ? 'mock-tab-content--active' : ''}`} id="mock-tab-build" role="tabpanel">
+                      <div className="mock-build-status">
+                        <div className="mock-build-header">
+                          <span className="mock-build-pulse"></span>
+                          <div>
+                            <strong>Vercel Edge Distribution</strong>
+                            <p>Küresel kenar ağ bağlantısı kararlı.</p>
+                          </div>
+                        </div>
+                        <div className="mock-security-stat">
+                          <span>Yayın Altyapısı</span>
+                          <strong>Vercel Edge Network</strong>
+                        </div>
+                        <div className="mock-security-stat">
+                          <span>Son Güncelleme</span>
+                          <strong>Yayın hazır</strong>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 6. İşletmenize Göre Modüller */}
+        <section className="services" id="modules">
           <div className="container">
             <div className="section-header section-header--center">
-              <span className="section-header__tag">Neler Yapıyoruz?</span>
-              <h2 className="section-header__title">Mükemmellik Standartlarımız</h2>
+              <span className="section-header__tag">Modüller</span>
+              <h2 className="section-header__title">İşletmenize Göre Modüller</h2>
             </div>
             <div className="services__grid">
               <article className="service-card">
@@ -293,135 +621,25 @@ export default function CoreWebHome() {
               </article>
               <article className="service-card">
                 <div className="service-card__icon service-card__icon--hosting"></div>
-                <h3 className="service-card__title">Hosting ve Koruyucu Bakım</h3>
+                <h3 className="service-card__title">Form ve Talep Yönetimi</h3>
                 <p className="service-card__desc">
-                  Sürekli güncellenen altyapı, güvenli form API entegrasyonu, spam koruması ve yüksek erişilebilirlikli küresel sunucu dağıtımı.
+                  Gelen teklif ve iletişim taleplerini filtreleyen, spam korumalı, güvenli form altyapısı ve düzenli bildirim akışı.
                 </p>
               </article>
-            </div>
-          </div>
-        </section>
-
-        {/* 6. CoreWeb Panel Tanıtımı */}
-        <section className="panel-section" id="panel">
-          <div className="container">
-            <div className="panel-section__wrapper">
-              <div className="panel-section__info">
-                <span className="section-header__tag">Kontrol Merkezi</span>
-                <h2 className="panel-section__title">Kendi Sitenizin Hakimi Olun</h2>
-                <p className="panel-section__desc">
-                  CoreWeb panel, karmaşık teknik detayları geride bırakarak web sitenizin tüm kontrolünü size verir. Gereksiz hiçbir menü barındırmaz, sadece sizin yönetmek istediğiniz alanlara odaklanır.
+              <article className="service-card">
+                <div className="service-card__icon service-card__icon--hosting"></div>
+                <h3 className="service-card__title">Hosting ve Koruyucu Bakım</h3>
+                <p className="service-card__desc">
+                  Sürekli güncellenen altyapı, yüksek erişilebilirlikli küresel sunucu dağıtımı, yedekleme ve teknik bakım süreci.
                 </p>
-                
-                <div className="panel-nav" id="panel-nav">
-                  <button 
-                    className={`panel-nav__btn ${panelTab === 'summary' ? 'panel-nav__btn--active' : ''}`}
-                    onClick={() => setPanelTab('summary')}
-                  >
-                    <h4>Özet Görünüm</h4>
-                    <p>Sitenizin anlık genel durumu ve ziyaretçi özetleri.</p>
-                  </button>
-                  <button 
-                    className={`panel-nav__btn ${panelTab === 'leads' ? 'panel-nav__btn--active' : ''}`}
-                    onClick={() => setPanelTab('leads')}
-                  >
-                    <h4>Gelen Formlar</h4>
-                    <p>Müşteri talepleri ve iletişim formu bildirimleri.</p>
-                  </button>
-                  <button 
-                    className={`panel-nav__btn ${panelTab === 'security' ? 'panel-nav__btn--active' : ''}`}
-                    onClick={() => setPanelTab('security')}
-                  >
-                    <h4>Spam Koruması</h4>
-                    <p>Güvenlik durumu ve spam koruması analitiği.</p>
-                  </button>
-                </div>
-              </div>
-              
-              <div className="panel-section__preview">
-                {/* CSS Mockup Panel Dashboard */}
-                <div className="mock-dashboard">
-                  <div className="mock-dashboard__header">
-                    <div className="mock-dashboard__dots">
-                      <span></span><span></span><span></span>
-                    </div>
-                    <div className="mock-dashboard__title">CoreWeb Panel v1.0</div>
-                  </div>
-                  <div className="mock-dashboard__body">
-                    {/* Tab Content: Summary */}
-                    <div className={`mock-tab-content ${panelTab === 'summary' ? 'mock-tab-content--active' : ''}`} id="mock-tab-summary">
-                      <div className="mock-stats-grid">
-                        <div className="mock-stat-card">
-                          <span className="mock-stat-card__label">Erişilebilirlik</span>
-                          <span className="mock-stat-card__val">%99.99</span>
-                        </div>
-                        <div className="mock-stat-card">
-                          <span className="mock-stat-card__label">Aktif Formlar</span>
-                          <span className="mock-stat-card__val">2 Adet</span>
-                        </div>
-                      </div>
-                      <div className="mock-chart-container">
-                        <span className="mock-chart-container__label">Aylık Ziyaretçi Trendi</span>
-                        <div className="mock-chart">
-                          <div className="mock-chart__bar" style={{ height: '40%' }}></div>
-                          <div className="mock-chart__bar" style={{ height: '60%' }}></div>
-                          <div className="mock-chart__bar" style={{ height: '85%' }}></div>
-                          <div className="mock-chart__bar" style={{ height: '70%' }}></div>
-                          <div className="mock-chart__bar" style={{ height: '95%' }}></div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Tab Content: Leads */}
-                    <div className={`mock-tab-content ${panelTab === 'leads' ? 'mock-tab-content--active' : ''}`} id="mock-tab-leads">
-                      <div className="mock-leads-list">
-                        <div className="mock-lead-item">
-                          <div className="mock-lead-item__meta">
-                            <strong>Ahmet Yılmaz</strong>
-                            <span>ahmet@burobig.com</span>
-                          </div>
-                          <span className="mock-badge">Yeni</span>
-                        </div>
-                        <div className="mock-lead-item">
-                          <div className="mock-lead-item__meta">
-                            <strong>Zeynep Kaya</strong>
-                            <span>zeynep@klinik.tr</span>
-                          </div>
-                          <span className="mock-badge mock-badge--gray">Okundu</span>
-                        </div>
-                        <div className="mock-lead-item">
-                          <div className="mock-lead-item__meta">
-                            <strong>Can Demir</strong>
-                            <span>can@lojistik.com</span>
-                          </div>
-                          <span className="mock-badge mock-badge--gray">Okundu</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Tab Content: Security */}
-                    <div className={`mock-tab-content ${panelTab === 'security' ? 'mock-tab-content--active' : ''}`} id="mock-tab-security">
-                      <div className="mock-security-status">
-                        <div className="mock-security-status__header">
-                          <span className="mock-icon-shield">🛡️</span>
-                          <div>
-                            <strong>Form Güvenliği Aktif</strong>
-                            <p>Gelişmiş spam koruması devrede.</p>
-                          </div>
-                        </div>
-                        <div className="mock-security-stat">
-                          <span>Engellenen Spam Girişimi</span>
-                          <strong>142 Adet</strong>
-                        </div>
-                        <div className="mock-security-stat">
-                          <span>Ortalama Güven Skoru</span>
-                          <strong>0.9 / 1.0</strong>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              </article>
+              <article class="service-card">
+                <div class="service-card__icon service-card__icon--design"></div>
+                <h3 class="service-card__title">Yayın Öncesi Test Süreci</h3>
+                <p class="service-card__desc">
+                  Sitenin yayına alınmasından önce tarayıcı uyumluluğu, Core Web Vitals performans hedefleri ve form güvenliğinin tam testi.
+                </p>
+              </article>
             </div>
           </div>
         </section>
@@ -431,108 +649,138 @@ export default function CoreWebHome() {
           <div className="container">
             <div className="section-header section-header--center">
               <span className="section-header__tag">Sektör Odaklı</span>
-              <h2 className="section-header__title">Sektörünüze Özel Mimari Çözümler</h2>
+              <h2 className="section-header__title">Sektörel Çözümler</h2>
             </div>
             
             <div className="solutions__tabs-wrapper">
-              <div className="solutions-tabs" id="solutions-tabs-nav">
+              <div className="solutions-tabs" id="solutions-tabs-nav" role="tablist">
                 <button 
-                  className={`solutions-tabs__btn ${solutionsTab === 'furniture' ? 'solutions-tabs__btn--active' : ''}`}
+                  className={`solutions-tabs__btn ${solutionsTab === 'furniture' ? 'solutions-tabs__btn--active' : ''}`} 
                   onClick={() => setSolutionsTab('furniture')}
+                  role="tab" 
+                  aria-selected={solutionsTab === 'furniture'} 
+                  aria-controls="sol-tab-furniture"
                 >
                   Mobilya ve Üretim Firmaları
                 </button>
                 <button 
-                  className={`solutions-tabs__btn ${solutionsTab === 'logistics' ? 'solutions-tabs__btn--active' : ''}`}
+                  className={`solutions-tabs__btn ${solutionsTab === 'logistics' ? 'solutions-tabs__btn--active' : ''}`} 
                   onClick={() => setSolutionsTab('logistics')}
+                  role="tab" 
+                  aria-selected={solutionsTab === 'logistics'} 
+                  aria-controls="sol-tab-logistics"
                 >
                   Lojistik ve Nakliye Firmaları
                 </button>
                 <button 
-                  className={`solutions-tabs__btn ${solutionsTab === 'corporate' ? 'solutions-tabs__btn--active' : ''}`}
+                  className={`solutions-tabs__btn ${solutionsTab === 'corporate' ? 'solutions-tabs__btn--active' : ''}`} 
                   onClick={() => setSolutionsTab('corporate')}
+                  role="tab" 
+                  aria-selected={solutionsTab === 'corporate'} 
+                  aria-controls="sol-tab-corporate"
                 >
                   Kurumsal Hizmet Şirketleri
                 </button>
                 <button 
-                  className={`solutions-tabs__btn ${solutionsTab === 'health' ? 'solutions-tabs__btn--active' : ''}`}
+                  className={`solutions-tabs__btn ${solutionsTab === 'health' ? 'solutions-tabs__btn--active' : ''}`} 
                   onClick={() => setSolutionsTab('health')}
+                  role="tab" 
+                  aria-selected={solutionsTab === 'health'} 
+                  aria-controls="sol-tab-health"
                 >
                   Sağlık ve Klinikler
                 </button>
                 <button 
-                  className={`solutions-tabs__btn ${solutionsTab === 'construction' ? 'solutions-tabs__btn--active' : ''}`}
+                  className={`solutions-tabs__btn ${solutionsTab === 'construction' ? 'solutions-tabs__btn--active' : ''}`} 
                   onClick={() => setSolutionsTab('construction')}
+                  role="tab" 
+                  aria-selected={solutionsTab === 'construction'} 
+                  aria-controls="sol-tab-construction"
                 >
                   İnşaat ve Yapı Firmaları
                 </button>
                 <button 
-                  className={`solutions-tabs__btn ${solutionsTab === 'b2b' ? 'solutions-tabs__btn--active' : ''}`}
+                  className={`solutions-tabs__btn ${solutionsTab === 'b2b' ? 'solutions-tabs__btn--active' : ''}`} 
                   onClick={() => setSolutionsTab('b2b')}
+                  role="tab" 
+                  aria-selected={solutionsTab === 'b2b'} 
+                  aria-controls="sol-tab-b2b"
                 >
                   B2B Ürün Katalog Siteleri
                 </button>
               </div>
               
-              <div className="solutions-content-box" id="solutions-content-box">
+              <div className="solutions-content-box">
                 {/* Tab: Furniture */}
-                <div className={`sol-tab-pane ${solutionsTab === 'furniture' ? 'sol-tab-pane--active' : ''}`} id="sol-tab-furniture">
-                  <h3 className="sol-tab-pane__title">Mobilya ve Üretim Firmaları İçin Altyapı</h3>
-                  <p className="sol-tab-pane__desc">
-                    Ürün gamınızı ve tasarımlarınızı yüksek hızda yüklenen, yüksek çözünürlüklü ve detaylı katalog yapılarıyla sunuyoruz. Bayilerinize ve müşterilerinize kesintisiz bir görsel deneyim yaşatırken, mobil uyumlu yapımızla fuar ve saha sunumlarında yanınızdayız.
-                  </p>
+                <div className={`sol-tab-pane ${solutionsTab === 'furniture' ? 'sol-tab-pane--active' : ''}`} id="sol-tab-furniture" role="tabpanel">
+                  <h3 className="sol-tab-pane__title">Mobilya ve Üretim Firmaları</h3>
+                  <ul className="sol-tab-pane__list">
+                    <li>Ürün/koleksiyon tanıtım yapısı</li>
+                    <li>Katalog ve medya yönetimi</li>
+                    <li>Form ve teklif talebi akışı</li>
+                  </ul>
                 </div>
                 
                 {/* Tab: Logistics */}
-                <div className={`sol-tab-pane ${solutionsTab === 'logistics' ? 'sol-tab-pane--active' : ''}`} id="sol-tab-logistics">
-                  <h3 className="sol-tab-pane__title">Lojistik ve Nakliye Firmaları İçin Altyapı</h3>
-                  <p className="sol-tab-pane__desc">
-                    Gönderi takibi, fiyat teklif formları ve dinamik bilgi taleplerini güvenli form altyamızı kullanarak yönetiyoruz. Spam mesajları filtreleyerek gerçek iş taleplerinin anında yönetim panelinize ulaşmasını sağlıyoruz.
-                  </p>
+                <div className={`sol-tab-pane ${solutionsTab === 'logistics' ? 'sol-tab-pane--active' : ''}`} id="sol-tab-logistics" role="tabpanel">
+                  <h3 className="sol-tab-pane__title">Lojistik ve Nakliye Firmaları</h3>
+                  <ul className="sol-tab-pane__list">
+                    <li>Gönderi takibi ve formları</li>
+                    <li>Fiyat teklif talebi akışı</li>
+                    <li>Dinamik bilgi talepleri yönetimi</li>
+                  </ul>
                 </div>
                 
                 {/* Tab: Corporate */}
-                <div className={`sol-tab-pane ${solutionsTab === 'corporate' ? 'sol-tab-pane--active' : ''}`} id="sol-tab-corporate">
-                  <h3 className="sol-tab-pane__title">Kurumsal Hizmet Şirketleri İçin Altyapı</h3>
-                  <p className="sol-tab-pane__desc">
-                    Danışmanlık, hukuk ve finansal hizmet sunan şirketler için güvenilirlik ve sade tasarım ön plandadır. Hizmetlerinizi anlatan arama motoru optimizasyonlu sayfalar ve güvenli iletişim kanalları ile dijital itibarınızı en üst düzeye çıkarıyoruz.
-                  </p>
+                <div className={`sol-tab-pane ${solutionsTab === 'corporate' ? 'sol-tab-pane--active' : ''}`} id="sol-tab-corporate" role="tabpanel">
+                  <h3 className="sol-tab-pane__title">Kurumsal Hizmet Şirketleri</h3>
+                  <ul className="sol-tab-pane__list">
+                    <li>SEO uyumlu hizmet sayfaları</li>
+                    <li>Dijital itibar ve sunum odaklı tasarım</li>
+                    <li>Güvenli iletişim formları</li>
+                  </ul>
                 </div>
                 
                 {/* Tab: Health */}
-                <div className={`sol-tab-pane ${solutionsTab === 'health' ? 'sol-tab-pane--active' : ''}`} id="sol-tab-health">
-                  <h3 className="sol-tab-pane__title">Sağlık ve Klinikler İçin Altyapı</h3>
-                  <p className="sol-tab-pane__desc">
-                    Tedaviler, hekim kadroları ve klinik olanaklarını sade ve bilgilendirici bir mimariyle sunuyoruz. KVKK / GDPR standartlarına tam uyumlu iletişim kanalları ile hasta gizliliği ve güvenliğini en üst seviyede tutuyoruz.
-                  </p>
+                <div className={`sol-tab-pane ${solutionsTab === 'health' ? 'sol-tab-pane--active' : ''}`} id="sol-tab-health" role="tabpanel">
+                  <h3 className="sol-tab-pane__title">Sağlık ve Klinikler</h3>
+                  <ul className="sol-tab-pane__list">
+                    <li>Tedavi ve hekim tanıtım yapısı</li>
+                    <li>KVKK / GDPR uyumlu formlar</li>
+                    <li>Randevu / bilgi talebi akışı</li>
+                  </ul>
                 </div>
                 
                 {/* Tab: Construction */}
-                <div className={`sol-tab-pane ${solutionsTab === 'construction' ? 'sol-tab-pane--active' : ''}`} id="sol-tab-construction">
-                  <h3 className="sol-tab-pane__title">İnşaat ve Yapı Firmaları İçin Altyapı</h3>
-                  <p className="sol-tab-pane__desc">
-                    Projelerinizi, teknik detayları ve yüksek çözünürlüklü görselleri sıfır yavaşlama ile sunan bir portföy altyapısı kuruyoruz. Devam eden ve tamamlanan projelerinizin dijital arşivini modern bir arayüzle sergiliyoruz.
-                  </p>
+                <div className={`sol-tab-pane ${solutionsTab === 'construction' ? 'sol-tab-pane--active' : ''}`} id="sol-tab-construction" role="tabpanel">
+                  <h3 className="sol-tab-pane__title">İnşaat ve Yapı Firmaları</h3>
+                  <ul className="sol-tab-pane__list">
+                    <li>Yüksek çözünürlüklü proje portföyü</li>
+                    <li>Teknik detay ve şartname tabloları</li>
+                    <li>Dinamik teklif ve iş geliştirme formları</li>
+                  </ul>
                 </div>
                 
                 {/* Tab: B2B */}
-                <div className={`sol-tab-pane ${solutionsTab === 'b2b' ? 'sol-tab-pane--active' : ''}`} id="sol-tab-b2b">
-                  <h3 className="sol-tab-pane__title">B2B Ürün Katalog Siteleri İçin Altyapı</h3>
-                  <p className="sol-tab-pane__desc">
-                    Binlerce ürünü, teknik tabloları ve pdf kılavuzları saniyeler içinde arayan ve filtreleyen hafif veri yapıları oluşturuyoruz. Sitenizi gereksiz e-ticaret karmaşıklığından arındırarak hızlı çalışan bir ürün vitrinine dönüştürüyoruz.
-                  </p>
+                <div className={`sol-tab-pane ${solutionsTab === 'b2b' ? 'sol-tab-pane--active' : ''}`} id="sol-tab-b2b" role="tabpanel">
+                  <h3 className="sol-tab-pane__title">B2B Ürün Katalog Siteleri</h3>
+                  <ul className="sol-tab-pane__list">
+                    <li>Hızlı arama ve filtreleme altyapısı</li>
+                    <li>Teknik veri ve PDF kılavuz yönetimi</li>
+                    <li>Toplu teklif ve katalog talebi akışı</li>
+                  </ul>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 8. Süreç (Process) */}
+        {/* 8. Yayına Alma Akışı */}
         <section className="process" id="process">
           <div className="container">
             <div className="section-header section-header--center">
-              <span className="section-header__tag">Nasıl Çalışıyoruz?</span>
-              <h2 className="section-header__title">Fikirden Canlı Altyapıya Sürecimiz</h2>
+              <span className="section-header__tag">Akış</span>
+              <h2 className="section-header__title">Yayına Alma Akışı</h2>
             </div>
             <div className="process__grid">
               <div className="process-card">
@@ -545,7 +793,7 @@ export default function CoreWebHome() {
               <div className="process-card">
                 <span className="process-card__num">02</span>
                 <h3 className="process-card__title">Arayüz Tasarımı & Kodlama</h3>
-                <p className="process-card__desc">
+                <p class="process-card__desc">
                   Şablonlardan uzak, özgün görsel kimliği tasarlıyor; ardından gereksiz kodlardan arındırılmış temiz bir mimari ile sitenizi inşa ediyoruz.
                 </p>
               </div>
@@ -558,21 +806,21 @@ export default function CoreWebHome() {
               </div>
               <div className="process-card">
                 <span className="process-card__num">04</span>
-                <h3 className="process-card__title">Küresel Dağıtımlı Yayın</h3>
+                <h3 className="process-card__title">Yayına Alma & Bakım</h3>
                 <p className="process-card__desc">
-                  Sitenizi Vercel Edge Network altyapısına bağlayarak DNS ayarlarını yapıyor ve sıfır kesintili, SSL sertifikalı yayını başlatıyoruz.
+                  Altyapıyı güvenli küresel ağlarda yayınlıyor, periyodik teknik kontroller ve güncellemelerle sistemin sürekliliğini sağlıyoruz.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 9. Paketler (Packages) */}
+        {/* 9. Başlangıç Paketi ve Gelecek Katmanlar */}
         <section className="packages" id="packages">
           <div className="container">
             <div className="section-header section-header--center">
-              <span className="section-header__tag">Şeffaf Model</span>
-              <h2 className="section-header__title">Hizmet Paketlerimiz</h2>
+              <span className="section-header__tag">Modeller</span>
+              <h2 className="section-header__title">Başlangıç Paketi ve Gelecek Katmanlar</h2>
             </div>
             <div className="packages__grid">
               {/* Pack 1: Standard (Active) */}
@@ -583,16 +831,17 @@ export default function CoreWebHome() {
                 </div>
                 <div className="package-card__body">
                   <ul className="package-card__features">
-                    <li>Özel Arayüz Tasarımı</li>
-                    <li>Temiz ve Hızlı Kod Altyapısı</li>
-                    <li>CoreWeb Müşteri Paneli</li>
-                    <li>Vercel Edge Dağıtımlı Hosting</li>
-                    <li>Güvenli Form Altyapısı ve Spam Koruması</li>
-                    <li>Güvenli Form API Altyapısı</li>
-                    <li>SSL Sertifikalı Yayın</li>
-                    <li>1 Yıl Teknik Destek & Bakım</li>
+                    <li>Özel tasarım kurumsal web sitesi</li>
+                    <li>CoreWeb müşteri paneli</li>
+                    <li>Anasayfa içerik yönetimi</li>
+                    <li>Blog / haber / ürün altyapısı</li>
+                    <li>Form ve talep yönetimi</li>
+                    <li>Medya kütüphanesi</li>
+                    <li>SEO uyumlu sayfa yapısı</li>
+                    <li>SSL ve yayın desteği</li>
+                    <li>Temel bakım ve teknik destek</li>
                   </ul>
-                  <a href="#contact" className="btn btn--primary btn--full">Projemi Planlayalım</a>
+                  <a href="#contact" className="btn btn--primary btn--full" onClick={(e) => handleSmoothScroll(e, '#contact')}>Projemi Planlayalım</a>
                 </div>
               </div>
 
@@ -647,21 +896,21 @@ export default function CoreWebHome() {
                     <li>Özel Veritabanı Entegrasyonları</li>
                     <li>Maksimum Güvenlik Geliştirmeleri</li>
                     <li>Çoklu Kiracılı Alt Ağlar</li>
-                    <li>SLA Garantili SLA Bakım Sözleşmesi</li>
+                    <li>SLA Destekli Bakım Sözleşmesi</li>
                   </ul>
-                  <a href="#contact" className="btn btn--secondary btn--full">Talep Edin</a>
+                  <a href="#contact" className="btn btn--secondary btn--full" onClick={(e) => handleSmoothScroll(e, '#contact')}>Talep Edin</a>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 10. Projeler (Projects) */}
+        {/* 10. Geliştirilen Sistemler */}
         <section className="projects" id="projects">
           <div className="container">
             <div className="section-header section-header--center">
-              <span className="section-header__tag">Neler Ürettik?</span>
-              <h2 className="section-header__title">Geliştirdiğimiz Aktif Altyapılar</h2>
+              <span className="section-header__tag">Referanslar</span>
+              <h2 className="section-header__title">Geliştirilen Sistemler</h2>
             </div>
             <div className="projects__grid">
               {/* Project 1: CoreWeb */}
@@ -687,7 +936,9 @@ export default function CoreWebHome() {
                 <div className="project-card__content">
                   <h3 className="project-card__title">CoreWeb Resmi Web Sitesi</h3>
                   <p className="project-card__desc">
-                    Şu an incelemekte olduğunuz, sıfır eklenti bağımlılığıyla tasarlanan ve Vercel Edge üzerinde yayınlanan resmi web altyapımız.
+                    <strong>Sektör:</strong> Teknoloji & Altyapı<br />
+                    <strong>Durum:</strong> Yayında<br />
+                    <strong>Kullanılan Yapı:</strong> Vanilla HTML/CSS/JS + Edge Distribution
                   </p>
                 </div>
               </div>
@@ -715,7 +966,9 @@ export default function CoreWebHome() {
                 <div className="project-card__content">
                   <h3 className="project-card__title">Burobig Ofis Mobilyaları</h3>
                   <p className="project-card__desc">
-                    Üretim grubunu ve lüks ofis koltuklarını listeleyen, yüksek hızlı ürün katalog mimarisi.
+                    <strong>Sektör:</strong> Ofis Mobilyaları & Üretim<br />
+                    <strong>Durum:</strong> Hazırlık adresinde<br />
+                    <strong>Kullanılan Yapı:</strong> Özel Katalog Altyapısı + Müşteri Paneli
                   </p>
                 </div>
               </div>
@@ -739,7 +992,9 @@ export default function CoreWebHome() {
                 <div className="project-card__content">
                   <h3 className="project-card__title">Capilon Mobilya</h3>
                   <p className="project-card__desc">
-                    Kurumsal marka değerini ön plana çıkaran, hızlı görsel yükleme ve sade yönetim paneline sahip kurumsal web sitesi.
+                    <strong>Sektör:</strong> Ev Mobilyası & İhracat<br />
+                    <strong>Durum:</strong> Geliştirme aşamasında<br />
+                    <strong>Kullanılan Yapı:</strong> Kurumsal Web Sitesi + Ürün Yönetimi
                   </p>
                 </div>
               </div>
@@ -766,7 +1021,9 @@ export default function CoreWebHome() {
                 <div className="project-card__content">
                   <h3 className="project-card__title">Kreatif Fikirler</h3>
                   <p className="project-card__desc">
-                    Özel hizmet ve vaka çalışmalarını arama motoru dostu semantik yapıyla sunan kurumsal tanıtım sitesi.
+                    <strong>Sektör:</strong> Dijital Ajans & Hizmet<br />
+                    <strong>Durum:</strong> Yayında<br />
+                    <strong>Kullanılan Yapı:</strong> Tanıtım Sitesi + Dinamik Vaka Çalışmaları
                   </p>
                 </div>
               </div>
@@ -774,24 +1031,24 @@ export default function CoreWebHome() {
           </div>
         </section>
 
-        {/* 11. Güven Alanı (Trust Area) */}
+        {/* 11. Güven Katmanı */}
         <section className="trust" id="trust">
           <div className="container">
             <div className="section-header section-header--center">
-              <span className="section-header__tag">Teknik Güvenceler</span>
-              <h2 className="section-header__title">Neden CoreWeb Altyapısı?</h2>
+              <span className="section-header__tag">Güven Katmanı</span>
+              <h2 className="section-header__title">Güven Katmanı</h2>
             </div>
             <div className="trust__grid">
               <div className="trust-item">
                 <h3 className="trust-item__title">Hafif Kod Mimarisi</h3>
                 <p className="trust-item__desc">
-                  Eklentilerle şişirilmemiş, saf ve temiz kod blokları sayesinde web siteniz her tarayıcıda stabil çalışır.
+                  Eklentilerle şişirilmemiş, saf ve temiz kod blokları sayesinde web siteniz her tarayıcıda kararlı çalışır.
                 </p>
               </div>
               <div className="trust-item">
                 <h3 className="trust-item__title">Mobil Uyum</h3>
                 <p className="trust-item__desc">
-                  Cihaz bağımsız, tüm ekran boyutlarına tam uyumlu esnek tasarım yapısı sayesinde kusursuz mobil deneyim.
+                  Cihaz bağımsız, tüm ekran boyutlarına tam uyumlu esnek tasarım yapısı sayesinde kesintisiz mobil deneyim.
                 </p>
               </div>
               <div className="trust-item">
@@ -801,7 +1058,7 @@ export default function CoreWebHome() {
                 </p>
               </div>
               <div className="trust-item">
-                <h3 className="trust-item__title">SEO Uyumlu Yapı</h3>
+                <h3 className="trust-item__title">SEO Uyumlu Sayfa İskeleti</h3>
                 <p className="trust-item__desc">
                   Arama motorları ve anlamsal YZ tarayıcı botları için optimize edilmiş HTML5 etiket düzeni.
                 </p>
@@ -809,17 +1066,17 @@ export default function CoreWebHome() {
               <div className="trust-item">
                 <h3 className="trust-item__title">Güvenli Form Altyapısı</h3>
                 <p className="trust-item__desc">
-                  Gelişmiş spam koruması ve veri filtreleme algoritmalarıyla güvenliği ve iletim kararlılığı sağlanmış form yapıları.
+                  Gelişmiş spam koruması ve veri filtreleme algoritmalarıyla güvenliği sağlanmış form yapıları.
                 </p>
               </div>
               <div className="trust-item">
-                <h3 className="trust-item__title">Panel Yönetimi</h3>
+                <h3 className="trust-item__title">Panelden Yönetim</h3>
                 <p className="trust-item__desc">
                   Sadece işletmenizin ihtiyaç duyduğu alanları yönetebileceğiniz, sadeleştirilmiş müşteri kontrol paneli.
                 </p>
               </div>
               <div className="trust-item">
-                <h3 className="trust-item__title">Yayın Öncesi Test Süreci</h3>
+                <h3 className="trust-item__title">Yayın Öncesi Kontrol Süreci</h3>
                 <p className="trust-item__desc">
                   Yayın öncesinde tarayıcı uyumluluğu, Core Web Vitals performans hedefleri ve form doğrulamaları test edilerek sıfır hata hedeflenir.
                 </p>
@@ -828,21 +1085,21 @@ export default function CoreWebHome() {
           </div>
         </section>
 
-        {/* 12. Final CTA ve İletişim Formu */}
+        {/* 12. Projeni Planlayalım (Form) */}
         <section className="contact" id="contact">
           <div className="container">
             <div className="contact__wrapper">
               <div className="contact__info">
-                <h2 className="contact__title">Hadi, Projenizi Birlikte Planlayalım</h2>
+                <h2 className="contact__title">Web sitenizi yönetilebilir bir sisteme dönüştürelim.</h2>
                 <p className="contact__desc">
-                  İşletmenizin web altyapısını güçlendirmek ve CoreWeb yönetim paneliyle tanışmak için formu doldurun. Talebiniz doğrultusunda en kısa sürede size dönüş yapalım.
+                  CoreWeb ile yalnızca yayına alınan bir web sitesi değil; içerikleri, formları, SEO kontrolleri ve yayın süreci yönetilebilen uzun vadeli bir dijital altyapı kurun.
                 </p>
               </div>
               
               <div className="contact__form-box">
                 <form className="contact-form" id="main-contact-form" onSubmit={handleFormSubmit}>
                   <div className="form-group">
-                    <label htmlFor="form-name" className="form-label">Adınız Soyadınız *</label>
+                    <label htmlFor="form-name" className="form-label">Ad Soyad *</label>
                     <input 
                       type="text" 
                       id="form-name" 
@@ -856,7 +1113,21 @@ export default function CoreWebHome() {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="form-email" className="form-label">E-posta Adresiniz *</label>
+                    <label htmlFor="form-company" className="form-label">Firma Adı *</label>
+                    <input 
+                      type="text" 
+                      id="form-company" 
+                      name="company" 
+                      className="form-input" 
+                      required 
+                      placeholder="Örn. CoreWeb A.Ş." 
+                      value={formData.company}
+                      onChange={handleInputChange}
+                      disabled={loading}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="form-email" className="form-label">E-posta Adresi *</label>
                     <input 
                       type="email" 
                       id="form-email" 
@@ -870,7 +1141,7 @@ export default function CoreWebHome() {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="form-phone" className="form-label">Telefon Numaranız *</label>
+                    <label htmlFor="form-phone" className="form-label">Telefon Numarası *</label>
                     <input 
                       type="tel" 
                       id="form-phone" 
@@ -884,12 +1155,30 @@ export default function CoreWebHome() {
                     />
                   </div>
                   <div className="form-group">
+                    <label htmlFor="form-projectType" className="form-label">Proje Türü *</label>
+                    <select 
+                      id="form-projectType" 
+                      name="projectType" 
+                      className="form-input" 
+                      required
+                      value={formData.projectType}
+                      onChange={handleInputChange}
+                      disabled={loading}
+                    >
+                      <option value="" disabled>Lütfen seçin...</option>
+                      <option value="Kurumsal Web Sitesi">Kurumsal Web Sitesi</option>
+                      <option value="Ürün Katalog Sitesi">Ürün Katalog Sitesi</option>
+                      <option value="Hizmet Tanıtım Altyapısı">Hizmet Tanıtım Altyapısı</option>
+                      <option value="Diğer">Diğer</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
                     <label htmlFor="form-message" className="form-label">Mesajınız</label>
                     <textarea 
                       id="form-message" 
                       name="message" 
                       className="form-input form-input--textarea" 
-                      placeholder="Projeniz hakkında kısa bilgi verin..."
+                      placeholder="Projeniz hakkında detaylar verin..."
                       value={formData.message}
                       onChange={handleInputChange}
                       disabled={loading}
@@ -936,17 +1225,18 @@ export default function CoreWebHome() {
       <footer className="footer">
         <div className="container footer__container">
           <div className="footer__brand">
-            <a href="/" className="footer__logo">
+            <a href="/" className="footer__logo" aria-label="CoreWeb Anasayfa" onClick={(e) => handleSmoothScroll(e, '#hero')}>
               <img src="/logo.png" alt="CoreWeb Logo" className="logo-img" />
             </a>
-            <p className="footer__desc">Yönetilebilir web altyapısı sağlayan teknoloji firması.</p>
+            <p className="footer__desc">Kurumlar için özel tasarımlı, yüksek performanslı ve sürdürülebilir yönetilebilir web altyapıları sağlayan teknoloji sağlayıcısı.</p>
           </div>
           <div className="footer__links">
-            <a href="#services" className="footer__link">Hizmetler</a>
-            <a href="#panel" className="footer__link">Yönetim Paneli</a>
-            <a href="#solutions" className="footer__link">Sektörel Çözümler</a>
-            <a href="#packages" className="footer__link">Paketler</a>
-            <a href="#projects" className="footer__link">Projeler</a>
+            <a href="#hero" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#hero')}>Sistem</a>
+            <a href="#panel" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#panel')}>Kontrol Merkezi</a>
+            <a href="#modules" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#modules')}>Modüller</a>
+            <a href="#process" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#process')}>Süreç</a>
+            <a href="#packages" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#packages')}>Paketler</a>
+            <a href="#projects" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#projects')}>Projeler</a>
           </div>
         </div>
         <div className="container footer__bottom">
