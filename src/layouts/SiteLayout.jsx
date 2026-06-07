@@ -39,6 +39,12 @@ export default function SiteLayout({ children, tenantMapping, activeLang }) {
       }
       // Remove trailing slash and /tr or /tr/ prefix from path for canonical tag
       let cleanPath = location.pathname;
+      if (cleanPath.startsWith('/coreweb/tr')) {
+        cleanPath = cleanPath.substring(11);
+      } else if (cleanPath.startsWith('/coreweb')) {
+        cleanPath = cleanPath.substring(8);
+      }
+      
       if (cleanPath === '/tr' || cleanPath === '/tr/') {
         cleanPath = '';
       } else if (cleanPath.startsWith('/tr/')) {

@@ -216,9 +216,8 @@ export default function CoreWebHome() {
             <a href="#panel" className="header__link" onClick={(e) => handleSmoothScroll(e, '#panel')}>Kontrol Merkezi</a>
             <a href="#modules" className="header__link" onClick={(e) => handleSmoothScroll(e, '#modules')}>Modüller</a>
             <a href="#process" className="header__link" onClick={(e) => handleSmoothScroll(e, '#process')}>Süreç</a>
-            <a href="#packages" className="header__link" onClick={(e) => handleSmoothScroll(e, '#packages')}>Paketler</a>
-            <a href="#projects" className="header__link" onClick={(e) => handleSmoothScroll(e, '#projects')}>Projeler</a>
-            <a href="#contact" className="header__btn" onClick={(e) => handleSmoothScroll(e, '#contact')}>Planlayalım</a>
+            <a href="#trust" className="header__link" onClick={(e) => handleSmoothScroll(e, '#trust')}>Güven</a>
+            <a href="#contact" className="header__btn" onClick={(e) => handleSmoothScroll(e, '#contact')}>İletişim</a>
           </nav>
         </div>
       </header>
@@ -478,24 +477,24 @@ export default function CoreWebHome() {
                       <div className="mock-leads-list">
                         <div className="mock-lead-item">
                           <div className="mock-lead-item__meta">
-                            <strong>Ahmet Yılmaz</strong>
-                            <span>Burobig Ofis Mobilyaları • Mobilya Katalog Altyapısı</span>
+                            <strong>Form güvenliği aktif</strong>
+                            <span>Spam korumalı iletişim modülü devrede</span>
                           </div>
-                          <span className="mock-badge">Yeni</span>
+                          <span className="mock-badge">Etkin</span>
                         </div>
                         <div className="mock-lead-item">
                           <div className="mock-lead-item__meta">
-                            <strong>Zeynep Kaya</strong>
-                            <span>Kaya Klinik • Tanıtım & Randevu Altyapısı</span>
+                            <strong>Site yayına hazır</strong>
+                            <span>Yayın öncesi kontrol tamamlandı</span>
                           </div>
-                          <span className="mock-badge mock-badge--gray">İletildi</span>
+                          <span className="mock-badge">Hazır</span>
                         </div>
                         <div className="mock-lead-item">
                           <div className="mock-lead-item__meta">
-                            <strong>Can Demir</strong>
-                            <span>Demir Lojistik • Fiyat Teklifi Formu</span>
+                            <strong>Panel modülü aktif</strong>
+                            <span>İçerik alanları düzenli, talep akışı hazır</span>
                           </div>
-                          <span className="mock-badge mock-badge--gray">İletildi</span>
+                          <span className="mock-badge">Aktif</span>
                         </div>
                       </div>
                     </div>
@@ -815,221 +814,9 @@ export default function CoreWebHome() {
           </div>
         </section>
 
-        {/* 9. Başlangıç Paketi ve Gelecek Katmanlar */}
-        <section className="packages" id="packages">
-          <div className="container">
-            <div className="section-header section-header--center">
-              <span className="section-header__tag">Modeller</span>
-              <h2 className="section-header__title">Başlangıç Paketi ve Gelecek Katmanlar</h2>
-            </div>
-            <div className="packages__grid">
-              {/* Pack 1: Standard (Active) */}
-              <div className="package-card package-card--active">
-                <div className="package-card__header">
-                  <h3 className="package-card__name">Standart Paket</h3>
-                  <p className="package-card__price">Projenize göre tekliflendirilir</p>
-                </div>
-                <div className="package-card__body">
-                  <ul className="package-card__features">
-                    <li>Özel tasarım kurumsal web sitesi</li>
-                    <li>CoreWeb müşteri paneli</li>
-                    <li>Anasayfa içerik yönetimi</li>
-                    <li>Blog / haber / ürün altyapısı</li>
-                    <li>Form ve talep yönetimi</li>
-                    <li>Medya kütüphanesi</li>
-                    <li>SEO uyumlu sayfa yapısı</li>
-                    <li>SSL ve yayın desteği</li>
-                    <li>Temel bakım ve teknik destek</li>
-                  </ul>
-                  <a href="#contact" className="btn btn--primary btn--full" onClick={(e) => handleSmoothScroll(e, '#contact')}>Projemi Planlayalım</a>
-                </div>
-              </div>
 
-              {/* Pack 2: Gold (Passive) */}
-              <div className="package-card package-card--disabled">
-                <div className="package-card__header">
-                  <span className="package-card__tag">Yakında</span>
-                  <h3 className="package-card__name">Gold Paket</h3>
-                  <p className="package-card__price">Yakında</p>
-                </div>
-                <div className="package-card__body">
-                  <ul className="package-card__features">
-                    <li>Standart Paket Özellikleri</li>
-                    <li>Çoklu Dil (Multilingual) Desteği</li>
-                    <li>Dinamik Blog & Haber Modülü</li>
-                    <li>Gelişmiş SEO Yönetimi</li>
-                    <li>Sosyal Medya Entegrasyonları</li>
-                  </ul>
-                  <button className="btn btn--secondary btn--full" disabled>Yakında</button>
-                </div>
-              </div>
 
-              {/* Pack 3: Platinum (Passive) */}
-              <div className="package-card package-card--disabled">
-                <div className="package-card__header">
-                  <span className="package-card__tag">Yakında</span>
-                  <h3 className="package-card__name">Platinum Paket</h3>
-                  <p className="package-card__price">Yakında</p>
-                </div>
-                <div className="package-card__body">
-                  <ul className="package-card__features">
-                    <li>Gold Paket Özellikleri</li>
-                    <li>B2B Ürün Katalog Modülü</li>
-                    <li>Gelişmiş Filtreleme Arayüzü</li>
-                    <li>Müşteriye Özel API Entegrasyonları</li>
-                    <li>7/24 Öncelikli Destek Hattı</li>
-                  </ul>
-                  <button className="btn btn--secondary btn--full" disabled>Yakında</button>
-                </div>
-              </div>
 
-              {/* Pack 4: Corporate Custom (Passive) */}
-              <div className="package-card package-card--disabled">
-                <div className="package-card__header">
-                  <span className="package-card__tag">Talep İle</span>
-                  <h3 className="package-card__name">Kurumsal Özel</h3>
-                  <p className="package-card__price">Talep ile</p>
-                </div>
-                <div className="package-card__body">
-                  <ul className="package-card__features">
-                    <li>Büyük Ölçekli Dijital Altyapı</li>
-                    <li>Özel Veritabanı Entegrasyonları</li>
-                    <li>Maksimum Güvenlik Geliştirmeleri</li>
-                    <li>Çoklu Kiracılı Alt Ağlar</li>
-                    <li>SLA Destekli Bakım Sözleşmesi</li>
-                  </ul>
-                  <a href="#contact" className="btn btn--secondary btn--full" onClick={(e) => handleSmoothScroll(e, '#contact')}>Talep Edin</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 10. Geliştirilen Sistemler */}
-        <section className="projects" id="projects">
-          <div className="container">
-            <div className="section-header section-header--center">
-              <span className="section-header__tag">Referanslar</span>
-              <h2 className="section-header__title">Geliştirilen Sistemler</h2>
-            </div>
-            <div className="projects__grid">
-              {/* Project 1: CoreWeb */}
-              <div className="project-card">
-                <div className="project-card__mockup mockup-browser">
-                  <div className="mockup-browser__header">
-                    <div className="mockup-browser__dots">
-                      <span></span><span></span><span></span>
-                    </div>
-                    <div className="mockup-browser__url">coreweb.tr</div>
-                  </div>
-                  <div className="mockup-browser__body">
-                    <div className="skeleton-page page-coreweb">
-                      <div className="skeleton-line-thick"></div>
-                      <div className="skeleton-line-thin"></div>
-                      <div className="skeleton-grid-2">
-                        <div className="skeleton-block"></div>
-                        <div className="skeleton-block"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="project-card__content">
-                  <h3 className="project-card__title">CoreWeb Resmi Web Sitesi</h3>
-                  <p className="project-card__desc">
-                    <strong>Sektör:</strong> Teknoloji & Altyapı<br />
-                    <strong>Durum:</strong> Yayında<br />
-                    <strong>Kullanılan Yapı:</strong> Vanilla HTML/CSS/JS + Edge Distribution
-                  </p>
-                </div>
-              </div>
-              
-              {/* Project 2: Burobig */}
-              <div className="project-card">
-                <div className="project-card__mockup mockup-browser">
-                  <div className="mockup-browser__header">
-                    <div className="mockup-browser__dots">
-                      <span></span><span></span><span></span>
-                    </div>
-                    <div className="mockup-browser__url">burobig.com</div>
-                  </div>
-                  <div className="mockup-browser__body">
-                    <div className="skeleton-page page-burobig">
-                      <div className="skeleton-line-thick"></div>
-                      <div className="skeleton-grid-3">
-                        <div className="skeleton-block"></div>
-                        <div className="skeleton-block"></div>
-                        <div className="skeleton-block"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="project-card__content">
-                  <h3 className="project-card__title">Burobig Ofis Mobilyaları</h3>
-                  <p className="project-card__desc">
-                    <strong>Sektör:</strong> Ofis Mobilyaları & Üretim<br />
-                    <strong>Durum:</strong> Hazırlık adresinde<br />
-                    <strong>Kullanılan Yapı:</strong> Özel Katalog Altyapısı + Müşteri Paneli
-                  </p>
-                </div>
-              </div>
-
-              {/* Project 3: Capilon */}
-              <div className="project-card">
-                <div className="project-card__mockup mockup-browser">
-                  <div className="mockup-browser__header">
-                    <div className="mockup-browser__dots">
-                      <span></span><span></span><span></span>
-                    </div>
-                    <div className="mockup-browser__url">capilon.com.tr</div>
-                  </div>
-                  <div className="mockup-browser__body">
-                    <div className="skeleton-page page-capilon">
-                      <div className="skeleton-hero-banner"></div>
-                      <div className="skeleton-line-thin"></div>
-                    </div>
-                  </div>
-                </div>
-                <div className="project-card__content">
-                  <h3 className="project-card__title">Capilon Mobilya</h3>
-                  <p className="project-card__desc">
-                    <strong>Sektör:</strong> Ev Mobilyası & İhracat<br />
-                    <strong>Durum:</strong> Geliştirme aşamasında<br />
-                    <strong>Kullanılan Yapı:</strong> Kurumsal Web Sitesi + Ürün Yönetimi
-                  </p>
-                </div>
-              </div>
-
-              {/* Project 4: Kreatif Fikirler */}
-              <div className="project-card">
-                <div className="project-card__mockup mockup-browser">
-                  <div className="mockup-browser__header">
-                    <div className="mockup-browser__dots">
-                      <span></span><span></span><span></span>
-                    </div>
-                    <div className="mockup-browser__url">kreatiffikirler.com</div>
-                  </div>
-                  <div className="mockup-browser__body">
-                    <div className="skeleton-page page-kreatif">
-                      <div className="skeleton-grid-2">
-                        <div className="skeleton-block"></div>
-                        <div className="skeleton-block"></div>
-                      </div>
-                      <div className="skeleton-line-thin"></div>
-                    </div>
-                  </div>
-                </div>
-                <div className="project-card__content">
-                  <h3 className="project-card__title">Kreatif Fikirler</h3>
-                  <p className="project-card__desc">
-                    <strong>Sektör:</strong> Dijital Ajans & Hizmet<br />
-                    <strong>Durum:</strong> Yayında<br />
-                    <strong>Kullanılan Yapı:</strong> Tanıtım Sitesi + Dinamik Vaka Çalışmaları
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* 11. Güven Katmanı */}
         <section className="trust" id="trust">
@@ -1235,8 +1022,8 @@ export default function CoreWebHome() {
             <a href="#panel" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#panel')}>Kontrol Merkezi</a>
             <a href="#modules" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#modules')}>Modüller</a>
             <a href="#process" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#process')}>Süreç</a>
-            <a href="#packages" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#packages')}>Paketler</a>
-            <a href="#projects" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#projects')}>Projeler</a>
+            <a href="#trust" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#trust')}>Güven</a>
+            <a href="#contact" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#contact')}>İletişim</a>
           </div>
         </div>
         <div className="container footer__bottom">
