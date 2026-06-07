@@ -194,9 +194,17 @@ export default function BurobigProductDetail({ product }) {
             <span className="detail-showcase__subtitle">
               {product.category?.toUpperCase()}
             </span>
-            <p className="detail-showcase__desc">
-              {product.summary || product.content?.replace(/<[^>]*>/g, '')}
-            </p>
+            <div className="detail-showcase__desc">
+              {product.content ? (
+                product.content.startsWith('<') ? (
+                  <div dangerouslySetInnerHTML={{ __html: product.content }} className="space-y-4" />
+                ) : (
+                  <div className="whitespace-pre-line">{product.content}</div>
+                )
+              ) : (
+                product.summary
+              )}
+            </div>
             <div className="detail-showcase__actions">
               <a
                 href={`mailto:info@burobig.com?subject=Fiyat Teklifi: ${product.title}`}
