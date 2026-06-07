@@ -8,8 +8,6 @@ export default function CapilonHome() {
 
   // State Management
   const [activeSlide, setActiveSlide] = useState(0);
-  const [scrolled, setScrolled] = useState(false);
-  const [headerHidden, setHeaderHidden] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Mega menu image swap state
@@ -37,8 +35,11 @@ export default function CapilonHome() {
     metaDesc.setAttribute('content', descText);
   }, [activeLang]);
 
-  // Header Scroll and Direction logic
+  // Header Scroll and Direction logic (Direct DOM manipulation to avoid React re-renders & lag)
   useEffect(() => {
+    const header = document.getElementById('site-header');
+    if (!header) return;
+
     let ticking = false;
     let lastScrollY = window.scrollY;
 
@@ -46,12 +47,15 @@ export default function CapilonHome() {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentScrollY = window.scrollY;
-          setScrolled(currentScrollY > 50);
+          
+          // Toggle 'scrolled' class on header
+          header.classList.toggle('scrolled', currentScrollY > 50);
 
+          // Hide header on scroll down, show on scroll up (uses 'hidden-header' to avoid global .hidden { display: none; })
           if (currentScrollY > lastScrollY && currentScrollY > 150) {
-            setHeaderHidden(true);
+            header.classList.add('hidden-header');
           } else if (currentScrollY < lastScrollY) {
-            setHeaderHidden(false);
+            header.classList.remove('hidden-header');
           }
 
           lastScrollY = currentScrollY;
@@ -249,7 +253,7 @@ export default function CapilonHome() {
       </div>
 
       {/* 3. Ana Header (Logo, Arama, İkonlar) */}
-      <header className={`site-header-solid ${scrolled ? 'scrolled' : ''} ${headerHidden ? 'hidden' : ''}`} id="site-header">
+      <header className="site-header-solid" id="site-header">
         <div className="header-container main-header-row">
           <div className="header-brand">
             <button className="hamburger-btn" aria-label="Menü" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
