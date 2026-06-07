@@ -2397,7 +2397,7 @@
 .related-carousel-track {
     display: flex;
     width: max-content;
-    animation: scroll 30s linear infinite;
+    animation: scroll 80s linear infinite;
 }
 .related-carousel-track:hover {
     animation-play-state: paused;
