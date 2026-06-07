@@ -1,0 +1,414 @@
+/* src/themes/capilon/capilon.css */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Roboto:wght@300;400;500;700&display=swap');
+
+.capilon-theme {
+  --capilon-bg: #faf8f5;
+  --capilon-text: #4a4541;
+  --capilon-text-muted: #8c857d;
+  --capilon-white: #ffffff;
+  --capilon-accent: #b87353;
+  --capilon-orange: #f38220;
+  --capilon-border: rgba(74, 69, 65, 0.08);
+  --capilon-font: 'Roboto', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  --capilon-font-serif: 'Playfair Display', Georgia, serif;
+  
+  font-family: var(--capilon-font);
+  color: var(--capilon-text);
+  background-color: var(--capilon-bg);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Ensure elements are strictly scoped under .capilon-theme */
+.capilon-theme * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.capilon-theme a {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.capilon-theme a:hover {
+  opacity: 0.8;
+}
+
+.capilon-theme img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.capilon-theme button {
+  font-family: var(--capilon-font);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.capilon-theme h1,
+.capilon-theme h2,
+.capilon-theme h3 {
+  font-family: var(--capilon-font-serif);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+/* Custom layout elements scoped */
+.capilon-theme .top-bar {
+  background-color: var(--capilon-orange);
+  color: var(--capilon-white);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 5%;
+  letter-spacing: 0.5px;
+}
+
+.capilon-theme .top-bar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.capilon-theme .top-bar-left {
+  display: flex;
+  gap: 20px;
+}
+
+.capilon-theme .top-bar-right {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.capilon-theme .top-bar a:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.capilon-theme .site-header {
+  background-color: rgba(250, 248, 245, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--capilon-border);
+  padding: 20px 5%;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.capilon-theme .header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.capilon-theme .header-brand img {
+  height: 48px;
+  width: auto;
+}
+
+.capilon-theme .header-brand-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.capilon-theme .header-actions {
+  display: flex;
+  gap: 24px;
+}
+
+.capilon-theme .action-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Hero section */
+.capilon-theme .hero-section {
+  position: relative;
+  height: 80vh;
+  min-height: 550px;
+  background-color: #dcd7cf;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 5%;
+  overflow: hidden;
+}
+
+.capilon-theme .hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+}
+
+.capilon-theme .hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 2;
+}
+
+.capilon-theme .hero-content {
+  position: relative;
+  z-index: 3;
+  color: var(--capilon-white);
+  max-width: 700px;
+  background: rgba(74, 69, 65, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 3.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: capilon-entrance 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes capilon-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.capilon-theme .hero-overline {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  color: var(--capilon-orange);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.capilon-theme .hero-content h1 {
+  font-size: clamp(2rem, 3.5vw, 3.2rem);
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+.capilon-theme .hero-content p {
+  font-size: clamp(1rem, 1.2vw, 1.15rem);
+  margin-bottom: 2.5rem;
+  opacity: 0.9;
+  max-width: 550px;
+}
+
+.capilon-theme .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 32px;
+  background-color: var(--capilon-orange);
+  color: var(--capilon-white);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  border: 1px solid var(--capilon-orange);
+}
+
+.capilon-theme .btn-primary:hover {
+  background-color: transparent;
+  color: var(--capilon-white);
+  border-color: var(--capilon-white);
+  opacity: 1;
+}
+
+.capilon-theme .btn-primary svg {
+  margin-left: 8px;
+  transition: transform 0.3s ease;
+}
+
+.capilon-theme .btn-primary:hover svg {
+  transform: translateX(4px);
+}
+
+/* Manifesto Section */
+.capilon-theme .manifesto-section {
+  padding: 80px 5%;
+  background-color: var(--capilon-white);
+}
+
+.capilon-theme .manifesto-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.capilon-theme .manifesto-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.capilon-theme .manifesto-header h2 {
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  margin-bottom: 12px;
+}
+
+.capilon-theme .manifesto-header p {
+  color: var(--capilon-text-muted);
+  font-size: clamp(1rem, 1.1vw, 1.15rem);
+}
+
+.capilon-theme .manifesto-grid {
+  display: grid;
+  grid-template-cols: 1fr;
+  gap: 40px;
+}
+
+@media (min-width: 768px) {
+  .capilon-theme .manifesto-grid {
+    grid-template-cols: repeat(3, 1fr);
+  }
+}
+
+.capilon-theme .manifesto-card {
+  display: flex;
+  gap: 20px;
+}
+
+.capilon-theme .manifesto-number {
+  font-family: var(--capilon-font-serif);
+  font-size: 32px;
+  color: var(--capilon-orange);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.capilon-theme .manifesto-info h3 {
+  font-family: var(--capilon-font);
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.capilon-theme .manifesto-info p {
+  color: var(--capilon-text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Contact CTA Bar */
+.capilon-theme .contact-cta-bar {
+  background-color: #1a1a1a;
+  color: var(--capilon-white);
+  padding: 50px 5%;
+  text-align: center;
+  border-top: 1px solid var(--capilon-border);
+}
+
+.capilon-theme .contact-cta-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.capilon-theme .contact-cta-container h3 {
+  font-size: 24px;
+}
+
+.capilon-theme .contact-cta-container p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+}
+
+.capilon-theme .contact-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.capilon-theme .btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 28px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--capilon-white);
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.capilon-theme .btn-outline:hover {
+  border-color: var(--capilon-white);
+  background-color: var(--capilon-white);
+  color: #111;
+  opacity: 1;
+}
+
+.capilon-theme .btn-whatsapp {
+  border-color: #25D366;
+  background-color: #25D366;
+  color: var(--capilon-white);
+}
+
+.capilon-theme .btn-whatsapp:hover {
+  background-color: #128C7E;
+  border-color: #128C7E;
+  color: var(--capilon-white);
+}
+
+/* Footer */
+.capilon-theme .site-footer {
+  background-color: var(--capilon-bg);
+  border-top: 1px solid var(--capilon-border);
+  padding: 40px 5%;
+  color: var(--capilon-text-muted);
+  font-size: 14px;
+}
+
+.capilon-theme .footer-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+@media (min-width: 768px) {
+  .capilon-theme .footer-container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.capilon-theme .footer-brand img {
+  height: 32px;
+  width: auto;
+}
+
+.capilon-theme .footer-copyright {
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .capilon-theme .footer-copyright {
+    text-align: left;
+  }
+}

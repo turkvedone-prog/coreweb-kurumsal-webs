@@ -92,11 +92,22 @@ export default function SiteLayout({ children, tenantMapping, activeLang }) {
   };
 
   const isBurobig = tenantMapping?.tenantSlug === 'burobig' || tenantMapping?.tenantId === 'TEN-BUROBIG';
+  const isCapilon = tenantMapping?.tenantSlug === 'capilon' || tenantMapping?.tenantId === 'TEN-CAPILON';
 
   if (isBurobig) {
     return (
       <SiteContext.Provider value={contextValue}>
         <div className="burobig-theme">
+          {children}
+        </div>
+      </SiteContext.Provider>
+    );
+  }
+
+  if (isCapilon) {
+    return (
+      <SiteContext.Provider value={contextValue}>
+        <div className="capilon-theme">
           {children}
         </div>
       </SiteContext.Provider>

@@ -5,6 +5,7 @@ import { Mail, Phone, Sparkles, Award, Users } from 'lucide-react';
 import { useSite } from '../layouts/SiteLayout';
 import { updateSEOMeta } from '../utils/seo';
 import BurobigHome from '../themes/burobig/BurobigHome';
+import CapilonHome from '../themes/capilon/CapilonHome';
 
 export default function Home() {
   const { tenantMapping, activeLang, settings } = useSite();
@@ -13,10 +14,13 @@ export default function Home() {
   const [loadingSliders, setLoadingSliders] = useState(true);
 
   const isBurobig = tenantSlug === 'burobig' || tenantId === 'TEN-BUROBIG';
+  const isCapilon = tenantSlug === 'capilon' || tenantId === 'TEN-CAPILON';
 
   const companyName = settings?.companyName || tenantSlug || 'CoreWeb';
 
   useEffect(() => {
+    if (isBurobig || isCapilon) return;
+
     // Dynamic SEO update for homepage
     const homeDescription = activeLang === 'tr'
       ? `${companyName} firmamıza hoş geldiniz. Modern teknolojiler ve uzman ekibimizle profesyonel çözümler sunuyoruz.`
@@ -28,7 +32,7 @@ export default function Home() {
       image: settings?.logos?.header || settings?.logos?.footer || '',
       companyName: settings?.homeTitle ? '' : companyName
     });
-  }, [activeLang, companyName, settings]);
+  }, [activeLang, companyName, settings, isBurobig, isCapilon]);
 
   useEffect(() => {
     if (!tenantId) return;
@@ -53,6 +57,10 @@ export default function Home() {
 
   if (isBurobig) {
     return <BurobigHome />;
+  }
+
+  if (isCapilon) {
+    return <CapilonHome />;
   }
 
   return (
