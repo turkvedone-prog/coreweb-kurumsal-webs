@@ -3,9 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { getCompanySettings, getNavigation } from '../services/publicContentService';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import LoadingState from '../components/LoadingState';
-import BurobigHeader from '../themes/burobig/BurobigHeader';
-import BurobigFooter from '../themes/burobig/BurobigFooter';
+import CapilonHeader from '../themes/capilon/CapilonHeader';
+import CapilonFooter from '../themes/capilon/CapilonFooter';
 
 const SiteContext = createContext(null);
 
@@ -107,6 +106,13 @@ export default function SiteLayout({ children, tenantMapping, activeLang }) {
     }
   }, [tenantMapping]);
 
+  // Synchronize HTML lang attribute with activeLang for correct local casing rules (e.g. Turkish i -> İ)
+  useEffect(() => {
+    if (activeLang) {
+      document.documentElement.lang = activeLang;
+    }
+  }, [activeLang]);
+
   useEffect(() => {
     if (!tenantId) return;
 
@@ -130,7 +136,7 @@ export default function SiteLayout({ children, tenantMapping, activeLang }) {
   }, [tenantId]);
 
   if (loading) {
-    return <LoadingState />;
+    return null;
   }
 
   const contextValue = {
@@ -140,27 +146,16 @@ export default function SiteLayout({ children, tenantMapping, activeLang }) {
     navigation
   };
 
-  const isBurobig = tenantMapping?.tenantSlug === 'burobig' || tenantMapping?.tenantId === 'TEN-BUROBIG';
   const isCapilon = tenantMapping?.tenantSlug === 'capilon' || tenantMapping?.tenantId === 'TEN-CAPILON';
   const isCoreWeb = tenantMapping?.tenantSlug === 'coreweb' || tenantMapping?.tenantId === 'TEN-507';
-
-  if (isBurobig) {
-    return (
-      <SiteContext.Provider value={contextValue}>
-        <div className="burobig-theme">
-          <BurobigHeader />
-          {children}
-          <BurobigFooter />
-        </div>
-      </SiteContext.Provider>
-    );
-  }
 
   if (isCapilon) {
     return (
       <SiteContext.Provider value={contextValue}>
         <div className="capilon-theme">
+          <CapilonHeader />
           {children}
+          <CapilonFooter />
         </div>
       </SiteContext.Provider>
     );

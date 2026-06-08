@@ -4729,3 +4729,328 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
 }
 
 }
+
+/* ============================================================
+   CAPILON İLETİŞİM SAYFASI STİLLERİ
+   ============================================================ */
+.capilon-theme .contact-hero {
+    background-color: #f38220; /* Capilon Turuncusu */
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+}
+.capilon-theme .contact-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 500;
+    color: #ffffff; /* Beyaz başlık */
+    margin-bottom: 1rem;
+}
+.capilon-theme .contact-hero p {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.95); /* Okunabilir beyaz alt metin */
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.capilon-theme .contact-section {
+    padding: 100px 0;
+    background-color: #fbfbf9; /* Çok hafif sıcak kırık beyaz zemin */
+}
+.capilon-theme .contact-container {
+    max-width: 1400px;
+    width: 95%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 50px;
+}
+
+/* Sol Kolon: Bilgiler (Lüks Koyu Panel) */
+.capilon-theme .contact-info-cards {
+    background-color: #1c1b18; /* Premium koyu antrasit tonu */
+    padding: 60px 50px;
+    border-radius: 20px;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 40px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+.capilon-theme .contact-info-cards::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(243, 130, 32, 0.15) 0%, rgba(243, 130, 32, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Tanıtım Yazısı */
+.capilon-theme .contact-info-intro {
+    margin-bottom: 10px;
+}
+.capilon-theme .info-tag {
+    display: inline-block;
+    background-color: rgba(243, 130, 32, 0.12);
+    color: #f38220;
+    padding: 6px 18px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(243, 130, 32, 0.2);
+}
+.capilon-theme .contact-info-intro h2 {
+    font-family: var(--font-primary);
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 15px;
+    letter-spacing: -0.5px;
+}
+.capilon-theme .contact-info-intro p {
+    font-size: 0.95rem;
+    color: #b0aeb0;
+    line-height: 1.7;
+}
+
+/* İletişim Bilgileri Listesi */
+.capilon-theme .contact-info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+.capilon-theme .contact-info-item {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+.capilon-theme .info-item-icon {
+    width: 46px;
+    height: 46px;
+    background-color: rgba(243, 130, 32, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #f38220;
+    flex-shrink: 0;
+    border: 1px solid rgba(243, 130, 32, 0.2);
+}
+.capilon-theme .info-item-text h4 {
+    font-family: var(--font-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #ffffff;
+}
+.capilon-theme .info-item-text p {
+    font-size: 0.95rem;
+    color: #b0aeb0;
+    line-height: 1.6;
+    margin: 0;
+}
+.capilon-theme .info-item-text a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 500;
+}
+.capilon-theme .info-item-text a:hover {
+    color: #f38220;
+}
+
+/* Sol Kart Sosyal Medya */
+.capilon-theme .contact-info-footer h4 {
+    font-family: var(--font-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.capilon-theme .info-socials {
+    display: flex;
+    gap: 12px;
+}
+.capilon-theme .info-socials a {
+    width: 38px;
+    height: 38px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.capilon-theme .info-socials a:hover {
+    background-color: #f38220;
+    border-color: #f38220;
+    color: #ffffff;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(243, 130, 32, 0.3);
+}
+
+/* Sağ Kolon: Form (Premium Beyaz Kart) */
+.capilon-theme .contact-form-wrapper {
+    background-color: #ffffff;
+    padding: 60px 50px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.03);
+}
+.capilon-theme .contact-form-wrapper h2 {
+    font-family: var(--font-primary);
+    font-size: 2.2rem;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+.capilon-theme .contact-form-wrapper p {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 35px;
+}
+
+.capilon-theme .contact-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+.capilon-theme .form-group-full {
+    grid-column: span 2;
+}
+.capilon-theme .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.capilon-theme .form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4a4541;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+.capilon-theme .form-group input,
+.capilon-theme .form-group textarea {
+    width: 100%;
+    background-color: #fcfbf9;
+    border: 1px solid #e2dfda;
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 0.95rem;
+    color: #333;
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.capilon-theme .form-group input:focus,
+.capilon-theme .form-group textarea:focus {
+    border-color: #f38220;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(243, 130, 32, 0.1);
+}
+.capilon-theme .form-group textarea {
+    resize: vertical;
+    min-height: 140px;
+}
+
+/* KVKK */
+.capilon-theme .form-checkbox {
+    grid-column: span 2;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 10px;
+}
+.capilon-theme .form-checkbox input {
+    margin-top: 4px;
+    accent-color: #f38220;
+    width: 16px;
+    height: 16px;
+}
+.capilon-theme .form-checkbox label {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.6;
+}
+.capilon-theme .form-checkbox a {
+    color: #f38220;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.capilon-theme .contact-submit-btn {
+    grid-column: span 2;
+    justify-self: start;
+    background-color: #f38220;
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    padding: 16px 45px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 5px 15px rgba(243, 130, 32, 0.2);
+    margin-top: 15px;
+}
+.capilon-theme .contact-submit-btn:hover {
+    background-color: #d76d13;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(243, 130, 32, 0.35);
+}
+
+/* Harita Alanı */
+.capilon-theme .contact-map-section {
+    width: 100%;
+    height: 500px;
+    background-color: #eee;
+    border-top: 1px solid #eaeaea;
+    position: relative;
+}
+.capilon-theme .contact-map-section iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+@media (max-width: 992px) {
+    .capilon-theme .contact-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .capilon-theme .contact-form {
+        grid-template-columns: 1fr;
+    }
+    .capilon-theme .form-group-full,
+    .capilon-theme .form-checkbox,
+    .capilon-theme .contact-submit-btn {
+        grid-column: span 1;
+    }
+    .capilon-theme .contact-info-cards {
+        padding: 40px 30px;
+    }
+    .capilon-theme .contact-form-wrapper {
+        padding: 40px 30px;
+    }
+}

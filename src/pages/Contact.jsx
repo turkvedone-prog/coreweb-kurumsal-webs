@@ -3,6 +3,7 @@ import { useSite } from '../layouts/SiteLayout';
 import { submitLead } from '../services/apiService';
 import { updateSEOMeta } from '../utils/seo';
 import { loadRecaptchaScript, executeRecaptcha } from '../utils/recaptcha';
+import CapilonContact from '../themes/capilon/CapilonContact';
 import { 
   Mail, 
   Phone, 
@@ -11,20 +12,21 @@ import {
   Send, 
   CheckCircle2, 
   AlertCircle, 
-  Loader2, 
-  Info,
-  ShieldCheck
+  Loader2
 } from 'lucide-react';
 
 export default function Contact() {
   const { tenantMapping, activeLang, settings } = useSite();
-  const { tenantSlug } = tenantMapping;
+  const { tenantId, tenantSlug } = tenantMapping;
+
+  const isCapilon = tenantSlug === 'capilon' || tenantId === 'TEN-CAPILON';
 
   // Form State
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
+    subject: '', // Subject field
     message: '',
     website_dummy: '' // Honeypot
   });
@@ -55,7 +57,7 @@ export default function Contact() {
       ),
       companyName
     });
-  }, [activeLang, companyName]);
+  }, [activeLang, companyName, translate]);
 
   // Load reCAPTCHA script in production
   useEffect(() => {
@@ -149,7 +151,7 @@ export default function Contact() {
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
-      message: formData.message,
+      message: formData.subject ? `Konu: ${formData.subject}\n\nMesaj:\n${formData.message}` : formData.message,
       consentAccepted,
       website_dummy: tripHoneypot ? 'spam-bot-bot' : formData.website_dummy,
       recaptchaToken: finalRecaptchaToken
@@ -162,6 +164,7 @@ export default function Contact() {
         name: '',
         email: '',
         phone: '',
+        subject: '',
         message: '',
         website_dummy: ''
       });
@@ -206,6 +209,31 @@ export default function Contact() {
       setLoading(false);
     }
   };
+
+
+
+  if (isCapilon) {
+    return (
+      <CapilonContact
+        formData={formData}
+        consentAccepted={consentAccepted}
+        setConsentAccepted={setConsentAccepted}
+        loading={loading}
+        success={success}
+        error={error}
+        handleSubmit={handleSubmit}
+        handleChange={handleChange}
+        companyName={companyName}
+        contact={contact}
+        workingHours={workingHours}
+        translate={translate}
+        mockToken={mockToken}
+        setMockToken={setMockToken}
+        tripHoneypot={tripHoneypot}
+        setTripHoneypot={setTripHoneypot}
+      />
+    );
+  }
 
   return (
     <div className="bg-slate-50 min-h-screen py-16">
@@ -490,77 +518,7 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Local Emulator Developer Widget */}
-        {import.meta.env.DEV && (
-          <div className="mt-12 max-w-3xl mx-auto animate-in fade-in duration-300">
-            <div className="mock-recaptcha-widget">
-              <div className="mock-recaptcha-title">
-                <span className="flex items-center gap-1.5 font-bold">
-                  <ShieldCheck className="h-4.5 w-4.5 text-indigo-600" />
-                  🔧 Local Emulator Test Paneli
-                </span>
-                <span className="text-[10px] bg-slate-100 px-2 py-0.5 rounded font-mono">import.meta.env.DEV</span>
-              </div>
-              
-              <div className="space-y-4 mt-3">
-                {/* Token selectors */}
-                <div>
-                  <label className="text-[11px] font-semibold text-slate-500 block mb-1">
-                    Mock reCAPTCHA Token Değeri:
-                  </label>
-                  <div className="mock-recaptcha-options">
-                    <button 
-                      type="button"
-                      onClick={() => setMockToken('mock-pass')}
-                      className={`mock-recaptcha-btn ${mockToken === 'mock-pass' ? 'active' : ''}`}
-                    >
-                      🟢 mock-pass (Başarılı - 0.9 Skor)
-                    </button>
-                    <button 
-                      type="button"
-                      onClick={() => setMockToken('mock-low-score')}
-                      className={`mock-recaptcha-btn ${mockToken === 'mock-low-score' ? 'active' : ''}`}
-                    >
-                      🟡 mock-low-score (Engellenir - 0.3 Skor)
-                    </button>
-                    <button 
-                      type="button"
-                      onClick={() => setMockToken('')}
-                      className={`mock-recaptcha-btn ${mockToken === '' ? 'active' : ''}`}
-                    >
-                      🔴 Boş/Geçersiz (Engellenir - Hata)
-                    </button>
-                  </div>
-                </div>
 
-                {/* Honeypot test */}
-                <div 
-                  className="mock-honeypot-checkbox"
-                  onClick={() => setTripHoneypot(!tripHoneypot)}
-                >
-                  <input 
-                    type="checkbox" 
-                    checked={tripHoneypot}
-                    onChange={() => {}}
-                    className="form-checkbox"
-                    style={{ width: '1rem', height: '1rem', marginTop: 0 }}
-                  />
-                  <span>
-                    🤖 Honeypot Alanını Doldur (Spam Bot Saldırı Testi - 400 Bad Request tetikler)
-                  </span>
-                </div>
-
-                {/* Information helper */}
-                <div className="flex items-start gap-2 text-[10px] text-slate-400 bg-slate-50 p-2 rounded border border-slate-100">
-                  <Info className="h-3.5 w-3.5 text-indigo-500 shrink-0 mt-0.5" />
-                  <span>
-                    Bu panel <strong>sadece yerel emülatör / development ortamında</strong> görünür. <code>npm run build</code> ile alınan production çıktısında widget kodları React component ağacından bütünüyle temizlenir ve DOM'da yer almaz.
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
       </div>
     </div>
