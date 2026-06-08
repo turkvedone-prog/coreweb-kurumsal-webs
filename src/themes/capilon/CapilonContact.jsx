@@ -63,14 +63,10 @@ export default function CapilonContact({
                   <Phone size={20} />
                 </div>
                 <div className="info-item-text">
-                  <h4>{translate('Telefon Numaraları', 'Phone Numbers')}</h4>
+                  <h4>{translate('Telefon Numarası', 'Phone Number')}</h4>
                   <p>
-                    <strong>{translate('Fabrika:', 'Factory:')}</strong>{' '}
-                    <a href="tel:03123790333">0.312 379 0 333</a>
-                  </p>
-                  <p>
-                    <strong>{translate('Müşteri Hizmetleri:', 'Customer Service:')}</strong>{' '}
-                    <a href="tel:08503333333">0850 333 33 33</a>
+                    <strong>{translate('Fabrika & Showroom:', 'Factory & Showroom:')}</strong>{' '}
+                    <a href="tel:+903123790333">0.312 379 0 333</a>
                   </p>
                 </div>
               </div>

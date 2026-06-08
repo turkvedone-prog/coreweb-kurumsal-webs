@@ -10,6 +10,7 @@ import NewsDetail from '../pages/NewsDetail';
 import ProductList from '../pages/ProductList';
 import ProductDetail from '../pages/ProductDetail';
 import Contact from '../pages/Contact';
+import CollectionsPage from '../pages/CollectionsPage';
 import LoadingState from '../components/LoadingState';
 import NotFoundSite from '../components/NotFoundSite';
 
@@ -104,6 +105,8 @@ function RouteResolver() {
     return <LoadingState />;
   }
 
+  const isCapilon = tenantMapping?.tenantSlug === 'capilon' || tenantMapping?.tenantId === 'TEN-CAPILON';
+
   return (
     <SiteLayout tenantMapping={tenantMapping} activeLang={resolvedLang}>
       <Routes>
@@ -119,6 +122,7 @@ function RouteResolver() {
         <Route path="/operasyonel-masalar" element={<ProductList />} />
         <Route path="/toplanti-masalari" element={<ProductList />} />
         <Route path="/iletisim" element={<Contact />} />
+        {isCapilon && <Route path="/koleksiyonlar" element={<CollectionsPage />} />}
         <Route path="*" element={<NotFoundSite reason="Sayfa bulunamadı." />} />
       </Routes>
     </SiteLayout>

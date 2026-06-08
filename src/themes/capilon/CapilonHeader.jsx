@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
-import { Phone, Search, Menu, X, ChevronDown, Heart, ShoppingBag } from 'lucide-react';
+import { Phone, Search, Menu, X, ChevronDown, ShoppingBag } from 'lucide-react';
 
 export default function CapilonHeader() {
   const { tenantMapping, activeLang } = useSite();
@@ -117,9 +117,9 @@ export default function CapilonHeader() {
             <Link to={getLocalizedPath('/blog')}>{translate('Blog', 'Blog')}</Link>
           </div>
           <div className="utility-right">
-            <a href="tel:08503333333" className="whatsapp-link">
+            <a href="tel:+903123790333" className="whatsapp-link">
               <Phone size={14} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />
-              0850 333 33 33
+              0.312 379 0 333
             </a>
             <Link to={getLocalizedPath('/iletisim')}>{translate('İletişim', 'Contact')}</Link>
             <div className="lang-dropdown-wrapper">
@@ -157,13 +157,12 @@ export default function CapilonHeader() {
           </div>
 
           <div className="header-actions">
+            <Link to={getLocalizedPath('/koleksiyonlar')} className="header-collection-btn">
+              {translate('KOLEKSİYON', 'COLLECTIONS')}
+            </Link>
             <a href="#e-tahsilat" className="action-icon">
               <ShoppingBag size={20} />
               <span>{translate('E-Tahsilat', 'E-Payment')}</span>
-            </a>
-            <a href="#favoriler" className="action-icon">
-              <Heart size={20} />
-              <span>{translate('Favoriler', 'Favorites')}</span>
             </a>
           </div>
         </div>

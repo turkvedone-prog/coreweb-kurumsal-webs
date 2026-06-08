@@ -111,9 +111,9 @@ export default function CapilonFooter() {
               <h4 className="footer-heading">{translate('İletişim Merkezi', 'Contact Center')}</h4>
               <p className="footer-desc">{translate('Bize yazarak yada arayarak ulaşabilirsiniz.', 'You can reach us by writing or calling.')}</p>
               <Link to={getLocalizedPath('/iletisim')} className="footer-contact-btn">{translate('İletişim', 'Contact')}</Link>
-              <a href="tel:08503333333" className="footer-contact-btn tel-btn">
+              <a href="tel:+903123790333" className="footer-contact-btn tel-btn">
                 <Phone size={16} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />
-                0850 333 33 33
+                0.312 379 0 333
               </a>
             </div>
           </div>
