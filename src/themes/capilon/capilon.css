@@ -66,8 +66,7 @@
         align-items: center;
         max-width: 1440px;
         margin: 0 auto;
-        width: 100%;
-        padding: 0 20px;
+        width: 95%;
     }
 
     .hero-section {
@@ -1970,11 +1969,23 @@
     border: 1px solid #dcdcdc;
     border-radius: 30px;
     padding: 4px 6px;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease;
 }
 .search-form-mondi:focus-within {
     border-color: #f38220;
-    box-shadow: 0 0 0 3px rgba(243, 130, 32, 0.1);
+    box-shadow: 0 0 0 3px rgba(243, 130, 32, 0.15);
+}
+.search-icon-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8c857d;
+    padding-left: 15px;
+    z-index: 2;
+    transition: color 0.4s ease;
 }
 .search-form-mondi input {
     flex: 1;
@@ -1984,19 +1995,47 @@
     font-size: 0.95rem;
     color: #333;
     outline: none;
+    z-index: 2;
+    transition: color 0.4s ease;
 }
-.search-form-mondi button {
-    background: transparent;
+.search-form-mondi input::placeholder {
+    color: #8c857d;
+    transition: color 0.4s ease;
+}
+.search-btn-right {
+    background-color: #f38220; /* Capilon Turuncusu */
+    color: #ffffff;
     border: none;
-    color: #666;
-    padding: 8px 15px;
+    border-radius: 25px;
+    padding: 10px 30px;
+    font-size: 0.9rem;
+    font-weight: 700;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.3s;
+    z-index: 2;
+    transition: background-color 0.4s ease, color 0.4s ease;
 }
-.search-form-mondi button:hover {
+
+/* Hovering the Search button spreads orange background across the entire search bar */
+.search-form-mondi:has(.search-btn-right:hover),
+.search-form-mondi:has(.search-btn-right:focus) {
+    background-color: #f38220;
+    border-color: #f38220;
+}
+.search-form-mondi:has(.search-btn-right:hover) .search-icon-left,
+.search-form-mondi:has(.search-btn-right:focus) .search-icon-left {
+    color: #ffffff;
+}
+.search-form-mondi:has(.search-btn-right:hover) input,
+.search-form-mondi:has(.search-btn-right:focus) input {
+    color: #ffffff;
+}
+.search-form-mondi:has(.search-btn-right:hover) input::placeholder,
+.search-form-mondi:has(.search-btn-right:focus) input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+.search-form-mondi:has(.search-btn-right:hover) .search-btn-right,
+.search-form-mondi:has(.search-btn-right:focus) .search-btn-right {
+    background-color: #ffffff;
     color: #f38220;
 }
 
@@ -5162,6 +5201,18 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
     background-color: #ffffff;
     color: #1a1a1a;
     border-color: #1a1a1a;
+}
+
+.capilon-theme .btn-sharp--outline {
+    background-color: transparent;
+    color: #4a4541;
+    border: 1.5px solid #4a4541;
+}
+
+.capilon-theme .btn-sharp--outline:hover {
+    background-color: #4a4541;
+    color: #ffffff;
+    border-color: #4a4541;
 }
 
 /* Tab Yapısı */

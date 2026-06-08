@@ -146,9 +146,12 @@ export default function CapilonHeader() {
 
           <div className="header-search">
             <form action="#" method="GET" className="search-form-mondi" onSubmit={(e) => e.preventDefault()}>
-              <input type="text" name="q" placeholder={translate('Ürün arama', 'Search products')} aria-label="Arama" />
-              <button type="submit" aria-label="Ara">
+              <span className="search-icon-left">
                 <Search size={20} />
+              </span>
+              <input type="text" name="q" placeholder={translate('Site içi ürün arama', 'Search products...')} aria-label="Arama" />
+              <button type="submit" className="search-btn-right">
+                {translate('ARA', 'SEARCH')}
               </button>
             </form>
           </div>
@@ -169,6 +172,8 @@ export default function CapilonHeader() {
         <nav className="main-nav-row" aria-label="Ana Menü">
           <div className="header-container">
             <ul role="list" className="nav-list">
+              <li><a href={getLocalizedPath('/#yemek')}>{translate('YEMEK ODALARI', 'DINING ROOMS')}</a></li>
+              <li><a href={getLocalizedPath('/#yatak')}>{translate('YATAK ODALARI', 'BEDROOMS')}</a></li>
               <li className="has-mega-menu">
                 <a href={getLocalizedPath('/#koltuk')}>
                   {translate('KOLTUK TAKIMLARI', 'LIVING ROOM SETS')} <ChevronDown className="chevron-down" size={14} style={{ display: 'inline', marginLeft: '4px' }} />
@@ -194,13 +199,12 @@ export default function CapilonHeader() {
                   </div>
                 </div>
               </li>
-              <li><a href={getLocalizedPath('/#yemek')}>{translate('YEMEK ODALARI', 'DINING ROOMS')}</a></li>
-              <li><a href={getLocalizedPath('/#yatak')}>{translate('YATAK ODALARI', 'BEDROOMS')}</a></li>
-              <li><a href={getLocalizedPath('/#genc')}>{translate('GENÇ ODALARI', 'TEEN ROOMS')}</a></li>
               <li><a href={getLocalizedPath('/#kose')}>{translate('KÖŞE TAKIMLARI', 'CORNER SOFAS')}</a></li>
               <li><a href={getLocalizedPath('/#tv')}>{translate('TV ÜNİTELERİ', 'TV UNITS')}</a></li>
-              <li><a href={getLocalizedPath('/#kanepeler')}>{translate('KANEPELER', 'SOFAS')}</a></li>
-              <li><a href={getLocalizedPath('/#mutfak')}>{translate('MUTFAK VE BALKON', 'KITCHEN & BALCONY')}</a></li>
+              <li><a href={getLocalizedPath('/#genc')}>{translate('ÇOCUK & GENÇ ODALARI', 'KIDS & TEEN ROOMS')}</a></li>
+              <li><a href={getLocalizedPath('/#tekil')}>{translate('TEKİL ÜRÜNLER', 'SINGLE PRODUCTS')}</a></li>
+              <li><a href={getLocalizedPath('/#yatak-baza')}>{translate('YATAK & BAZA', 'MATTRESSES & BASES')}</a></li>
+              <li><a href={getLocalizedPath('/#tamamlayici')}>{translate('TAMAMLAYICI ÜRÜNLER', 'COMPLEMENTARY PRODUCTS')}</a></li>
             </ul>
           </div>
         </nav>
@@ -214,10 +218,15 @@ export default function CapilonHeader() {
               <X size={24} />
             </button>
             <div style={{ marginTop: '40px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              <a href={getLocalizedPath('/#koltuk')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Koltuk Takımları', 'Living Room Sets')}</a>
               <a href={getLocalizedPath('/#yemek')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Yemek Odaları', 'Dining Rooms')}</a>
               <a href={getLocalizedPath('/#yatak')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Yatak Odaları', 'Bedrooms')}</a>
-              <a href={getLocalizedPath('/#genc')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Genç Odaları', 'Teen Rooms')}</a>
+              <a href={getLocalizedPath('/#koltuk')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Koltuk Takımları', 'Living Room Sets')}</a>
+              <a href={getLocalizedPath('/#kose')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Köşe Takımları', 'Corner Sofas')}</a>
+              <a href={getLocalizedPath('/#tv')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('TV Üniteleri', 'TV Units')}</a>
+              <a href={getLocalizedPath('/#genc')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Çocuk & Genç Odaları', 'Kids & Teen Rooms')}</a>
+              <a href={getLocalizedPath('/#tekil')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Tekil Ürünler', 'Single Products')}</a>
+              <a href={getLocalizedPath('/#yatak-baza')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Yatak & Baza', 'Mattresses & Bases')}</a>
+              <a href={getLocalizedPath('/#tamamlayici')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Tamamlayıcı Ürünler', 'Complementary Products')}</a>
               <Link to={getLocalizedPath('/iletisim')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('İletişim', 'Contact')}</Link>
             </div>
           </div>

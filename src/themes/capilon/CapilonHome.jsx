@@ -1,10 +1,20 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
 import { ArrowRight } from 'lucide-react';
 import './capilon.css';
 
 export default function CapilonHome() {
-  const { activeLang } = useSite();
+  const { tenantMapping, activeLang } = useSite();
+  const { tenantSlug } = tenantMapping;
+
+  const hostname = window.location.hostname;
+  const isLocalOrPortal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'coreweb.tr' || hostname.endsWith('.vercel.app');
+
+  const getLocalizedPath = (path) => {
+    const prefix = isLocalOrPortal ? `/${tenantSlug}/${activeLang}` : `/${activeLang}`;
+    return `${prefix}${path}`;
+  };
 
   // State Management
   const [activeSlide, setActiveSlide] = useState(0);
@@ -530,9 +540,9 @@ export default function CapilonHome() {
                 </div>
               </div>
             </div>
-            <a href="https://wa.me/905000000000" className="manifesto-action-btn" target="_blank" rel="noopener noreferrer">
+            <Link to={getLocalizedPath('/iletisim')} className="manifesto-action-btn">
               <span className="btn-text">{translate('MÜŞTERİ TEMSİLCİSİ', 'CUSTOMER REPRESENTATIVE')}</span>
-            </a>
+            </Link>
           </div>
         </div>
       </section>

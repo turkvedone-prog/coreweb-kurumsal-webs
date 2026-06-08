@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Phone } from 'lucide-react';
 
 // Standardized product structure that matches Firestore schema
 const fallbackProduct = {
@@ -159,15 +159,8 @@ export default function CapilonProductDetail({ product }) {
     return `${prefix}${path}`;
   };
 
-  // WhatsApp Action Link Creation
-  const getWhatsAppLink = () => {
-    const phone = "905000000000"; // Capilon baseline official WhatsApp number
-    const message = translate(
-      `Merhaba, ${p.title} hakkında bilgi almak istiyorum. (Seçimler: Kumaş - ${activeFabric}, Ayak - ${activeLeg})`,
-      `Hello, I would like to get information about the ${p.title}. (Selections: Fabric - ${activeFabric}, Legs - ${activeLeg})`
-    );
-    return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-  };
+  // WhatsApp/Phone placeholder links removed since no verified WhatsApp line exists.
+  // Primary CTA directs to the contact page, and secondary CTA directs to the verified phone number.
 
   // Similar collection items
   const similarItems = [
@@ -261,16 +254,26 @@ export default function CapilonProductDetail({ product }) {
             {p.content}
           </p>
 
-          <div style={{ marginBottom: '3.5rem' }}>
-            <a 
-              href={getWhatsAppLink()} 
-              target="_blank" 
-              rel="noopener noreferrer" 
+          <div className="product-actions-cta" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '3.5rem' }}>
+            <Link 
+              to={getLocalizedPath('/iletisim')} 
               className="btn-sharp"
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.8rem' }}
             >
               <MessageCircle size={18} />
-              <span>{translate('İNCELE & SİPARİŞ VER', 'ENQUIRE & ORDER')}</span>
+              <span>{translate('BİLGİ AL / TEKLİF AL', 'GET INFO / REQUEST QUOTE')}</span>
+            </Link>
+            <a 
+              href="tel:+903123790333" 
+              className="btn-sharp btn-sharp--outline"
+              style={{ 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: '0.8rem'
+              }}
+            >
+              <Phone size={18} />
+              <span>0.312 379 0 333</span>
             </a>
           </div>
         </div>
