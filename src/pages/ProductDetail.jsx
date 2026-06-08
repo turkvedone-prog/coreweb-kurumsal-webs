@@ -7,6 +7,7 @@ import { ShoppingBag, ChevronLeft, Download, CheckCircle, AlertCircle } from 'lu
 import { updateSEOMeta } from '../utils/seo';
 import ImageWithFallback from '../components/ImageWithFallback';
 import BurobigProductDetail from '../themes/burobig/BurobigProductDetail';
+import CapilonProductDetail from '../themes/capilon/CapilonProductDetail';
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -110,6 +111,12 @@ export default function ProductDetail() {
         </div>
       </div>
     );
+  }
+
+  const isCapilon = tenantSlug === 'capilon' || tenantId === 'TEN-CAPILON';
+
+  if (isCapilon) {
+    return <CapilonProductDetail product={product} />;
   }
 
   if (error || !product) {

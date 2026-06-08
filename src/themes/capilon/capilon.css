@@ -5054,3 +5054,319 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
         padding: 40px 30px;
     }
 }
+
+/* ============================================================
+   PRODUCT PAGE - MINIMAL LAYOUT (SCOPED)
+   ============================================================ */
+.capilon-theme .product-page--minimal {
+    background-color: #ffffff;
+    padding-top: 4rem; 
+    padding-bottom: 4rem;
+}
+
+.capilon-theme .minimal-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 5%;
+}
+
+.capilon-theme .minimal-hero__image-container {
+    width: 100%;
+    max-width: 650px; 
+    height: 600px;
+    margin: 0 auto 3rem auto;
+    position: relative;
+    border: 1px solid rgba(74, 69, 65, 0.05);
+    border-radius: 12px;
+}
+
+.capilon-theme .minimal-hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.capilon-theme .minimal-hero__img.active {
+    opacity: 1;
+    z-index: 1;
+}
+
+@media (max-width: 768px) {
+    .capilon-theme .minimal-hero__image-container {
+        height: 400px;
+        margin-bottom: 2rem;
+    }
+}
+
+.capilon-theme .minimal-hero__content {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.capilon-theme .minimal-hero__title {
+    font-size: clamp(2.5rem, 5vw, 3.8rem);
+    font-weight: 500; 
+    color: #4a4541;
+    margin-left: -3px;
+    margin-bottom: 0; 
+    letter-spacing: -1px; 
+    line-height: 1.1; 
+}
+
+.capilon-theme .minimal-hero__subtitle {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: #888888;
+    text-transform: uppercase;
+    letter-spacing: 1px; 
+    margin-top: -0.3rem;
+    margin-bottom: 2.5rem; 
+}
+
+.capilon-theme .minimal-hero__desc {
+    font-size: 1.1rem;
+    line-height: 1.5; 
+    font-weight: 400;
+    color: #4a4541; 
+    margin-bottom: 2.5rem;
+}
+
+.capilon-theme .btn-sharp {
+    display: inline-block;
+    background-color: #E6F2F2;
+    color: #1a1a1a;
+    padding: 1rem 2rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 25px;
+    border: 1px solid #E6F2F2; 
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.capilon-theme .btn-sharp:hover {
+    background-color: #ffffff;
+    color: #1a1a1a;
+    border-color: #1a1a1a;
+}
+
+/* Tab Yapısı */
+.capilon-theme .product-details-tabs {
+    max-width: 800px;
+    margin: 80px auto; 
+    padding: 0; 
+}
+
+.capilon-theme .apple-style-heading {
+    font-size: 22px;
+    font-weight: 600;
+    color: #4a4541;
+    margin-bottom: 2.5rem;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+}
+
+.capilon-theme .tab-buttons {
+    display: inline-flex;
+    background-color: #E6F2F2;
+    border-radius: 25px;
+    padding: 6px;
+    margin-bottom: 3rem;
+}
+
+.capilon-theme .tab-btn {
+    flex: none;
+    text-align: center; 
+    background-color: transparent; 
+    border: none; 
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    cursor: pointer;
+    padding: 0.8rem 1.8rem; 
+    transition: all 0.3s ease;
+    font-family: inherit;
+    border-radius: 25px;
+}
+
+.capilon-theme .tab-btn:hover:not(.active) {
+    color: #000000;
+    background-color: rgba(0,0,0,0.05);
+}
+
+.capilon-theme .tab-btn.active {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.capilon-theme .tab-content {
+    display: none;
+    animation: fadeInTab 0.4s ease forwards;
+}
+
+.capilon-theme .tab-content.active {
+    display: block;
+}
+
+/* Swatches */
+.capilon-theme .material-group {
+    margin-bottom: 3rem;
+}
+
+.capilon-theme .material-group h4 {
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: #4a4541;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    margin-bottom: 2rem;
+}
+
+.capilon-theme .swatch-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.capilon-theme .swatch-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    width: 80px; 
+}
+
+.capilon-theme .swatch-color {
+    width: 60px; 
+    height: 60px; 
+    border-radius: 8px; 
+    margin-bottom: 0.6rem; 
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.capilon-theme .swatch-item:hover .swatch-color {
+    transform: scale(1.08);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.capilon-theme .swatch-item span {
+    font-size: 0.8rem;
+    color: #4a4541;
+    font-weight: 400;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+/* Teknik Detaylar */
+.capilon-theme .doc-list {
+    list-style: none;
+    padding: 0;
+}
+
+.capilon-theme .doc-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    color: #4a4541;
+}
+
+.capilon-theme .doc-list strong {
+    font-weight: 500;
+}
+
+/* Breadcrumb */
+.capilon-theme .breadcrumb-elegant {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #888888;
+    font-weight: 400;
+}
+
+.capilon-theme .breadcrumb-elegant a {
+    color: #888888;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.capilon-theme .breadcrumb-elegant a:hover {
+    color: #b87353;
+}
+
+.capilon-theme .breadcrumb-elegant .separator {
+    color: #cccccc;
+    font-size: 0.75rem;
+}
+
+.capilon-theme .breadcrumb-elegant .current {
+    color: #4a4541;
+    font-weight: 500;
+}
+
+/* Similar Products */
+.capilon-theme .similar-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.capilon-theme .similar-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+@keyframes fadeInTab {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .capilon-theme .tab-btn {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.85rem;
+    }
+    .capilon-theme .btn-sharp {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .capilon-theme .tab-buttons {
+        flex-direction: column;
+        width: 100%;
+        border-radius: 12px;
+    }
+    .capilon-theme .tab-btn {
+        width: 100%;
+        border-radius: 8px;
+    }
+}
+
