@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useSite } from '../../layouts/SiteLayout';
 import { updateSEOMeta } from '../../utils/seo';
-import './capilon.css';
 
 export default function CapilonHistory() {
   const { activeLang } = useSite();

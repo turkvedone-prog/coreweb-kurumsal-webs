@@ -4,7 +4,6 @@ import { loadRecaptchaScript, executeRecaptcha } from '../../utils/recaptcha';
 import './coreweb.css';
 
 export default function CoreWebHome() {
-  const [menuActive, setMenuActive] = useState(false);
   const [panelTab, setPanelTab] = useState('summary');
   const [solutionsTab, setSolutionsTab] = useState('furniture');
 
@@ -42,30 +41,7 @@ export default function CoreWebHome() {
     loadRecaptchaScript(siteKey);
   }, [siteKey]);
 
-  // Escape key listener to close mobile menu
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        setMenuActive(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
 
-  // Sync body overflow when menu is active
-  useEffect(() => {
-    if (menuActive) {
-      document.body.classList.add('menu-open');
-    } else {
-      document.body.classList.remove('menu-open');
-    }
-    return () => {
-      document.body.classList.remove('menu-open');
-    };
-  }, [menuActive]);
 
   // Scroll Reveal IntersectionObserver
   useEffect(() => {
@@ -133,7 +109,6 @@ export default function CoreWebHome() {
         behavior: 'smooth'
       });
     }
-    setMenuActive(false);
   };
 
   const handleFormSubmit = async (e) => {
@@ -193,36 +168,7 @@ export default function CoreWebHome() {
   };
 
   return (
-    <>
-      {/* 1. Header (Navigation) */}
-      <header className="header">
-        <div className="header__container">
-          <a href="/" className="header__logo" aria-label="CoreWeb Anasayfa" onClick={(e) => handleSmoothScroll(e, '#hero')}>
-            <img src="/logo.png" alt="CoreWeb Logo" className="logo-img" />
-          </a>
-          <button 
-            className="header__toggle" 
-            aria-label="Menüyü Aç" 
-            aria-expanded={menuActive} 
-            id="menu-toggle"
-            onClick={() => setMenuActive(!menuActive)}
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-          <nav className={`header__nav ${menuActive ? 'header__nav--active' : ''}`} id="header-nav">
-            <a href="#hero" className="header__link" onClick={(e) => handleSmoothScroll(e, '#hero')}>Sistem</a>
-            <a href="#panel" className="header__link" onClick={(e) => handleSmoothScroll(e, '#panel')}>Kontrol Merkezi</a>
-            <a href="#modules" className="header__link" onClick={(e) => handleSmoothScroll(e, '#modules')}>Modüller</a>
-            <a href="#process" className="header__link" onClick={(e) => handleSmoothScroll(e, '#process')}>Süreç</a>
-            <a href="#trust" className="header__link" onClick={(e) => handleSmoothScroll(e, '#trust')}>Güven</a>
-            <a href="#contact" className="header__btn" onClick={(e) => handleSmoothScroll(e, '#contact')}>İletişim</a>
-          </nav>
-        </div>
-      </header>
-      
-      <main>
+    <main>
         {/* 2. Hero / Dijital İşletim Sistemi */}
         <section className="hero" id="hero">
           <div className="hero__grid-wrapper">
@@ -1007,29 +953,5 @@ export default function CoreWebHome() {
           </div>
         </section>
       </main>
-
-      {/* 13. Footer */}
-      <footer className="footer">
-        <div className="container footer__container">
-          <div className="footer__brand">
-            <a href="/" className="footer__logo" aria-label="CoreWeb Anasayfa" onClick={(e) => handleSmoothScroll(e, '#hero')}>
-              <img src="/logo.png" alt="CoreWeb Logo" className="logo-img" />
-            </a>
-            <p className="footer__desc">Kurumlar için özel tasarımlı, yüksek performanslı ve sürdürülebilir yönetilebilir web altyapıları sağlayan teknoloji sağlayıcısı.</p>
-          </div>
-          <div className="footer__links">
-            <a href="#hero" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#hero')}>Sistem</a>
-            <a href="#panel" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#panel')}>Kontrol Merkezi</a>
-            <a href="#modules" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#modules')}>Modüller</a>
-            <a href="#process" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#process')}>Süreç</a>
-            <a href="#trust" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#trust')}>Güven</a>
-            <a href="#contact" className="footer__link" onClick={(e) => handleSmoothScroll(e, '#contact')}>İletişim</a>
-          </div>
-        </div>
-        <div className="container footer__bottom">
-          <p>CoreWeb © 2026. Tüm hakları saklıdır. | KVKK Aydınlatma Metni</p>
-        </div>
-      </footer>
-    </>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
+import './burckaplama.css';
 
 export default function BurcKaplamaHeader() {
   const { tenantMapping, activeLang } = useSite();

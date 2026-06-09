@@ -8,6 +8,8 @@ import { updateSEOMeta } from '../utils/seo';
 import ImageWithFallback from '../components/ImageWithFallback';
 import BurobigProductDetail from '../themes/burobig/BurobigProductDetail';
 import CapilonProductDetail from '../themes/capilon/CapilonProductDetail';
+import BurcKaplamaProductDetail from '../themes/burckaplama/BurcKaplamaProductDetail';
+import { burcKaplamaData } from '../themes/burckaplama/burcKaplamaData';
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -40,9 +42,27 @@ export default function ProductDetail() {
           setProduct(localized);
           setActiveImage(localized.coverImageUrl || '');
         } else {
+          if (tenantSlug === 'burckaplama') {
+            const mockSvc = burcKaplamaData.services.find(s => s.slug === slug || s.id === slug);
+            if (mockSvc) {
+              setProduct(mockSvc);
+              setActiveImage('');
+              setLoading(false);
+              return;
+            }
+          }
           setError(activeLang === 'tr' ? 'Aradığınız ürün bulunamadı.' : 'The product you are looking for could not be found.');
         }
       } catch (err) {
+        if (tenantSlug === 'burckaplama') {
+          const mockSvc = burcKaplamaData.services.find(s => s.slug === slug || s.id === slug);
+          if (mockSvc) {
+            setProduct(mockSvc);
+            setActiveImage('');
+            setLoading(false);
+            return;
+          }
+        }
         console.error('Error fetching product detail:', err);
         setError(activeLang === 'tr' ? 'Ürün yüklenirken bir hata oluştu.' : 'An error occurred while loading the product.');
       } finally {
@@ -154,9 +174,14 @@ export default function ProductDetail() {
     : [];
 
   const isBurobig = tenantSlug === 'burobig' || tenantId === 'TEN-BUROBIG';
+  const isBurcKaplama = tenantSlug === 'burckaplama' || tenantId === 'TEN-BURCKAPLAMA';
 
   if (isBurobig) {
     return <BurobigProductDetail product={product} />;
+  }
+
+  if (isBurcKaplama) {
+    return <BurcKaplamaProductDetail product={product} />;
   }
 
   return (

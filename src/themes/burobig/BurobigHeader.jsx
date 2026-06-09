@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
+import './burobig.css';
 
 export default function BurobigHeader() {
   const { tenantMapping, activeLang, settings } = useSite();

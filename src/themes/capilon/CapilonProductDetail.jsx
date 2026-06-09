@@ -3,7 +3,6 @@ import { Link, useParams } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
 import { Plus, Minus, ShieldCheck, Truck, Award, HelpingHand, Newspaper } from 'lucide-react';
 import { updateSEOMeta } from '../../utils/seo';
-import './capilon.css';
 
 // Local product data mapping for visual parity without Firestore records
 const capilonProducts = {

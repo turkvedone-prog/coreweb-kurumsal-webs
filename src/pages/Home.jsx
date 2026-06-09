@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { getSliders } from '../services/publicContentService';
 import HeroSlider from '../components/HeroSlider';
 import { Mail, Phone, Sparkles, Award, Users } from 'lucide-react';
 import { useSite } from '../layouts/SiteLayout';
 import { updateSEOMeta } from '../utils/seo';
-import BurobigHome from '../themes/burobig/BurobigHome';
-import CapilonHome from '../themes/capilon/CapilonHome';
-import CoreWebHome from '../themes/coreweb/CoreWebHome';
+import themeRegistry from '../themes/themeRegistry';
 
 export default function Home() {
   const { tenantMapping, activeLang, settings } = useSite();
@@ -14,14 +12,12 @@ export default function Home() {
   const [sliders, setSliders] = useState([]);
   const [loadingSliders, setLoadingSliders] = useState(true);
 
-  const isBurobig = tenantSlug === 'burobig' || tenantId === 'TEN-BUROBIG';
-  const isCapilon = tenantSlug === 'capilon' || tenantId === 'TEN-CAPILON';
-  const isCoreWeb = tenantSlug === 'coreweb' || tenantId === 'TEN-507';
+  const hasTheme = !!themeRegistry[tenantSlug];
 
   const companyName = settings?.companyName || tenantSlug || 'CoreWeb';
 
   useEffect(() => {
-    if (isBurobig || isCapilon || isCoreWeb) return;
+    if (hasTheme) return;
 
     // Dynamic SEO update for homepage
     const homeDescription = activeLang === 'tr'
@@ -34,7 +30,7 @@ export default function Home() {
       image: settings?.logos?.header || settings?.logos?.footer || '',
       companyName: settings?.homeTitle ? '' : companyName
     });
-  }, [activeLang, companyName, settings, isBurobig, isCapilon, isCoreWeb]);
+  }, [activeLang, companyName, settings, hasTheme]);
 
   useEffect(() => {
     if (!tenantId) return;
@@ -57,16 +53,14 @@ export default function Home() {
     return activeLang === 'tr' ? tr : en;
   };
 
-  if (isBurobig) {
-    return <BurobigHome />;
-  }
-
-  if (isCapilon) {
-    return <CapilonHome />;
-  }
-
-  if (isCoreWeb) {
-    return <CoreWebHome />;
+  const theme = themeRegistry[tenantSlug];
+  if (theme?.Home) {
+    const DynamicHome = theme.Home;
+    return (
+      <Suspense fallback={null}>
+        <DynamicHome />
+      </Suspense>
+    );
   }
 
   return (

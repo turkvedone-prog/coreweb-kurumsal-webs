@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSite } from '../layouts/SiteLayout';
 import { updateSEOMeta } from '../utils/seo';
 import BurobigHistory from '../themes/burobig/BurobigHistory';
+import BurcKaplamaHistory from '../themes/burckaplama/BurcKaplamaHistory';
 import CapilonHistory from '../themes/capilon/CapilonHistory';
 import NotFoundSite from '../components/NotFoundSite';
 
@@ -10,6 +11,7 @@ export default function History() {
   const { tenantId, tenantSlug } = tenantMapping;
   
   const isBurobig = tenantSlug === 'burobig' || tenantId === 'TEN-BUROBIG';
+  const isBurcKaplama = tenantSlug === 'burckaplama' || tenantId === 'TEN-BURCKAPLAMA';
   const isCapilon = tenantSlug === 'capilon' || tenantId === 'TEN-CAPILON';
   const companyName = settings?.companyName || tenantSlug || 'CoreWeb';
 
@@ -32,6 +34,10 @@ export default function History() {
 
   if (isBurobig) {
     return <BurobigHistory />;
+  }
+
+  if (isBurcKaplama) {
+    return <BurcKaplamaHistory />;
   }
 
   return (

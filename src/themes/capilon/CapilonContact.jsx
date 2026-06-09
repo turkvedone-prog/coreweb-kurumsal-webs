@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { updateSEOMeta } from '../../utils/seo';
-import './capilon.css';
 
 export default function CapilonContact({
   formData,

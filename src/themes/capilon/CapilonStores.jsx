@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useSite } from '../../layouts/SiteLayout';
 import { ChevronDown, Phone, Mail } from 'lucide-react';
 import { updateSEOMeta } from '../../utils/seo';
-import './capilon.css';
 
 const storeData = [
   {

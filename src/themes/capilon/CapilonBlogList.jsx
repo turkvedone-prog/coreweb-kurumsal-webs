@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
 import { updateSEOMeta } from '../../utils/seo';
 import { capilonBlogData } from './capilonBlogData';
-import './capilon.css';
 
 export default function CapilonBlogList() {
   const { tenantMapping, activeLang } = useSite();

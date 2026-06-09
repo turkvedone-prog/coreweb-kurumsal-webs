@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
 import { ChevronRight, ArrowRight } from 'lucide-react';
 import { updateSEOMeta } from '../../utils/seo';
-import './capilon.css';
 
 export default function CapilonCollectionsPage() {
   const { tenantMapping, activeLang } = useSite();

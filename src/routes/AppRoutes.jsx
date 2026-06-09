@@ -20,7 +20,6 @@ import Sustainability from '../pages/Sustainability';
 import DesignPhilosophy from '../pages/DesignPhilosophy';
 import Stores from '../pages/Stores';
 import NotFoundSite from '../components/NotFoundSite';
-import BurcKaplamaHome from '../themes/burckaplama/BurcKaplamaHome';
 
 function RouteResolver() {
   const params = useParams();
@@ -114,12 +113,11 @@ function RouteResolver() {
   }
 
   const isCapilon = tenantMapping?.tenantSlug === 'capilon' || tenantMapping?.tenantId === 'TEN-CAPILON';
-  const isBurcKaplama = tenantMapping?.tenantSlug === 'burckaplama' || tenantMapping?.tenantId === 'TEN-BURCKAPLAMA';
 
   return (
     <SiteLayout tenantMapping={tenantMapping} activeLang={resolvedLang}>
       <Routes>
-        <Route path="/" element={isBurcKaplama ? <BurcKaplamaHome /> : <Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/blog" element={<BlogList />} />
         <Route path="/blog/:slug" element={<BlogDetail />} />
         <Route path="/haberler" element={<NewsList />} />

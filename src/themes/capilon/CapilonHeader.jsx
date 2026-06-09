@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
 import { Phone, Search, Menu, X, ChevronDown, ShoppingBag } from 'lucide-react';
+import './capilon.css';
 
 export default function CapilonHeader() {
   const { tenantMapping, activeLang } = useSite();

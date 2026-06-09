@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
+import './burobig.css';
 
 export default function BurobigFooter() {
   const { tenantMapping, activeLang, settings } = useSite();

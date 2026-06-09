@@ -1,4 +1,5 @@
 import { useSite } from '../../layouts/SiteLayout';
+import './burckaplama.css';
 
 export default function BurcKaplamaHome() {
   const { activeLang } = useSite();

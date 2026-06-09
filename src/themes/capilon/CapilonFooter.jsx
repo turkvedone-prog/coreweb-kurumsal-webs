@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
 import { Phone } from 'lucide-react';
+import './capilon.css';
 
 export default function CapilonFooter() {
   const { tenantMapping, activeLang } = useSite();

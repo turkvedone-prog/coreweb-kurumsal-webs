@@ -1,15 +1,10 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, Suspense } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getCompanySettings, getNavigation } from '../services/publicContentService';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import BurobigHeader from '../themes/burobig/BurobigHeader';
-import BurobigFooter from '../themes/burobig/BurobigFooter';
-import CapilonHeader from '../themes/capilon/CapilonHeader';
-import CapilonFooter from '../themes/capilon/CapilonFooter';
-import BurcKaplamaHeader from '../themes/burckaplama/BurcKaplamaHeader';
-import BurcKaplamaFooter from '../themes/burckaplama/BurcKaplamaFooter';
-import '../themes/burckaplama/burckaplama.css';
+
+import themeRegistry from '../themes/themeRegistry';
 
 const SiteContext = createContext(null);
 
@@ -151,52 +146,22 @@ export default function SiteLayout({ children, tenantMapping, activeLang }) {
     navigation
   };
 
-  const isBurobig = tenantMapping?.tenantSlug === 'burobig' || tenantMapping?.tenantId === 'TEN-BUROBIG';
-  const isCapilon = tenantMapping?.tenantSlug === 'capilon' || tenantMapping?.tenantId === 'TEN-CAPILON';
-  const isCoreWeb = tenantMapping?.tenantSlug === 'coreweb' || tenantMapping?.tenantId === 'TEN-507';
-  const isBurcKaplama = tenantMapping?.tenantSlug === 'burckaplama' || tenantMapping?.tenantId === 'TEN-BURCKAPLAMA';
+  const tenantSlug = tenantMapping?.tenantSlug;
+  const theme = themeRegistry[tenantSlug];
 
-  if (isBurobig) {
+  if (theme) {
+    const DynamicHeader = theme.Header;
+    const DynamicFooter = theme.Footer;
     return (
       <SiteContext.Provider value={contextValue}>
-        <div className="burobig-theme">
-          <BurobigHeader />
+        <div className={`${tenantSlug}-theme`}>
+          <Suspense fallback={null}>
+            {DynamicHeader && <DynamicHeader />}
+          </Suspense>
           {children}
-          <BurobigFooter />
-        </div>
-      </SiteContext.Provider>
-    );
-  }
-
-  if (isCapilon) {
-    return (
-      <SiteContext.Provider value={contextValue}>
-        <div className="capilon-theme">
-          <CapilonHeader />
-          {children}
-          <CapilonFooter />
-        </div>
-      </SiteContext.Provider>
-    );
-  }
-
-  if (isBurcKaplama) {
-    return (
-      <SiteContext.Provider value={contextValue}>
-        <div className="burckaplama-theme">
-          <BurcKaplamaHeader />
-          {children}
-          <BurcKaplamaFooter />
-        </div>
-      </SiteContext.Provider>
-    );
-  }
-
-  if (isCoreWeb) {
-    return (
-      <SiteContext.Provider value={contextValue}>
-        <div className="coreweb-theme">
-          {children}
+          <Suspense fallback={null}>
+            {DynamicFooter && <DynamicFooter />}
+          </Suspense>
         </div>
       </SiteContext.Provider>
     );
