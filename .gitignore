@@ -24,3 +24,18 @@ dist-ssr
 *.vercel
 .env*
 scratch/
+
+# Temporary testing, verification, and database script assets
+/screenshot_*.png
+/verify_*.png
+/*-check.png
+/footer-logo-check*.png
+/header-logo-check.png
+*_results.json
+inspect_*.js
+inspect_*.cjs
+seed_*.js
+write_*.js
+transfer_*.js
+verify_*.cjs
+wait_for_vercel.cjs

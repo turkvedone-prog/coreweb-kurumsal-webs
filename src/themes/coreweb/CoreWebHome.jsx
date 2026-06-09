@@ -295,7 +295,7 @@ export default function CoreWebHome() {
         <section className="problem" id="problem">
           <div className="container">
             <div className="section-header">
-              <span class="section-header__tag">Mevcut Durum</span>
+              <span className="section-header__tag">Mevcut Durum</span>
               <h2 className="section-header__title">Neden Klasik Siteler Yetmiyor?</h2>
             </div>
             <div className="problem__grid">
@@ -526,12 +526,12 @@ export default function CoreWebHome() {
                           <strong className="mock-badge">SEO kontrol edildi</strong>
                         </div>
                         <div className="mock-seo-item">
-                          <span class="mock-seo-check">✓</span>
+                          <span className="mock-seo-check">✓</span>
                           <span>Site Haritası ve Robots.txt Dosyaları</span>
                           <strong className="mock-badge">Oluşturuldu</strong>
                         </div>
                         <div className="mock-seo-item">
-                          <span class="mock-seo-check">✓</span>
+                          <span className="mock-seo-check">✓</span>
                           <span>Semantik HTML5 Sayfa İskeleti</span>
                           <strong className="mock-badge">Doğrulandı</strong>
                         </div>
@@ -632,10 +632,10 @@ export default function CoreWebHome() {
                   Sürekli güncellenen altyapı, yüksek erişilebilirlikli küresel sunucu dağıtımı, yedekleme ve teknik bakım süreci.
                 </p>
               </article>
-              <article class="service-card">
-                <div class="service-card__icon service-card__icon--design"></div>
-                <h3 class="service-card__title">Yayın Öncesi Test Süreci</h3>
-                <p class="service-card__desc">
+              <article className="service-card">
+                <div className="service-card__icon service-card__icon--design"></div>
+                <h3 className="service-card__title">Yayın Öncesi Test Süreci</h3>
+                <p className="service-card__desc">
                   Sitenin yayına alınmasından önce tarayıcı uyumluluğu, Core Web Vitals performans hedefleri ve form güvenliğinin tam testi.
                 </p>
               </article>
@@ -792,7 +792,7 @@ export default function CoreWebHome() {
               <div className="process-card">
                 <span className="process-card__num">02</span>
                 <h3 className="process-card__title">Arayüz Tasarımı & Kodlama</h3>
-                <p class="process-card__desc">
+                <p className="process-card__desc">
                   Şablonlardan uzak, özgün görsel kimliği tasarlıyor; ardından gereksiz kodlardan arındırılmış temiz bir mimari ile sitenizi inşa ediyoruz.
                 </p>
               </div>
