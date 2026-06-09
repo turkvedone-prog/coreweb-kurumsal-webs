@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
 import { Phone, Search, Menu, X, ChevronDown, ShoppingBag } from 'lucide-react';
 
@@ -7,7 +7,11 @@ export default function CapilonHeader() {
   const { tenantMapping, activeLang } = useSite();
   const { tenantSlug } = tenantMapping;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const [megaFeaturedImg, setMegaFeaturedImg] = useState('/assets/capilon/images/hero_living_room_1779477814666.png');
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const hostname = window.location.hostname;
   const isLocalOrPortal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'coreweb.tr' || hostname.endsWith('.vercel.app');
@@ -19,6 +23,20 @@ export default function CapilonHeader() {
 
   const translate = (tr, en) => {
     return activeLang === 'tr' ? tr : en;
+  };
+
+  const handleLangChange = (newLang) => {
+    if (newLang === activeLang) return;
+    const pathSegments = location.pathname.split('/').filter(Boolean);
+    const langIndex = isLocalOrPortal ? 1 : 0;
+    pathSegments[langIndex] = newLang;
+    navigate('/' + pathSegments.join('/'));
+    setLangDropdownOpen(false);
+  };
+
+  const getLanguageLabel = (code) => {
+    const labels = { tr: 'Türkçe', en: 'English' };
+    return labels[code] || code.toUpperCase();
   };
 
   // Header Scroll and Direction logic
@@ -65,6 +83,8 @@ export default function CapilonHeader() {
     { title: translate('Sehpa & Sehpa Takımı', 'Coffee Tables & Sets'), img: '/assets/capilon/images/menu 08.jpg', featured: '/assets/capilon/images/beta_main.png' },
   ];
 
+  const enabledLangs = tenantMapping?.enabledLanguages || ['tr'];
+
   return (
     <>
       <a href="#main-content" className="skip-link">
@@ -110,9 +130,9 @@ export default function CapilonHeader() {
       <div className="utility-bar">
         <div className="header-container utility-flex">
           <div className="utility-left">
-            <a href="#magazalar">{translate('Mağazalarımız', 'Our Stores')}</a>
-            <a href="#kampanyalar">{translate('Kampanyalar', 'Campaigns')}</a>
+            <Link to={getLocalizedPath('/hikayemiz')}>{translate('Hakkımızda', 'About Us')}</Link>
             <a href="#evlilik-paketleri">{translate('Evlilik Paketleri', 'Wedding Packages')}</a>
+            <Link to={getLocalizedPath('/magazalarimiz')}>{translate('Mağazalarımız', 'Our Stores')}</Link>
             <a href="#sanal-magaza">{translate('Sanal Mağaza', 'Virtual Store')}</a>
             <Link to={getLocalizedPath('/blog')}>{translate('Blog', 'Blog')}</Link>
           </div>
@@ -122,12 +142,73 @@ export default function CapilonHeader() {
               0312 379 03 33
             </a>
             <Link to={getLocalizedPath('/iletisim')}>{translate('İletişim', 'Contact')}</Link>
-            <div className="lang-dropdown-wrapper">
-              <span className="lang-selector">
-                <img src="https://flagcdn.com/w20/tr.png" width="16" alt="Turkey" style={{ verticalAlign: 'middle', marginRight: '6px' }} />
-                TR <ChevronDown size={10} style={{ display: 'inline', marginLeft: '4px' }} />
-              </span>
-            </div>
+            
+            {/* Language Selector */}
+            {enabledLangs.length > 1 && (
+              <div className="lang-dropdown-wrapper" style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                  className="lang-selector"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', color: 'inherit' }}
+                >
+                  <img
+                    src={`https://flagcdn.com/w20/${activeLang === 'en' ? 'gb' : activeLang}.png`}
+                    width="16"
+                    alt={activeLang}
+                    style={{ verticalAlign: 'middle', marginRight: '6px' }}
+                  />
+                  {activeLang.toUpperCase()}{' '}
+                  <ChevronDown size={10} style={{ display: 'inline', marginLeft: '4px' }} />
+                </button>
+                {langDropdownOpen && (
+                  <div
+                    className="lang-dropdown-menu"
+                    style={{
+                      position: 'absolute',
+                      right: 0,
+                      top: '100%',
+                      marginTop: '8px',
+                      backgroundColor: '#faf8f5',
+                      border: '1px solid rgba(74, 69, 65, 0.1)',
+                      borderRadius: '4px',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                      padding: '4px 0',
+                      zIndex: 1001,
+                      minWidth: '110px'
+                    }}
+                  >
+                    {enabledLangs.map((lang) => (
+                      <button
+                        key={lang}
+                        onClick={() => handleLangChange(lang)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          width: '100%',
+                          padding: '8px 12px',
+                          border: 'none',
+                          background: 'none',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          fontSize: '12px',
+                          fontWeight: lang === activeLang ? '600' : '400',
+                          color: '#414042',
+                          backgroundColor: lang === activeLang ? 'rgba(74, 69, 65, 0.05)' : 'transparent'
+                        }}
+                      >
+                        <img
+                          src={`https://flagcdn.com/w20/${lang === 'en' ? 'gb' : lang}.png`}
+                          width="16"
+                          alt={lang}
+                        />
+                        {getLanguageLabel(lang)}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -140,7 +221,7 @@ export default function CapilonHeader() {
               <Menu size={24} />
             </button>
             <Link to={getLocalizedPath('/')} aria-label="Ana Sayfa — Capilon Mobilya" className="capilon-logo-link">
-              <img src="/assets/capilon/images/Capilon-Mobilya-Logo.svg" alt="Capilon Mobilya Logo" className="logo__img" />
+              <img src="/assets/capilon/images/CapilonMobilya_Logo.svg" alt="Capilon Mobilya Logo" className="logo__img" />
             </Link>
           </div>
 
@@ -171,7 +252,7 @@ export default function CapilonHeader() {
         <nav className="main-nav-row" aria-label="Ana Menü">
           <div className="header-container">
             <ul role="list" className="nav-list">
-              <li><a href={getLocalizedPath('/#yemek')}>{translate('YEMEK ODALARI', 'DINING ROOMS')}</a></li>
+              <li><Link to={getLocalizedPath('/koleksiyonlar/yemek-odalari')}>{translate('YEMEK ODALARI', 'DINING ROOMS')}</Link></li>
               <li><a href={getLocalizedPath('/#yatak')}>{translate('YATAK ODALARI', 'BEDROOMS')}</a></li>
               <li className="has-mega-menu">
                 <a href={getLocalizedPath('/#koltuk')}>
@@ -211,22 +292,99 @@ export default function CapilonHeader() {
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="mobile-menu-overlay" style={{ position: 'fixed', inset: 0, zIndex: 1002, background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'flex-start' }}>
-          <div className="mobile-menu-container" style={{ width: '280px', background: '#faf8f5', height: '100%', padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px', position: 'relative' }}>
-            <button style={{ position: 'absolute', right: '20px', top: '20px', background: 'none', border: 'none', cursor: 'pointer' }} onClick={() => setMobileMenuOpen(false)}>
+        <div 
+          className="mobile-menu-overlay" 
+          onClick={() => setMobileMenuOpen(false)}
+          style={{ 
+            position: 'fixed', 
+            inset: 0, 
+            zIndex: 1002, 
+            background: 'rgba(0,0,0,0.5)', 
+            backdropFilter: 'blur(4px)',
+            display: 'flex', 
+            justifyContent: 'flex-start',
+            transition: 'opacity 0.3s ease'
+          }}
+        >
+          <div 
+            className="mobile-menu-container animate-slide-right" 
+            onClick={(e) => e.stopPropagation()}
+            style={{ 
+              width: '300px', 
+              background: '#faf8f5', 
+              height: '100%', 
+              padding: '30px 20px', 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: '24px', 
+              position: 'relative',
+              boxShadow: '4px 0 25px rgba(0,0,0,0.1)'
+            }}
+          >
+            <button 
+              style={{ 
+                position: 'absolute', 
+                right: '20px', 
+                top: '20px', 
+                background: 'none', 
+                border: 'none', 
+                cursor: 'pointer',
+                color: '#414042'
+              }} 
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label={translate('Kapat', 'Close')}
+            >
               <X size={24} />
             </button>
-            <div style={{ marginTop: '40px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              <a href={getLocalizedPath('/#yemek')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Yemek Odaları', 'Dining Rooms')}</a>
-              <a href={getLocalizedPath('/#yatak')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Yatak Odaları', 'Bedrooms')}</a>
-              <a href={getLocalizedPath('/#koltuk')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Koltuk Takımları', 'Living Room Sets')}</a>
-              <a href={getLocalizedPath('/#kose')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Köşe Takımları', 'Corner Sofas')}</a>
-              <a href={getLocalizedPath('/#tv')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('TV Üniteleri', 'TV Units')}</a>
-              <a href={getLocalizedPath('/#genc')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Çocuk & Genç Odaları', 'Kids & Teen Rooms')}</a>
-              <a href={getLocalizedPath('/#tekil')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Tekil Ürünler', 'Single Products')}</a>
-              <a href={getLocalizedPath('/#yatak-baza')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Yatak & Baza', 'Mattresses & Bases')}</a>
-              <a href={getLocalizedPath('/#tamamlayici')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('Tamamlayıcı Ürünler', 'Complementary Products')}</a>
-              <Link to={getLocalizedPath('/iletisim')} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: '600' }}>{translate('İletişim', 'Contact')}</Link>
+            
+            {/* Logo in Drawer */}
+            <div style={{ marginTop: '20px', borderBottom: '1px solid rgba(74, 69, 65, 0.1)', paddingBottom: '20px' }}>
+              <img src="/assets/capilon/images/CapilonMobilya_Logo.svg" alt="Capilon Mobilya Logo" style={{ height: '28px' }} />
+            </div>
+
+            {/* Menu Links */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', overflowY: 'auto', flex: 1 }}>
+              <Link to={getLocalizedPath('/koleksiyonlar/yemek-odalari')} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '15px', fontWeight: '600', color: '#414042', textDecoration: 'none' }}>{translate('YEMEK ODALARI', 'DINING ROOMS')}</Link>
+              <a href={getLocalizedPath('/#yatak')} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '15px', fontWeight: '600', color: '#414042', textDecoration: 'none' }}>{translate('YATAK ODALARI', 'BEDROOMS')}</a>
+              <a href={getLocalizedPath('/#koltuk')} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '15px', fontWeight: '600', color: '#414042', textDecoration: 'none' }}>{translate('KOLTUK TAKIMLARI', 'LIVING ROOM SETS')}</a>
+              <a href={getLocalizedPath('/#kose')} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '15px', fontWeight: '600', color: '#414042', textDecoration: 'none' }}>{translate('KÖŞE TAKIMLARI', 'CORNER SOFAS')}</a>
+              <a href={getLocalizedPath('/#tv')} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '15px', fontWeight: '600', color: '#414042', textDecoration: 'none' }}>{translate('TV ÜNİTELERİ', 'TV UNITS')}</a>
+              <a href={getLocalizedPath('/#genc')} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '15px', fontWeight: '600', color: '#414042', textDecoration: 'none' }}>{translate('ÇOCUK & GENÇ ODALARI', 'KIDS & TEEN ROOMS')}</a>
+              <a href={getLocalizedPath('/#tekil')} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '15px', fontWeight: '600', color: '#414042', textDecoration: 'none' }}>{translate('TEKİL ÜRÜNLER', 'SINGLE PRODUCTS')}</a>
+              <a href={getLocalizedPath('/#yatak-baza')} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '15px', fontWeight: '600', color: '#414042', textDecoration: 'none' }}>{translate('YATAK & BAZA', 'MATTRESSES & BASES')}</a>
+              <a href={getLocalizedPath('/#tamamlayici')} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '15px', fontWeight: '600', color: '#414042', textDecoration: 'none' }}>{translate('TAMAMLAYICI ÜRÜNLER', 'COMPLEMENTARY PRODUCTS')}</a>
+              
+              <div style={{ borderTop: '1px solid rgba(74, 69, 65, 0.1)', paddingTop: '18px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <Link to={getLocalizedPath('/hikayemiz')} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '14px', fontWeight: '500', color: '#666', textDecoration: 'none' }}>{translate('Hakkımızda', 'About Us')}</Link>
+                <Link to={getLocalizedPath('/magazalarimiz')} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '14px', fontWeight: '500', color: '#666', textDecoration: 'none' }}>{translate('Mağazalarımız', 'Our Stores')}</Link>
+                <Link to={getLocalizedPath('/blog')} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '14px', fontWeight: '500', color: '#666', textDecoration: 'none' }}>{translate('Blog', 'Blog')}</Link>
+                <Link to={getLocalizedPath('/iletisim')} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '14px', fontWeight: '500', color: '#666', textDecoration: 'none' }}>{translate('İletişim', 'Contact')}</Link>
+              </div>
+            </div>
+            
+            {/* Language Switcher in Drawer */}
+            <div style={{ borderTop: '1px solid rgba(74, 69, 65, 0.1)', paddingTop: '15px', display: 'flex', gap: '12px' }}>
+              {enabledLangs.map((lang) => (
+                <button
+                  key={lang}
+                  onClick={() => {
+                    handleLangChange(lang);
+                    setMobileMenuOpen(false);
+                  }}
+                  style={{
+                    background: lang === activeLang ? '#f58220' : 'transparent',
+                    color: lang === activeLang ? '#fff' : '#414042',
+                    border: '1px solid rgba(74, 69, 65, 0.2)',
+                    padding: '6px 12px',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {lang.toUpperCase()}
+                </button>
+              ))}
             </div>
           </div>
         </div>

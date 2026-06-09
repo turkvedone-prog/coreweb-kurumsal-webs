@@ -57,6 +57,7 @@ export default function Contact() {
         `${companyName} iletişim bilgileri, adres, telefon ve online iletişim formu.`,
         `${companyName} contact information, address, phone number, and online message form.`
       ),
+      companyName
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeLang, companyName]);

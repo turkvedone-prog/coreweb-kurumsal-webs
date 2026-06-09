@@ -29,7 +29,7 @@ export default function CapilonFooter() {
               <ul className="footer-list">
                 <li><a href={getLocalizedPath('/#koltuk')}>{translate('Koltuk Takımları', 'Living Room Sets')}</a></li>
                 <li><a href={getLocalizedPath('/#kose')}>{translate('Köşe Takımları', 'Corner Sofa Sets')}</a></li>
-                <li><a href={getLocalizedPath('/#yemek')}>{translate('Yemek Odası Takımları', 'Dining Room Sets')}</a></li>
+                <li><Link to={getLocalizedPath('/koleksiyonlar/yemek-odalari')}>{translate('Yemek Odası Takımları', 'Dining Room Sets')}</Link></li>
                 <li><a href={getLocalizedPath('/#yatak')}>{translate('Yatak Odası Takımları', 'Bedroom Sets')}</a></li>
                 <li><a href={getLocalizedPath('/#genc')}>{translate('Genç Odası Takımları', 'Teen Room Sets')}</a></li>
                 <li><a href="#evlilik-paketleri">{translate('Düğün Paketleri', 'Wedding Packages')}</a></li>
@@ -40,7 +40,7 @@ export default function CapilonFooter() {
               <h4 className="footer-heading">{translate('Popüler Kategoriler', 'Popular Categories')}</h4>
               <ul className="footer-list">
                 <li><a href={getLocalizedPath('/#koltuk')}>{translate('Oturma Grubu', 'Living Room')}</a></li>
-                <li><a href={getLocalizedPath('/#yemek')}>{translate('Yemek Odası', 'Dining Room')}</a></li>
+                <li><Link to={getLocalizedPath('/koleksiyonlar/yemek-odalari')}>{translate('Yemek Odası', 'Dining Room')}</Link></li>
                 <li><a href={getLocalizedPath('/#yatak')}>{translate('Yatak Odası', 'Bedroom')}</a></li>
                 <li><a href={getLocalizedPath('/#genc')}>{translate('Genç ve Çocuk Odası', 'Teen & Kid Room')}</a></li>
                 <li><a href="#bahce-mobilyalari">{translate('Bahçe Mobilyaları', 'Garden Furniture')}</a></li>
@@ -73,11 +73,11 @@ export default function CapilonFooter() {
             <div className="footer-col">
               <h4 className="footer-heading">Capilon Kurumsal</h4>
               <ul className="footer-list">
-                <li><a href="#kurumsal">{translate('Hakkımızda', 'About Us')}</a></li>
+                <li><Link to={getLocalizedPath('/hikayemiz')}>{translate('Hakkımızda', 'About Us')}</Link></li>
                 <li><Link to={getLocalizedPath('/iletisim')}>{translate('İletişim', 'Contact')}</Link></li>
                 <li><a href="#is-ortakligi">{translate('İş Ortaklığı', 'Partnership')}</a></li>
                 <li><a href="#kataloglar">{translate('Kataloglar', 'Catalogs')}</a></li>
-                <li><a href="#magazalar">{translate('Mağazalar', 'Stores')}</a></li>
+                <li><Link to={getLocalizedPath('/magazalarimiz')}>{translate('Mağazalar', 'Stores')}</Link></li>
                 <li><Link to={getLocalizedPath('/blog')}>{translate('Blog', 'Blog')}</Link></li>
                 <li><a href="#tedarikci">{translate('Tedarikçi Başvuru', 'Supplier Application')}</a></li>
               </ul>
@@ -122,14 +122,17 @@ export default function CapilonFooter() {
         <div className="footer-bottom">
           <div className="footer-logo-left">
             <Link to={getLocalizedPath('/')}>
-              <img src="/assets/capilon/images/Capilon-Mobilya-Logo.svg" alt="Capilon Mobilya Grubu" style={{ height: '30px' }} />
+              <img src="/assets/capilon/images/CapilonMobilya_Logo.svg" alt="Capilon Mobilya Grubu" style={{ height: '30px' }} />
             </Link>
           </div>
           <div className="footer-copyright">
             Copyright © 2026 Capilon Mobilya. {translate('Tüm hakları saklıdır.', 'All rights reserved.')}
           </div>
           <div className="footer-signature">
-            {translate('Tasarım & Yazılım:', 'Design & Software:')} <strong>Kreatiffikirler.com</strong>
+            <a href="https://www.coreweb.tr" target="_blank" className="footer-coreweb-link" rel="noopener noreferrer">
+              <img src="/assets/capilon/images/CoreWeb_Logo Disi.svg" className="coreweb-logo logo-disi" alt="CoreWeb" />
+              <img src="/assets/capilon/images/CoreWeb_Logo Orji.svg" className="coreweb-logo logo-orji" alt="CoreWeb" />
+            </a>
           </div>
         </div>
       </footer>

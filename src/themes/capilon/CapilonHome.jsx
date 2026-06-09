@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
 import { ArrowRight } from 'lucide-react';
+import { updateSEOMeta } from '../../utils/seo';
 import './capilon.css';
 
 export default function CapilonHome() {
@@ -22,22 +23,18 @@ export default function CapilonHome() {
 
   // Set Document Title and Meta Description on Mount
   useEffect(() => {
-    document.title = activeLang === 'tr'
-      ? "Capilon Mobilya | Premium Ev Mobilyaları ve Yaşam Alanları"
-      : "Capilon Furniture | Premium Home Furniture & Living Spaces";
-
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.setAttribute('name', 'description');
-      document.head.appendChild(metaDesc);
-    }
-
+    const titleText = activeLang === 'tr'
+      ? "Premium Ev Mobilyaları ve Yaşam Alanları"
+      : "Premium Home Furniture & Living Spaces";
     const descText = activeLang === 'tr'
       ? "Eviniz için ilham veren, sıcak ve zamansız dokunuşlar. Modern salon, yatak odası ve yemek odası mobilya koleksiyonunu keşfedin."
       : "Inspiring, warm and timeless touches for your home. Discover the modern living room, bedroom and dining room furniture collections.";
-    
-    metaDesc.setAttribute('content', descText);
+
+    updateSEOMeta({
+      title: titleText,
+      description: descText,
+      companyName: 'Capilon Mobilya'
+    });
   }, [activeLang]);
 
   // Slider Auto Play
@@ -46,33 +43,6 @@ export default function CapilonHome() {
       setActiveSlide((prev) => (prev + 1) % slideCount);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
-
-  // Intersection Observer for scroll reveal animations (.reveal-up)
-  useEffect(() => {
-    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
-
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.15
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, observerOptions);
-
-    const revealElements = document.querySelectorAll('.reveal-up');
-    revealElements.forEach((el) => observer.observe(el));
-
-    return () => {
-      observer.disconnect();
-    };
   }, []);
 
   const translate = (tr, en) => {
@@ -84,22 +54,15 @@ export default function CapilonHome() {
   };
 
   const quickCategories = [
-    { title: translate('Yemek Odaları', 'Dining Rooms'), img: '/assets/capilon/images/product_dining_1779477859352.png', link: '#yemek' },
-    { title: translate('Yatak Odaları', 'Bedrooms'), img: '/assets/capilon/images/hero_bedroom_1779477829254.png', link: '#yatak' },
-    { title: translate('Koltuk Takımları', 'Living Room Sets'), img: '/assets/capilon/images/product_sofa_1779477845050.png', link: '#koltuk' },
-    { title: translate('Kanepeler', 'Sofas'), img: '/assets/capilon/images/hero_living_room_1779477814666.png', link: '#kanepeler' },
-    { title: translate('Berjerler', 'Armchairs'), img: '/assets/capilon/images/product_sofa_1779477845050.png', link: '#berjerler' },
-    { title: translate('Köşe Takımları', 'Corner Sofas'), img: '/assets/capilon/images/product_sofa_1779477845050.png', link: '#kose' },
-    { title: translate('TV Üniteleri', 'TV Units'), img: '/assets/capilon/images/product_dining_1779477859352.png', link: '#tv' },
-    { title: translate('Bebek Odaları', 'Baby Rooms'), img: '/assets/capilon/images/hero_bedroom_1779477829254.png', link: '#bebek' },
-    { title: translate('Genç Odaları', 'Teen Rooms'), img: '/assets/capilon/images/hero_living_room_1779477814666.png', link: '#genc' },
-    { title: translate('Tek Kişilik Yataklar', 'Single Beds'), img: '/assets/capilon/images/hero_bedroom_1779477829254.png', link: '#yatak' },
-    { title: translate('Çift Kişilik Yataklar', 'Double Beds'), img: '/assets/capilon/images/hero_bedroom_1779477829254.png', link: '#yatak' },
-    { title: translate('Başlıklar', 'Headboards'), img: '/assets/capilon/images/hero_bedroom_1779477829254.png', link: '#yatak' },
-    { title: translate('Tekil Ürünler', 'Single Items'), img: '/assets/capilon/images/product_sofa_1779477845050.png', link: '#tekil' },
-    { title: translate('Mutfak ve Balkon', 'Kitchen & Balcony'), img: '/assets/capilon/images/product_dining_1779477859352.png', link: '#mutfak' },
-    { title: translate('Bank Takımları', 'Bench Sets'), img: '/assets/capilon/images/product_dining_1779477859352.png', link: '#bank' },
-    { title: translate('Sehpalar', 'Coffee Tables'), img: '/assets/capilon/images/product_sofa_1779477845050.png', link: '#sehpalar' },
+    { title: translate('Yemek Odaları', 'Dining Rooms'), img: '/assets/capilon/images/product_dining_1779477859352.png', link: '/koleksiyonlar/yemek-odalari', isReactRoute: true },
+    { title: translate('Yatak Odaları', 'Bedrooms'), img: '/assets/capilon/images/hero_bedroom_1779477829254.png', link: '/#yatak' },
+    { title: translate('Koltuk Takımları', 'Living Room Sets'), img: '/assets/capilon/images/product_sofa_1779477845050.png', link: '/#koltuk' },
+    { title: translate('Köşe Takımları', 'Corner Sofas'), img: '/assets/capilon/images/product_sofa_1779477845050.png', link: '/#kose' },
+    { title: translate('TV Üniteleri', 'TV Units'), img: '/assets/capilon/images/product_dining_1779477859352.png', link: '/#tv' },
+    { title: translate('Çocuk & Genç Odaları', 'Kids & Teen Rooms'), img: '/assets/capilon/images/hero_living_room_1779477814666.png', link: '/#genc' },
+    { title: translate('Tekil Ürünler', 'Single Items'), img: '/assets/capilon/images/product_sofa_1779477845050.png', link: '/#tekil' },
+    { title: translate('Yatak & Baza', 'Mattresses & Bases'), img: '/assets/capilon/images/hero_bedroom_1779477829254.png', link: '/#yatak-baza' },
+    { title: translate('Tamamlayıcı Ürünler', 'Complementary Products'), img: '/assets/capilon/images/product_sofa_1779477845050.png', link: '/#tamamlayici' },
   ];
 
   const monthlyFeatured = [
@@ -110,7 +73,7 @@ export default function CapilonHome() {
       title: translate('Nova Yemek Odası', 'Nova Dining Room'),
       text: translate('Modern çizgiler ve doğal dokular...', 'Modern lines and natural textures...'),
       img: '/assets/capilon/images/product_dining_1779477859352.png',
-      link: '#yemek'
+      link: '/urunler/serenity-yemek-odasi-takimi'
     },
     {
       brand: 'NOVA',
@@ -119,7 +82,7 @@ export default function CapilonHome() {
       title: translate('Nova Koltuk Takımı', 'Nova Sofa Set'),
       text: translate('Eşsiz konfor ve minimal tasarım...', 'Unique comfort and minimal design...'),
       img: '/assets/capilon/images/product_sofa_1779477845050.png',
-      link: '#koltuk'
+      link: '/urunler/serenity-yemek-odasi-takimi'
     },
     {
       brand: 'LINA',
@@ -128,7 +91,7 @@ export default function CapilonHome() {
       title: translate('Lina Yatak Odası', 'Lina Bedroom'),
       text: translate('Güne dingin bir başlangıç yapın...', 'Start the day serenely...'),
       img: '/assets/capilon/images/hero_bedroom_1779477829254.png',
-      link: '#yatak'
+      link: '/urunler/serenity-yemek-odasi-takimi'
     },
     {
       brand: 'VIGO',
@@ -137,7 +100,7 @@ export default function CapilonHome() {
       title: translate('Polar Yaşam Ünitesi', 'Polar Living Unit'),
       text: translate('Salonunuza karakter katacak detaylar...', 'Details to add character to your living room...'),
       img: '/assets/capilon/images/hero_living_room_1779477814666.png',
-      link: '#tv'
+      link: '/urunler/serenity-yemek-odasi-takimi'
     }
   ];
 
@@ -161,9 +124,9 @@ export default function CapilonHome() {
                   "Modern, stylish and timeless touches to your living spaces. Discover Capilon's renewed premium comfort."
                 )}
               </p>
-              <a href="#koleksiyonlar" className="btn-primary" id="hero-cta-1">
+              <Link to={getLocalizedPath('/koleksiyonlar/yemek-odalari')} className="btn-primary" id="hero-cta-1">
                 {translate('Koleksiyonu Keşfet', 'Discover Collection')} <span className="arrow">→</span>
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -182,9 +145,9 @@ export default function CapilonHome() {
                   "Aesthetic bedroom designs that surround you with comfort, letting you leave the day's fatigue behind."
                 )}
               </p>
-              <a href="#koleksiyonlar" className="btn-primary" id="hero-cta-2">
+              <Link to={getLocalizedPath('/koleksiyonlar/yemek-odalari')} className="btn-primary" id="hero-cta-2">
                 {translate('Koleksiyonu İncele', 'Examine Collection')} <span className="arrow">→</span>
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -217,23 +180,45 @@ export default function CapilonHome() {
         <div className="marquee-wrapper">
           <div className="marquee-track">
             {/* Set 1 */}
-            {quickCategories.map((cat, idx) => (
-              <a key={`cat1-${idx}`} href={cat.link} className="cat-circle">
-                <div className="circle-img-wrap">
-                  <img src={cat.img} alt={cat.title} loading="lazy" />
-                </div>
-                <span>{cat.title}</span>
-              </a>
-            ))}
+            {quickCategories.map((cat, idx) => {
+              const content = (
+                <>
+                  <div className="circle-img-wrap">
+                    <img src={cat.img} alt={cat.title} loading="lazy" />
+                  </div>
+                  <span>{cat.title}</span>
+                </>
+              );
+              return cat.isReactRoute ? (
+                <Link key={`cat1-${idx}`} to={getLocalizedPath(cat.link)} className="cat-circle">
+                  {content}
+                </Link>
+              ) : (
+                <a key={`cat1-${idx}`} href={getLocalizedPath(cat.link)} className="cat-circle">
+                  {content}
+                </a>
+              );
+            })}
             {/* Set 2 (Duplicate for seamless scroll) */}
-            {quickCategories.map((cat, idx) => (
-              <a key={`cat2-${idx}`} href={cat.link} className="cat-circle">
-                <div className="circle-img-wrap">
-                  <img src={cat.img} alt={cat.title} loading="lazy" />
-                </div>
-                <span>{cat.title}</span>
-              </a>
-            ))}
+            {quickCategories.map((cat, idx) => {
+              const content = (
+                <>
+                  <div className="circle-img-wrap">
+                    <img src={cat.img} alt={cat.title} loading="lazy" />
+                  </div>
+                  <span>{cat.title}</span>
+                </>
+              );
+              return cat.isReactRoute ? (
+                <Link key={`cat2-${idx}`} to={getLocalizedPath(cat.link)} className="cat-circle">
+                  {content}
+                </Link>
+              ) : (
+                <a key={`cat2-${idx}`} href={getLocalizedPath(cat.link)} className="cat-circle">
+                  {content}
+                </a>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -245,54 +230,59 @@ export default function CapilonHome() {
           <p>{translate('Evinizin her köşesi için özenle tasarlanmış, estetik ve konforu buluşturan seçkin koleksiyonlarımız.', 'Our distinguished collections carefully designed for every corner of your home, bringing together aesthetics and comfort.')}</p>
         </div>
         <div className="pc-grid">
+          {/* Sütun 1 */}
           <div className="pc-col">
-            <a href="#koltuk" className="pc-item" style={{ height: '450px' }}>
-              <img src="/assets/capilon/images/hero_living_room_1779477814666.png" alt="Koltuk Takımları" />
-              <div className="pc-overlay"><span>{translate('Koltuk Takımları', 'Living Room Sets')}</span></div>
+            <a href={getLocalizedPath('/#tamamlayici')} className="pc-item" style={{ height: '450px' }}>
+              <img src="/assets/capilon/images/hero_living_room_1779477814666.png" alt={translate('Tamamlayıcı Ürünler', 'Complementary Products')} />
+              <div className="pc-overlay"><span>{translate('TAMAMLAYICI ÜRÜNLER', 'COMPLEMENTARY PRODUCTS')}</span></div>
             </a>
-            <a href="#berjerler" className="pc-item" style={{ height: '300px' }}>
-              <img src="/assets/capilon/images/cat_armchair_warm.png" alt="Berjerler" />
-              <div className="pc-overlay"><span>{translate('Berjerler', 'Armchairs')}</span></div>
+            <a href={getLocalizedPath('/#koltuk')} className="pc-item" style={{ height: '300px' }}>
+              <img src="/assets/capilon/images/cat_armchair_warm.png" alt={translate('Koltuk Takımları', 'Living Room Sets')} />
+              <div className="pc-overlay"><span>{translate('KOLTUK TAKIMLARI', 'LIVING ROOM SETS')}</span></div>
             </a>
           </div>
+          {/* Sütun 2 */}
           <div className="pc-col">
-            <a href="#yatak" className="pc-item" style={{ height: '500px' }}>
-              <img src="/assets/capilon/images/hero_bedroom_1779477829254.png" alt="Yatak Odaları" />
-              <div className="pc-overlay"><span>{translate('Yatak Odaları', 'Bedrooms')}</span></div>
-            </a>
+            <Link to={getLocalizedPath('/koleksiyonlar/yemek-odalari')} className="pc-item" style={{ height: '500px' }}>
+              <img src="/assets/capilon/images/hero_bedroom_1779477829254.png" alt={translate('Yemek Odaları', 'Dining Rooms')} />
+              <div className="pc-overlay"><span>{translate('YEMEK ODALARI', 'DINING ROOMS')}</span></div>
+            </Link>
             <div className="pc-item pc-text-block pc-bg-anthracite" style={{ height: '250px' }}>
               <h3>{translate('Konfor', 'Comfort')}</h3>
               <p>{translate('Eşsiz rahatlık ve modern konforu yaşam alanlarınıza taşıyan, bedeninizi ve ruhunuzu dinlendiren tasarımlar.', 'Designs that bring unique ease and modern comfort to your living spaces, resting your body and soul.')}</p>
             </div>
           </div>
+          {/* Sütun 3 */}
           <div className="pc-col">
-            <a href="#yemek" className="pc-item" style={{ height: '350px' }}>
-              <img src="/assets/capilon/images/product_dining_1779477859352.png" alt="Yemek Odaları" />
-              <div className="pc-overlay"><span>{translate('Yemek Odaları', 'Dining Rooms')}</span></div>
+            <a href={getLocalizedPath('/#tekil')} className="pc-item" style={{ height: '350px' }}>
+              <img src="/assets/capilon/images/product_dining_1779477859352.png" alt={translate('Tekil Ürünler', 'Single Items')} />
+              <div className="pc-overlay"><span>{translate('TEKİL ÜRÜNLER', 'SINGLE PRODUCTS')}</span></div>
             </a>
-            <a href="#kose" className="pc-item" style={{ height: '400px' }}>
-              <img src="/assets/capilon/images/cat_corner_sofa_warm.png" alt="Köşe Takımları" />
-              <div className="pc-overlay"><span>{translate('Köşe Takımları', 'Corner Sofas')}</span></div>
+            <a href={getLocalizedPath('/#kose')} className="pc-item" style={{ height: '400px' }}>
+              <img src="/assets/capilon/images/cat_corner_sofa_warm.png" alt={translate('Köşe Takımları', 'Corner Sofas')} />
+              <div className="pc-overlay"><span>{translate('KÖŞE TAKIMLARI', 'CORNER SOFAS')}</span></div>
             </a>
           </div>
+          {/* Sütun 4 */}
           <div className="pc-col">
             <div className="pc-item pc-text-block pc-bg-orange" style={{ height: '250px' }}>
               <h3>{translate('Modern', 'Modern')}</h3>
               <p>{translate('Estetik ve fonksiyonelliğin birleştiği, evinizi saran yepyeni bir tasarım çizgisi.', 'A brand new design line that surrounds your home, where aesthetics and functionality merge.')}</p>
             </div>
-            <a href="#genc" className="pc-item" style={{ height: '500px' }}>
-              <img src="/assets/capilon/images/cat_teen_room_warm.png" alt="Genç Odaları" />
-              <div className="pc-overlay"><span>{translate('Genç Odaları', 'Teen Rooms')}</span></div>
+            <a href={getLocalizedPath('/#yatak')} className="pc-item" style={{ height: '500px' }}>
+              <img src="/assets/capilon/images/cat_teen_room_warm.png" alt={translate('Yatak Odaları', 'Bedrooms')} />
+              <div className="pc-overlay"><span>{translate('YATAK ODALARI', 'BEDROOMS')}</span></div>
             </a>
           </div>
+          {/* Sütun 5 */}
           <div className="pc-col">
-            <a href="#tv" className="pc-item" style={{ height: '450px' }}>
-              <img src="/assets/capilon/images/cat_tv_unit_warm.png" alt="TV Üniteleri" />
-              <div className="pc-overlay"><span>{translate('TV Üniteleri', 'TV Units')}</span></div>
+            <a href={getLocalizedPath('/#yatak')} className="pc-item" style={{ height: '450px' }}>
+              <img src="/assets/capilon/images/cat_tv_unit_warm.png" alt={translate('Yatak Odaları', 'Bedrooms')} />
+              <div className="pc-overlay"><span>{translate('YATAK ODALARI', 'BEDROOMS')}</span></div>
             </a>
-            <a href="#bebek" className="pc-item" style={{ height: '300px' }}>
-              <img src="/assets/capilon/images/cat_baby_room_warm.png" alt="Bebek Odaları" />
-              <div className="pc-overlay"><span>{translate('Bebek Odaları', 'Baby Rooms')}</span></div>
+            <a href={getLocalizedPath('/#genc')} className="pc-item" style={{ height: '300px' }}>
+              <img src="/assets/capilon/images/cat_baby_room_warm.png" alt={translate('Çocuk & Genç Odaları', 'Kids & Teen Rooms')} />
+              <div className="pc-overlay"><span>{translate('ÇOCUK & GENÇ ODALARI', 'KIDS & TEEN ROOMS')}</span></div>
             </a>
           </div>
         </div>
@@ -327,7 +317,7 @@ export default function CapilonHome() {
             {/* Set 1 */}
             {monthlyFeatured.map((prod, idx) => (
               <article key={`monthly1-${idx}`} className="monthly-card">
-                <a href={prod.link} className="monthly-card-link">
+                <Link to={getLocalizedPath(prod.link)} className="monthly-card-link">
                   <div className="monthly-img-wrapper">
                     <img src={prod.img} alt={prod.title} loading="lazy" />
                     <div className="monthly-img-overlay">
@@ -347,13 +337,13 @@ export default function CapilonHome() {
                       </div>
                     </div>
                   </div>
-                </a>
+                </Link>
               </article>
             ))}
             {/* Set 2 (Duplicate for seamless scroll) */}
             {monthlyFeatured.map((prod, idx) => (
               <article key={`monthly2-${idx}`} className="monthly-card">
-                <a href={prod.link} className="monthly-card-link">
+                <Link to={getLocalizedPath(prod.link)} className="monthly-card-link">
                   <div className="monthly-img-wrapper">
                     <img src={prod.img} alt={prod.title} loading="lazy" />
                     <div className="monthly-img-overlay">
@@ -373,7 +363,7 @@ export default function CapilonHome() {
                       </div>
                     </div>
                   </div>
-                </a>
+                </Link>
               </article>
             ))}
           </div>
@@ -397,9 +387,9 @@ export default function CapilonHome() {
                 <span className="blog-date">{translate('12 Mayıs 2026', 'May 12, 2026')}</span>
                 <h3 className="blog-title">{translate('Minimalist Ev Dekorasyonu İçin 5 İpucu', '5 Tips for Minimalist Home Decoration')}</h3>
                 <p className="blog-excerpt">{translate('Ferah ve huzurlu bir yaşam alanı yaratmanın en sade ve etkili yollarını keşfedin. Doğal ışığı içeri alın.', 'Discover the simplest and most effective ways to create a spacious and peaceful living space. Let natural light in.')}</p>
-                <a href="#blog" className="blog-read-more">
+                <Link to={getLocalizedPath('/blog/minimalist-ev-dekorasyonu-icin-5-ipucu')} className="blog-read-more">
                   {translate('Devamını Oku', 'Read More')} <ArrowRight size={14} style={{ display: 'inline', marginLeft: '4px', verticalAlign: 'middle' }} />
-                </a>
+                </Link>
               </div>
             </article>
 
@@ -412,9 +402,9 @@ export default function CapilonHome() {
                 <span className="blog-date">{translate('08 Mayıs 2026', 'May 8, 2026')}</span>
                 <h3 className="blog-title">{translate('2026 Mobilya Renk Trendleri', '2026 Furniture Color Trends')}</h3>
                 <p className="blog-excerpt">{translate('Gece mavisi, kiremit ve zeytin yeşili bu yıl mekanlara hakim oluyor. Renklerin psikolojik etkilerini inceledik.', 'Midnight blue, brick and olive green dominate spaces this year. We analyzed the psychological effects of colors.')}</p>
-                <a href="#blog" className="blog-read-more">
+                <Link to={getLocalizedPath('/blog/2026-mobilya-renk-trendleri')} className="blog-read-more">
                   {translate('Devamını Oku', 'Read More')} <ArrowRight size={14} style={{ display: 'inline', marginLeft: '4px', verticalAlign: 'middle' }} />
-                </a>
+                </Link>
               </div>
             </article>
 
@@ -427,14 +417,15 @@ export default function CapilonHome() {
                 <span className="blog-date">{translate('03 Mayıs 2026', 'May 3, 2026')}</span>
                 <h3 className="blog-title">{translate('Salonunuz İçin Doğru Koltuk Seçimi', 'Choosing the Right Sofa for Your Living Room')}</h3>
                 <p className="blog-excerpt">{translate('Alanınızın ölçüleri, kumaş türleri ve kullanım alışkanlıklarınıza göre mükemmel koltuğu nasıl bulursunuz?', 'How do you find the perfect sofa based on your space measurements, fabric types, and usage habits?')}</p>
-                <a href="#blog" className="blog-read-more">
+                <Link to={getLocalizedPath('/blog/salonunuz-icin-dogru-koltuk-secimi')} className="blog-read-more">
                   {translate('Devamını Oku', 'Read More')} <ArrowRight size={14} style={{ display: 'inline', marginLeft: '4px', verticalAlign: 'middle' }} />
-                </a>
+                </Link>
               </div>
             </article>
           </div>
         </div>
       </section>
+
 
       {/* 10. Newsletter Banner */}
       <section className="newsletter-banner">

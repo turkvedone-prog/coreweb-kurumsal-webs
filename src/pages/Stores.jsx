@@ -1,23 +1,21 @@
 import { useEffect } from 'react';
 import { useSite } from '../layouts/SiteLayout';
 import { updateSEOMeta } from '../utils/seo';
-import BurobigHistory from '../themes/burobig/BurobigHistory';
-import CapilonHistory from '../themes/capilon/CapilonHistory';
+import CapilonStores from '../themes/capilon/CapilonStores';
 import NotFoundSite from '../components/NotFoundSite';
 
-export default function History() {
+export default function Stores() {
   const { tenantMapping, activeLang, settings } = useSite();
   const { tenantId, tenantSlug } = tenantMapping;
   
-  const isBurobig = tenantSlug === 'burobig' || tenantId === 'TEN-BUROBIG';
   const isCapilon = tenantSlug === 'capilon' || tenantId === 'TEN-CAPILON';
   const companyName = settings?.companyName || tenantSlug || 'CoreWeb';
 
   useEffect(() => {
-    const title = activeLang === 'tr' ? 'Hikayemiz' : 'Our Story';
+    const title = activeLang === 'tr' ? 'Mağazalarımız' : 'Our Stores';
     const description = activeLang === 'tr'
-      ? `${companyName} kurumsal hikayesi ve kökenleri.`
-      : `${companyName} corporate history and origin story.`;
+      ? `${companyName} mağaza adresleri, telefon bilgileri ve showroom harita konumları.`
+      : `${companyName} store addresses, phone numbers, and showroom map locations.`;
 
     updateSEOMeta({
       title,
@@ -27,11 +25,7 @@ export default function History() {
   }, [activeLang, companyName]);
 
   if (isCapilon) {
-    return <CapilonHistory />;
-  }
-
-  if (isBurobig) {
-    return <BurobigHistory />;
+    return <CapilonStores />;
   }
 
   return (

@@ -18,6 +18,7 @@ import Manifesto from '../pages/Manifesto';
 import QualityPolicy from '../pages/QualityPolicy';
 import Sustainability from '../pages/Sustainability';
 import DesignPhilosophy from '../pages/DesignPhilosophy';
+import Stores from '../pages/Stores';
 import NotFoundSite from '../components/NotFoundSite';
 import BurcKaplamaHome from '../themes/burckaplama/BurcKaplamaHome';
 
@@ -138,7 +139,9 @@ function RouteResolver() {
         <Route path="/kalite-politikamiz" element={<QualityPolicy />} />
         <Route path="/surdurulebilirlik" element={<Sustainability />} />
         <Route path="/iletisim" element={<Contact />} />
+        <Route path="/magazalarimiz" element={<Stores />} />
         {isCapilon && <Route path="/koleksiyonlar" element={<CollectionsPage />} />}
+        {isCapilon && <Route path="/koleksiyonlar/:slug" element={<CollectionsPage />} />}
         <Route path="*" element={<NotFoundSite reason="Sayfa bulunamadı." />} />
       </Routes>
     </SiteLayout>

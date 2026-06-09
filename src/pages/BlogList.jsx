@@ -7,13 +7,14 @@ import { Calendar, ChevronRight, BookOpen } from 'lucide-react';
 import { updateSEOMeta } from '../utils/seo';
 import ImageWithFallback from '../components/ImageWithFallback';
 import BurobigBlogList from '../themes/burobig/BurobigBlogList';
+import CapilonBlogList from '../themes/capilon/CapilonBlogList';
 
 export default function BlogList() {
   const { tenantMapping, activeLang, settings } = useSite();
   const { tenantId, tenantSlug } = tenantMapping;
   
   const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(tenantSlug !== 'capilon');
   const [error, setError] = useState(null);
 
   const hostname = window.location.hostname;
@@ -22,6 +23,10 @@ export default function BlogList() {
 
   useEffect(() => {
     if (!tenantId) return;
+
+    if (tenantSlug === 'capilon') {
+      return;
+    }
 
     const fetchBlogs = async () => {
       setLoading(true);
@@ -38,7 +43,7 @@ export default function BlogList() {
     };
 
     fetchBlogs();
-  }, [tenantId, activeLang]);
+  }, [tenantId, activeLang, tenantSlug]);
 
   // SEO Update
   useEffect(() => {
@@ -106,6 +111,12 @@ export default function BlogList() {
         getLocalizedPath={getLocalizedPath}
       />
     );
+  }
+
+  const isCapilon = tenantSlug === 'capilon' || tenantId === 'TEN-CAPILON';
+
+  if (isCapilon) {
+    return <CapilonBlogList />;
   }
 
   return (

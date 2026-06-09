@@ -6,6 +6,7 @@ import { useSite } from '../layouts/SiteLayout';
 import { Calendar, ChevronLeft, BookOpen, AlertCircle } from 'lucide-react';
 import { updateSEOMeta } from '../utils/seo';
 import ImageWithFallback from '../components/ImageWithFallback';
+import CapilonBlogDetail from '../themes/capilon/CapilonBlogDetail';
 
 export default function BlogDetail() {
   const { slug } = useParams();
@@ -13,7 +14,7 @@ export default function BlogDetail() {
   const { tenantId, tenantSlug } = tenantMapping;
 
   const [blog, setBlog] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(tenantSlug !== 'capilon');
   const [error, setError] = useState(null);
 
   const hostname = window.location.hostname;
@@ -26,6 +27,10 @@ export default function BlogDetail() {
 
   useEffect(() => {
     if (!tenantId || !slug) return;
+
+    if (tenantSlug === 'capilon') {
+      return;
+    }
 
     const fetchBlogDetail = async () => {
       setLoading(true);
@@ -47,7 +52,7 @@ export default function BlogDetail() {
     };
 
     fetchBlogDetail();
-  }, [tenantId, slug, activeLang]);
+  }, [tenantId, slug, activeLang, tenantSlug]);
 
   // SEO Update
   useEffect(() => {
@@ -102,6 +107,12 @@ export default function BlogDetail() {
         </div>
       </div>
     );
+  }
+
+  const isCapilon = tenantSlug === 'capilon' || tenantId === 'TEN-CAPILON';
+
+  if (isCapilon) {
+    return <CapilonBlogDetail />;
   }
 
   if (error || !blog) {

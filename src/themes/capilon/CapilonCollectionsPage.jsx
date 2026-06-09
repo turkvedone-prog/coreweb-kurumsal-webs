@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
 import { ChevronRight, ArrowRight } from 'lucide-react';
+import { updateSEOMeta } from '../../utils/seo';
 import './capilon.css';
 
 export default function CapilonCollectionsPage() {
@@ -21,25 +22,16 @@ export default function CapilonCollectionsPage() {
   };
 
   useEffect(() => {
-    document.title = translate(
-      "Koleksiyonlar | Capilon Mobilya Premium Yaşam Alanları",
-      "Collections | Capilon Furniture Premium Living Spaces"
-    );
+    const titleText = activeLang === 'tr' ? "Capilon Koleksiyon" : "Capilon Collection";
+    const descText = activeLang === 'tr'
+      ? "Capilon'un yemek odası, yatak odası, koltuk takımları ve tamamlayıcı mobilya koleksiyonlarını keşfedin. Tasarım ve konforun buluştuğu premium yaşam alanları."
+      : "Discover Capilon's dining room, bedroom, sofa sets and complementary furniture collections. Premium living spaces where design meets comfort.";
 
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.setAttribute('name', 'description');
-      document.head.appendChild(metaDesc);
-    }
-
-    const descText = translate(
-      "Capilon'un yemek odası, yatak odası, koltuk takımları ve tamamlayıcı mobilya koleksiyonlarını keşfedin. Tasarım ve konforun buluştuğu premium yaşam alanları.",
-      "Discover Capilon's dining room, bedroom, sofa sets and complementary furniture collections. Premium living spaces where design meets comfort."
-    );
-    
-    metaDesc.setAttribute('content', descText);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    updateSEOMeta({
+      title: titleText,
+      description: descText,
+      companyName: 'Capilon Mobilya'
+    });
   }, [activeLang]);
 
   const collections = [
@@ -50,7 +42,8 @@ export default function CapilonCollectionsPage() {
       desc: translate(
         'Sıcak paylaşımlar ve estetik detaylarla harmanlanan modern yemek odası tasarımları.',
         'Modern dining room designs blended with warm gatherings and aesthetic details.'
-      )
+      ),
+      link: '/koleksiyonlar/yemek-odalari'
     },
     {
       id: 'yatak-odalari',
@@ -147,9 +140,11 @@ export default function CapilonCollectionsPage() {
           </nav>
 
           {/* Hero Header Content */}
-          <div className="hero-content">
-            <h1 className="hero-title">{translate('Koleksiyonlar', 'Collections')}</h1>
-            <p className="hero-subtitle">
+          <div className="collections-hero-content">
+            <h1 className="collections-hero-title">
+              {translate('Capilon Koleksiyon', 'Capilon Collection')}
+            </h1>
+            <p className="collections-hero-subtitle">
               {translate(
                 "Capilon’un tasarım ve konforu bir arada sunan, yaşam alanlarınıza sıcak ve zamansız dokunuşlar katan benzersiz mobilya dünyasını keşfedin.",
                 "Discover Capilon's unique furniture world that offers design and comfort together, adding warm and timeless touches to your living spaces."
@@ -162,36 +157,57 @@ export default function CapilonCollectionsPage() {
       {/* Grid Section */}
       <section className="collections-grid-section">
         <div className="collections-container">
-          <div className="collections-grid">
-            {collections.map((item) => (
-              <div 
-                key={item.id} 
-                id={`collection-card-${item.id}`}
-                className="collection-card"
-              >
-                {/* Image Container */}
-                <div className="card-image-wrapper">
-                  <img 
-                    src={item.img} 
-                    alt={item.title} 
-                    className="card-image"
-                    loading="lazy"
-                  />
-                </div>
-
-                {/* Details */}
-                <div className="card-details">
-                  <h2 className="card-title">{item.title}</h2>
-                  <p className="card-desc">{item.desc}</p>
-                  
-                  {/* Presentation CTA Indicator (Not an active link yet) */}
-                  <div className="card-cta-indicator">
-                    <span>{translate('Koleksiyonu İncele', 'View Collection')}</span>
-                    <ArrowRight size={16} className="cta-arrow" />
+          <div className="collections-page-grid">
+            {collections.map((item) => {
+              const CardContent = (
+                <>
+                  {/* Image Container */}
+                  <div className="card-image-wrapper">
+                    <img 
+                      src={item.img} 
+                      alt={item.title} 
+                      className="card-image"
+                      loading="lazy"
+                    />
                   </div>
+
+                  {/* Details */}
+                  <div className="card-details">
+                    <h2 className="card-title">{item.title}</h2>
+                    <p className="card-desc">{item.desc}</p>
+                    
+                    {/* Presentation CTA Indicator */}
+                    <div className="card-cta-indicator">
+                      <span>{translate('Koleksiyonu İncele', 'View Collection')}</span>
+                      <ArrowRight size={16} className="cta-arrow" />
+                    </div>
+                  </div>
+                </>
+              );
+
+              if (item.link) {
+                return (
+                  <Link 
+                    key={item.id} 
+                    to={getLocalizedPath(item.link)}
+                    className="collections-page-card"
+                    id={`collection-card-${item.id}`}
+                  >
+                    {CardContent}
+                  </Link>
+                );
+              }
+
+              return (
+                <div 
+                  key={item.id} 
+                  className="collections-page-card"
+                  id={`collection-card-${item.id}`}
+                >
+                  {CardContent}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -230,6 +246,8 @@ export default function CapilonCollectionsPage() {
           </div>
         </div>
       </section>
+      
+      <div style={{ height: '150px', backgroundColor: 'transparent', width: '100%' }}></div>
     </div>
   );
 }

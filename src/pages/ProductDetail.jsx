@@ -51,7 +51,7 @@ export default function ProductDetail() {
     };
 
     fetchProductDetail();
-  }, [tenantId, slug, activeLang]);
+  }, [tenantId, slug, activeLang, tenantSlug]);
 
   // SEO Update
   useEffect(() => {
@@ -116,7 +116,7 @@ export default function ProductDetail() {
   const isCapilon = tenantSlug === 'capilon' || tenantId === 'TEN-CAPILON';
 
   if (isCapilon) {
-    return <CapilonProductDetail product={product} />;
+    return <CapilonProductDetail key={slug} product={product} />;
   }
 
   if (error || !product) {
