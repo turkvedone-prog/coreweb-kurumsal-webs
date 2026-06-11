@@ -9,8 +9,6 @@ export default function CapilonHeader() {
   const { tenantSlug } = tenantMapping;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
-  const [megaFeaturedImg, setMegaFeaturedImg] = useState('/assets/capilon/images/hero_living_room_1779477814666.png');
-
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -73,16 +71,6 @@ export default function CapilonHeader() {
     };
   }, []);
 
-  const megaMenuItems = [
-    { title: translate('Koltuk Takımları', 'Living Room Sets'), img: '/assets/capilon/images/menu 01.jpg', featured: '/assets/capilon/images/hero_living_room_1779477814666.png' },
-    { title: translate('Köşe Koltuk', 'Corner Sofas'), img: '/assets/capilon/images/menu 02.jpg', featured: '/assets/capilon/images/beta-studio.png' },
-    { title: translate('Kanepe / Koltuk', 'Sofas & Couches'), img: '/assets/capilon/images/menu 03.png', featured: '/assets/capilon/images/beta-studio-angle2.png' },
-    { title: translate('Sleeper', 'Sleepers'), img: '/assets/capilon/images/menu 04.jpg', featured: '/assets/capilon/images/hero_bedroom_1779477829254.png' },
-    { title: translate('Tekli Koltuk & Berjer', 'Armchairs & Recliners'), img: '/assets/capilon/images/menu 05.png', featured: '/assets/capilon/images/beta-main.png' },
-    { title: translate('TV Koltuğu & Baba Koltuğu', 'TV & Lounge Chairs'), img: '/assets/capilon/images/menu 06.jpg', featured: '/assets/capilon/images/product_full_page_1779183314743.png' },
-    { title: translate('TV Üniteleri & Tv Sehpaları', 'TV Units & TV Stands'), img: '/assets/capilon/images/menu 07.jpg', featured: '/assets/capilon/images/product_dining_1779477859352.png' },
-    { title: translate('Sehpa & Sehpa Takımı', 'Coffee Tables & Sets'), img: '/assets/capilon/images/menu 08.jpg', featured: '/assets/capilon/images/beta_main.png' },
-  ];
 
   const enabledLangs = tenantMapping?.enabledLanguages || ['tr'];
 
@@ -169,7 +157,7 @@ export default function CapilonHeader() {
                       right: 0,
                       top: '100%',
                       marginTop: '8px',
-                      backgroundColor: '#faf8f5',
+                      backgroundColor: '#ffffff',
                       border: '1px solid rgba(74, 69, 65, 0.1)',
                       borderRadius: '4px',
                       boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
@@ -255,30 +243,10 @@ export default function CapilonHeader() {
             <ul role="list" className="nav-list">
               <li><Link to={getLocalizedPath('/koleksiyonlar/yemek-odalari')}>{translate('YEMEK ODALARI', 'DINING ROOMS')}</Link></li>
               <li><a href={getLocalizedPath('/#yatak')}>{translate('YATAK ODALARI', 'BEDROOMS')}</a></li>
-              <li className="has-mega-menu">
+              <li>
                 <a href={getLocalizedPath('/#koltuk')}>
-                  {translate('KOLTUK TAKIMLARI', 'LIVING ROOM SETS')} <ChevronDown className="chevron-down" size={14} style={{ display: 'inline', marginLeft: '4px' }} />
+                  {translate('KOLTUK TAKIMLARI', 'LIVING ROOM SETS')}
                 </a>
-                <div className="mega-menu">
-                  <div className="mega-menu-inner">
-                    <div className="mega-menu-categories">
-                      {megaMenuItems.map((item, idx) => (
-                        <a
-                          key={idx}
-                          href={getLocalizedPath('/#koltuk')}
-                          className="mega-category-item"
-                          onMouseEnter={() => setMegaFeaturedImg(item.featured)}
-                        >
-                          <img src={item.img} alt={item.title} />
-                          <span className="mega-cat-title">{item.title}</span>
-                        </a>
-                      ))}
-                    </div>
-                    <div className="mega-menu-featured">
-                      <img id="mega-featured-img" src={megaFeaturedImg} alt="Öne Çıkan Ürün" />
-                    </div>
-                  </div>
-                </div>
               </li>
               <li><a href={getLocalizedPath('/#kose')}>{translate('KÖŞE TAKIMLARI', 'CORNER SOFAS')}</a></li>
               <li><a href={getLocalizedPath('/#tv')}>{translate('TV ÜNİTELERİ', 'TV UNITS')}</a></li>
@@ -312,7 +280,7 @@ export default function CapilonHeader() {
             onClick={(e) => e.stopPropagation()}
             style={{ 
               width: '300px', 
-              background: '#faf8f5', 
+              background: '#ffffff', 
               height: '100%', 
               padding: '30px 20px', 
               display: 'flex', 

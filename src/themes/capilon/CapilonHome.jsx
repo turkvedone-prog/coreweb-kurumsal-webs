@@ -111,7 +111,15 @@ export default function CapilonHome() {
         <div className="hero-slider" id="hero-slider">
           {/* Slide 1: Living Room */}
           <div className={`hero-slide ${activeSlide === 0 ? 'active' : ''}`}>
-            <div className="hero-slide-bg" style={{ backgroundImage: `url('/assets/capilon/images/hero_living_room_1779477814666.png')` }} />
+            <div className="hero-slide-bg">
+              <img 
+                src="/assets/capilon/images/hero_living_room_1779477814666.png" 
+                alt="" 
+                fetchPriority="high" 
+                loading="eager"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
             <div className="hero-content">
               <span className="hero-overline">{translate('YENİ SEZON KOLEKSİYONU', 'NEW SEASON COLLECTION')}</span>
               <h1 id="hero-heading">
@@ -132,7 +140,14 @@ export default function CapilonHome() {
 
           {/* Slide 2: Bedroom */}
           <div className={`hero-slide ${activeSlide === 1 ? 'active' : ''}`}>
-            <div className="hero-slide-bg" style={{ backgroundImage: `url('/assets/capilon/images/hero_bedroom_1779477829254.png')` }} />
+            <div className="hero-slide-bg">
+              <img 
+                src="/assets/capilon/images/hero_bedroom_1779477829254.png" 
+                alt="" 
+                loading="lazy"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
             <div className="hero-content">
               <span className="hero-overline">{translate('HUZURUN MİMARİSİ', 'ARCHITECTURE OF SERENITY')}</span>
               <h2>
@@ -320,16 +335,11 @@ export default function CapilonHome() {
                 <Link to={getLocalizedPath(prod.link)} className="monthly-card-link">
                   <div className="monthly-img-wrapper">
                     <img src={prod.img} alt={prod.title} loading="lazy" />
-                    <div className="monthly-img-overlay">
-                      <span className="overlay-brand">{prod.brand}</span>
-                      <span className="overlay-desc">{prod.desc}</span>
-                    </div>
                   </div>
                   <div className="monthly-info">
                     <div className="monthly-text">
                       <span className="monthly-subtitle">{prod.subtitle}</span>
                       <h3 className="monthly-title">{prod.title}</h3>
-                      <p className="monthly-desc">{prod.text}</p>
                     </div>
                     <div className="monthly-action">
                       <div className="action-btn">
@@ -346,16 +356,11 @@ export default function CapilonHome() {
                 <Link to={getLocalizedPath(prod.link)} className="monthly-card-link">
                   <div className="monthly-img-wrapper">
                     <img src={prod.img} alt={prod.title} loading="lazy" />
-                    <div className="monthly-img-overlay">
-                      <span className="overlay-brand">{prod.brand}</span>
-                      <span className="overlay-desc">{prod.desc}</span>
-                    </div>
                   </div>
                   <div className="monthly-info">
                     <div className="monthly-text">
                       <span className="monthly-subtitle">{prod.subtitle}</span>
                       <h3 className="monthly-title">{prod.title}</h3>
-                      <p className="monthly-desc">{prod.text}</p>
                     </div>
                     <div className="monthly-action">
                       <div className="action-btn">
@@ -537,6 +542,19 @@ export default function CapilonHome() {
           </div>
         </div>
       </section>
+
+      {/* Floating WhatsApp Button */}
+      <a
+        href="https://wa.me/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="floating-whatsapp"
+        aria-label="WhatsApp"
+      >
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+          <path d="M12.031 2C6.446 2 1.92 6.528 1.92 12.118c0 1.788.466 3.532 1.35 5.067L1.92 22l4.956-1.298c1.487.812 3.167 1.24 4.887 1.24 5.585 0 10.111-4.529 10.111-10.118C21.875 6.53 17.618 2 12.031 2zm6.29 14.246c-.244.688-1.22 1.25-1.688 1.344-.469.094-.969.188-3.031-.656-2.125-.875-3.844-3.031-4.75-4.25-.125-.156-.938-1.25-.938-2.375 0-1.125.563-1.688.813-1.938.25-.25.563-.313.75-.313H10c.188 0 .438-.063.688.5.25.563.875 2.125.938 2.25.063.125.063.313 0 .438-.063.125-.125.25-.25.375s-.25.25-.375.375c-.125.125-.25.25-.094.5.156.25.688 1.125 1.469 1.813.969.875 1.781 1.156 2.031 1.281.25.125.375.094.531-.094.156-.188.688-.813.875-1.094.188-.281.375-.219.625-.125.25.094 1.563.75 1.844.875.281.125.469.188.531.313.063.125.063.719-.188 1.406z"/>
+        </svg>
+      </a>
     </main>
   );
 }

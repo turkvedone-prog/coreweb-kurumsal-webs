@@ -1,11 +1,15 @@
 import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
-import { Phone } from 'lucide-react';
+import { Phone, ChevronUp } from 'lucide-react';
 import './capilon.css';
 
 export default function CapilonFooter() {
   const { tenantMapping, activeLang } = useSite();
   const { tenantSlug } = tenantMapping;
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const hostname = window.location.hostname;
   const isLocalOrPortal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'coreweb.tr' || hostname.endsWith('.vercel.app');
@@ -121,19 +125,17 @@ export default function CapilonFooter() {
         </div>
 
         <div className="footer-bottom">
-          <div className="footer-logo-left">
-            <Link to={getLocalizedPath('/')}>
-              <img src="/assets/capilon/images/CapilonMobilya_Logo.svg" alt="Capilon Mobilya Grubu" style={{ height: '30px' }} />
-            </Link>
-          </div>
           <div className="footer-copyright">
             Copyright © 2026 Capilon Mobilya. {translate('Tüm hakları saklıdır.', 'All rights reserved.')}
           </div>
-          <div className="footer-signature">
+          <div className="footer-signature" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <a href="https://www.coreweb.tr" target="_blank" className="footer-coreweb-link" rel="noopener noreferrer">
-              <img src="/assets/capilon/images/CoreWeb_Logo Disi.svg" className="coreweb-logo logo-disi" alt="CoreWeb" />
-              <img src="/assets/capilon/images/CoreWeb_Logo Orji.svg" className="coreweb-logo logo-orji" alt="CoreWeb" />
+              <img src="/assets/capilon/images/CoreWeb_Logo_02_Disi.svg" className="coreweb-logo logo-disi" alt="CoreWeb" />
+              <img src="/assets/capilon/images/CoreWeb_Logo_01.svg" className="coreweb-logo logo-color" alt="CoreWeb" />
             </a>
+            <button onClick={scrollToTop} className="scroll-top-btn" aria-label={translate('Yukarı Git', 'Scroll to Top')}>
+              <ChevronUp size={18} />
+            </button>
           </div>
         </div>
       </footer>

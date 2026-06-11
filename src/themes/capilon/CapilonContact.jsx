@@ -11,11 +11,7 @@ export default function CapilonContact({
   error,
   handleSubmit,
   handleChange,
-  translate,
-  mockToken,
-  setMockToken,
-  tripHoneypot,
-  setTripHoneypot
+  translate
 }) {
   const [marketingAccepted, setMarketingAccepted] = useState(false);
   const [uploadedFileName, setUploadedFileName] = useState('No File Chosen');
@@ -166,30 +162,6 @@ export default function CapilonContact({
                 />
               </div>
 
-              {/* Dev Mode Tokens Input for Testing */}
-              {import.meta.env.DEV && (
-                <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '6px', background: '#3a3a3a', padding: '12px', borderRadius: '8px', border: '1px dashed #555', color: '#ccc', marginBottom: '15px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>[DEV-ONLY] Bypass reCAPTCHA:</span>
-                    <input
-                      type="checkbox"
-                      checked={!!mockToken}
-                      onChange={(e) => setMockToken(e.target.checked ? 'mock-pass' : '')}
-                      style={{ width: '14px', height: '14px', accentColor: '#f58220' }}
-                    />
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: '6px' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>[DEV-ONLY] Trigger Honeypot (Spam):</span>
-                    <input
-                      type="checkbox"
-                      checked={tripHoneypot}
-                      onChange={(e) => setTripHoneypot(e.target.checked)}
-                      style={{ width: '14px', height: '14px', accentColor: '#f58220' }}
-                    />
-                  </div>
-                </div>
-              )}
-
               {/* Consents */}
               <div className="nurus-checkbox-group">
                 <div className="nurus-checkbox-item">
@@ -299,9 +271,6 @@ export default function CapilonContact({
           </div>
         </div>
       </section>
-
-      {/* Harita altı 150px beyaz alan */}
-      <div style={{ height: '150px', backgroundColor: '#ffffff', width: '100%' }}></div>
     </main>
   );
 }

@@ -43,7 +43,7 @@
 .capilon-theme {
 
     /* Critical base styles from index head */
-    --color-bg-crit: #faf8f5;
+    --color-bg-crit: #ffffff;
     --color-text-crit: #4a4541;
     --color-white-crit: #ffffff;
     --font-primary-crit: 'Roboto', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
@@ -129,7 +129,7 @@
 
 /* --- CSS Değişkenleri (Tema Yönetimi) --- */
 & {
-    --color-bg:       #faf8f5;
+    --color-bg:       #ffffff;
     --color-text:     #4a4541;
     --color-text-muted: #8c857d;
     --color-white:    #ffffff;
@@ -500,8 +500,8 @@
    HIZLI KATEGORİ YUVARLAKLARI (SONSUZ DÖNGÜ)
    ============================================================ */
 .quick-categories {
-    padding-top: 120px;
-    padding-bottom: 0;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
     background: #ffffff;
     display: flex;
     flex-direction: column;
@@ -509,19 +509,24 @@
     width: 100%;
 }
 .quick-categories-header {
-    text-align: center;
-    margin-bottom: 60px;
+    height: 400px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin-bottom: 0 !important;
+    width: 100% !important;
 }
 .quick-categories-header h2 {
-    font-family: var(--font-primary);
-    font-size: 2.5rem;
-    color: #222;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
+    font-size: 45px !important;
+    font-weight: 500 !important;
+    color: #1a1a1a;
+    margin-bottom: 0 !important;
 }
 .quick-categories-header p {
+    font-size: 1.05rem;
     color: #777;
-    font-size: 1.1rem;
 }
 .marquee-wrapper {
     width: 100%;
@@ -550,7 +555,7 @@
     width: calc((100vw - 400px) / 6); /* 200px sağdan ve 200px soldan çıktığı için tam 6 tane görünecek hesaplama */
     text-decoration: none;
     color: #333;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 15px;
     flex-shrink: 0;
     transition: color 0.3s ease;
@@ -561,7 +566,7 @@
     border-radius: 50%;
     overflow: hidden;
     background: #fdfdfd;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .circle-img-wrap img {
     width: 100%;
@@ -574,7 +579,6 @@
 }
 .cat-circle:hover .circle-img-wrap {
     transform: scale(1.22);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 .cat-circle:hover .circle-img-wrap img {
     transform: scale(1.10);
@@ -2559,7 +2563,8 @@
    ============================================================ */
 .comfort-series-section {
     background-color: #b0a9a4;
-    padding: 6rem 0;
+    height: 675px;
+    padding: 0;
     margin-top: 0;
 }
 .comfort-wrapper {
@@ -2569,13 +2574,21 @@
     display: flex;
     align-items: center;
     gap: 4rem;
+    height: 100%;
 }
 .comfort-image {
     flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
 .comfort-image img {
-    width: 100%;
+    max-width: 100%;
+    max-height: 580px;
+    width: auto;
     height: auto;
+    object-fit: contain;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 .comfort-content {
@@ -2614,10 +2627,21 @@
 }
 
 @media (max-width: 992px) {
+    .comfort-series-section {
+        height: auto !important;
+        padding: 6rem 0 !important;
+    }
     .comfort-wrapper {
         flex-direction: column;
         text-align: center;
         gap: 3rem;
+        height: auto !important;
+    }
+    .comfort-image {
+        height: auto !important;
+    }
+    .comfort-image img {
+        max-height: 400px !important;
     }
     .comfort-content h2 {
         font-size: 2.2rem;
@@ -2755,8 +2779,29 @@
 
 /* Marquee Overrides for Monthly Products */
 .monthly-featured-section {
-    padding: 6rem 0 8rem 0;
+    padding: 0 0 8rem 0 !important;
     overflow: hidden;
+}
+.monthly-header {
+    height: 400px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin-bottom: 0 !important;
+    width: 100% !important;
+}
+.monthly-header h2 {
+    font-size: 45px !important;
+    font-weight: 500 !important;
+    color: #1a1a1a;
+    margin-bottom: 5px !important;
+}
+.monthly-header p {
+    font-size: 16.8px !important;
+    font-weight: 400 !important;
+    color: #777;
 }
 .monthly-wrapper {
     padding: 0;
@@ -2917,7 +2962,7 @@
     background-color: #242526; /* Antrasit zemin */
     color: #f0f0f0;
     font-family: var(--font-secondary);
-    border-top: 1px solid #3a3b3c;
+    border-top: 100px solid #ffffff !important;
 }
 .footer-main-container {
     max-width: 1500px;
@@ -3192,7 +3237,8 @@
     margin: 0 auto;
     background-color: #a79a91;
     border-radius: 24px;
-    padding: 4rem 5rem;
+    height: 175px !important;
+    padding: 0 5rem !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -3247,7 +3293,7 @@
     font-family: var(--font-secondary);
 }
 .subscribe-form button:hover {
-    background-color: #1a3b6e;
+    background-color: #f58220;
 }
 
 @media (max-width: 992px) {
@@ -3255,6 +3301,8 @@
         flex-direction: column;
         text-align: center;
         gap: 2rem;
+        height: auto !important;
+        padding: 3rem 2rem !important;
     }
     .subscribe-form {
         max-width: 100%;
@@ -4498,20 +4546,26 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
 
 
 .product-collections-section {
-    padding: 200px 0;
+    padding: 0 0 200px 0 !important;
     background-color: #ffffff;
 }
 
 .pc-header {
-    text-align: center;
-    margin-bottom: 3.5rem;
+    height: 400px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin-bottom: 0 !important;
+    width: 100% !important;
 }
 
 .pc-header h2 {
-    font-size: 2.4rem;
-    font-weight: 700;
+    font-size: 45px !important;
+    font-weight: 500 !important;
     color: #1a1a1a;
-    margin-bottom: 0.6rem;
+    margin-bottom: 5px !important;
     font-family: var(--font-primary);
 }
 
@@ -5425,7 +5479,7 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
 
 /* Collections Page Styling */
 .capilon-theme .collections-page-wrapper {
-    background-color: #faf8f5;
+    background-color: #ffffff;
     min-height: 100vh;
     padding-bottom: 80px;
     font-family: 'Roboto', sans-serif;
@@ -5820,7 +5874,7 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
    KOLEKSİYONLAR SAYFASI STİLLERİ
    ============================================================ */
 .collections-page-wrapper {
-    background-color: #faf8f5;
+    background-color: #ffffff;
     min-height: 100vh;
 }
 
@@ -6549,7 +6603,7 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
    NURUS STYLE CONTACT PAGE STYLES
    ============================================================ */
 .contact-hero-clean {
-    background-color: #faf8f5;
+    background-color: #ffffff;
     padding: 80px 20px 40px 20px;
     text-align: center;
     min-height: 375px;
@@ -6731,7 +6785,7 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
 /* Premium Split Info & Map Section */
 .premium-contact-info-map-section {
     background-color: #ffffff;
-    padding: 80px 20px;
+    padding: 120px 20px;
 }
 .premium-info-map-container {
     max-width: 1200px;
@@ -6847,7 +6901,7 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
    HAKKIMIZDA (ABOUT US) PAGE STYLES
    ============================================================ */
 .about-hero-clean {
-    background-color: #faf8f5;
+    background-color: #ffffff;
     padding: 80px 20px 40px 20px;
     text-align: center;
     min-height: 375px;
@@ -6965,7 +7019,7 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
     margin-top: 40px;
 }
 .stat-card {
-    background-color: #faf8f5;
+    background-color: #ffffff;
     border-radius: 12px;
     padding: 30px;
     text-align: center;
@@ -7045,7 +7099,7 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
    MAĞAZALARIMIZ (STORES) PAGE STYLES
    ============================================================ */
 .stores-hero-clean {
-    background-color: #faf8f5;
+    background-color: #ffffff;
     padding: 80px 20px 40px 20px;
     text-align: center;
     min-height: 375px;
@@ -7136,7 +7190,7 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
     width: 6px;
 }
 .stores-list-column::-webkit-scrollbar-track {
-    background: #faf8f5;
+    background: #ffffff;
 }
 .stores-list-column::-webkit-scrollbar-thumb {
     background: #ced4da;
@@ -7355,7 +7409,7 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
 .highlight-item:hover {
-    background-color: #faf8f5;
+    background-color: #ffffff;
     transform: translateY(-3px);
 }
 .highlight-icon {
@@ -7762,7 +7816,7 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
    ALTERNATIVE PRODUCTS SECTION
    ============================================================ */
 .alternative-products-section {
-    background-color: #faf8f5; /* Warm premium gray/sand background */
+    background-color: #ffffff; /* Warm premium gray/sand background */
     padding: 80px 0;
     width: 100%;
     box-sizing: border-box;
@@ -7909,4 +7963,40 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
         transform: translateX(-50%);
     }
 }
+
+/* Static Footer CoreWeb Link with Hover Transition */
+.footer-coreweb-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 110px;
+    height: 36px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.footer-coreweb-link .coreweb-logo {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    transition: opacity 0.3s ease;
+}
+
+.footer-coreweb-link .logo-disi {
+    opacity: 1;
+}
+
+.footer-coreweb-link .logo-color {
+    opacity: 0;
+}
+
+.footer-coreweb-link:hover .logo-disi {
+    opacity: 0;
+}
+
+.footer-coreweb-link:hover .logo-color {
+    opacity: 1;
+}
+
 
