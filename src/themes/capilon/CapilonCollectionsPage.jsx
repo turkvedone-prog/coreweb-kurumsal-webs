@@ -123,20 +123,6 @@ export default function CapilonCollectionsPage() {
       {/* Hero Header Section */}
       <section className="collections-hero-section">
         <div className="collections-container">
-          {/* Breadcrumbs */}
-          <nav aria-label="Breadcrumb" className="collections-breadcrumb">
-            <ol className="breadcrumb-list">
-              <li>
-                <Link to={getLocalizedPath('/')}>{translate('Ana Sayfa', 'Home')}</Link>
-              </li>
-              <li className="separator">
-                <ChevronRight size={14} />
-              </li>
-              <li className="current" aria-current="page">
-                {translate('Koleksiyonlar', 'Collections')}
-              </li>
-            </ol>
-          </nav>
 
           {/* Hero Header Content */}
           <div className="collections-hero-content">
