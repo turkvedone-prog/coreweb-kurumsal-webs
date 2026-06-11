@@ -97,13 +97,14 @@
 
     /* Scoped site-header scrolled states for site-header-solid */
     .site-header-solid {
-        position: relative;
+        position: sticky;
+        top: 0;
         z-index: 1000;
         transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
     }
 
     .site-header-solid.scrolled {
-        position: fixed !important;
+        position: sticky !important;
         top: 0 !important;
         left: 0;
         width: 100%;
@@ -1931,7 +1932,8 @@
 .site-header-solid {
     background-color: #ffffff;
     border-bottom: 1px solid #eaeaea;
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 1000;
 }
 
