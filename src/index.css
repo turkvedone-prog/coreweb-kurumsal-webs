@@ -970,3 +970,8 @@ img {
   cursor: pointer;
 }
 
+/* Hide Google reCAPTCHA v3 badge globally */
+.grecaptcha-badge {
+  visibility: hidden !important;
+}
+

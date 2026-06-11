@@ -1,11 +1,219 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { submitLead } from '../../services/apiService';
 import { loadRecaptchaScript, executeRecaptcha } from '../../utils/recaptcha';
+import { Cpu, Search, Mail, FileText, Database, Image, Shield, Globe, LineChart } from 'lucide-react';
 import './coreweb.css';
 
 export default function CoreWebHome() {
   const [panelTab, setPanelTab] = useState('summary');
   const [solutionsTab, setSolutionsTab] = useState('furniture');
+
+  // Mock Dashboard States
+  const [mockHeadline, setMockHeadline] = useState("Web siteniz bir sayfa değil. İşletmenizin dijital işletim sistemi olmalı.");
+  const [mockSeoDesc, setMockSeoDesc] = useState("CoreWeb; kurumunuz için özel tasarlanmış, yüksek performanslı ve yönetilebilir web siteleri sunar.");
+  const [isSpeedOptimized, setIsSpeedOptimized] = useState(false);
+  const [buildStatus, setBuildStatus] = useState('idle');
+  const [buildProgress, setBuildProgress] = useState(0);
+
+  const startBuildSimulation = () => {
+    if (buildStatus === 'building') return;
+    setBuildStatus('building');
+    setBuildProgress(0);
+    
+    const interval = setInterval(() => {
+      setBuildProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setBuildStatus('success');
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 150);
+  };
+
+  const canvasRef = useRef(null);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+
+    const WIDTH = 440;
+    const HEIGHT = 440;
+    canvas.width = WIDTH;
+    canvas.height = HEIGHT;
+
+    // Coordinates matching relative positions of module nodes in core-scene
+    const fixedNodes = [
+      { id: 'core', x: 220, y: 220 },
+      { id: 'seo', x: 198, y: 18 },
+      { id: 'forms', x: 330, y: 88 },
+      { id: 'content', x: 352, y: 229 },
+      { id: 'products', x: 308, y: 352 },
+      { id: 'media', x: 185, y: 392 },
+      { id: 'security', x: 62, y: 343 },
+      { id: 'hosting', x: 35, y: 202 },
+      { id: 'analytics', x: 62, y: 79 }
+    ];
+
+    const particleCount = 26;
+    const particles = [];
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * WIDTH,
+        y: Math.random() * HEIGHT,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        radius: Math.random() * 1.5 + 1.2
+      });
+    }
+
+    const mouse = { x: null, y: null, radius: 95 };
+
+    const handleMouseMove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    };
+
+    const handleMouseLeave = () => {
+      mouse.x = null;
+      mouse.y = null;
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('mousemove', handleMouseMove);
+      container.addEventListener('mouseleave', handleMouseLeave);
+    }
+
+    const getDistance = (p1, p2) => {
+      const dx = p1.x - p2.x;
+      const dy = p1.y - p2.y;
+      return Math.sqrt(dx * dx + dy * dy);
+    };
+
+    const signals = [];
+    fixedNodes.forEach((node) => {
+      if (node.id !== 'core') {
+        signals.push({
+          node,
+          progress: Math.random(),
+          speed: Math.random() * 0.004 + 0.002
+        });
+      }
+    });
+
+    const draw = () => {
+      ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+      // 1. Draw connecting vector lines
+      ctx.lineWidth = 1;
+      fixedNodes.forEach((node) => {
+        if (node.id !== 'core') {
+          ctx.beginPath();
+          ctx.moveTo(220, 220);
+          ctx.lineTo(node.x, node.y);
+          if (node.id === 'seo' || node.id === 'content' || node.id === 'security' || node.id === 'media') {
+            ctx.strokeStyle = 'rgba(226, 65, 37, 0.06)';
+          } else {
+            ctx.strokeStyle = 'rgba(14, 165, 233, 0.08)';
+          }
+          ctx.stroke();
+        }
+      });
+
+      // 2. Animate and draw data flow pulses
+      signals.forEach((sig) => {
+        sig.progress += sig.speed;
+        if (sig.progress > 1) {
+          sig.progress = 0;
+          sig.speed = Math.random() * 0.004 + 0.002;
+        }
+        
+        const x = 220 + (sig.node.x - 220) * sig.progress;
+        const y = 220 + (sig.node.y - 220) * sig.progress;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = sig.node.id === 'seo' || sig.node.id === 'content' || sig.node.id === 'security' || sig.node.id === 'media'
+          ? 'rgba(226, 65, 37, 0.45)'
+          : 'rgba(14, 165, 233, 0.5)';
+        ctx.fill();
+      });
+
+      // 3. Update drifting particles
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > WIDTH) p.vx *= -1;
+        if (p.y < 0 || p.y > HEIGHT) p.vy *= -1;
+
+        if (mouse.x !== null && mouse.y !== null) {
+          const distToMouse = getDistance(p, mouse);
+          if (distToMouse < mouse.radius) {
+            const force = (mouse.radius - distToMouse) / mouse.radius;
+            p.x += (mouse.x - p.x) * force * 0.025;
+            p.y += (mouse.y - p.y) * force * 0.025;
+          }
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.12)';
+        ctx.fill();
+      });
+
+      // 4. Draw drift connections
+      ctx.lineWidth = 0.8;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dist = getDistance(particles[i], particles[j]);
+          if (dist < 75) {
+            const alpha = (75 - dist) / 75 * 0.06;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(15, 23, 42, ${alpha})`;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // 5. Draw mouse attraction lines
+      if (mouse.x !== null && mouse.y !== null) {
+        ctx.lineWidth = 0.8;
+        particles.forEach((p) => {
+          const dist = getDistance(p, mouse);
+          if (dist < mouse.radius) {
+            const alpha = (mouse.radius - dist) / mouse.radius * 0.1;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.strokeStyle = `rgba(226, 65, 37, ${alpha})`;
+            ctx.stroke();
+          }
+        });
+      }
+
+      animationFrameId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      if (container) {
+        container.removeEventListener('mousemove', handleMouseMove);
+        container.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+  }, []);
 
   // Contact Form State
   const [formData, setFormData] = useState({
@@ -186,43 +394,46 @@ export default function CoreWebHome() {
               </div>
             </div>
             
-            <div className="hero__visual">
-              <div className="core-scene">
+             <div className="hero__visual">
+              <div className="core-scene" ref={containerRef}>
+                {/* Dynamic Interactive Particle Constellation & Data Flow Canvas */}
+                <canvas ref={canvasRef} className="connection-svg" />
+                
                 <div className="core-node">
                   <span className="core-node__title">CoreWeb</span>
                   <span className="core-node__subtitle">Dijital Çekirdek</span>
                   <div className="core-node__pulse"></div>
                 </div>
                 <div className="floating-module float-seo">
-                  <span className="float-icon">⚡</span>
+                  <Search size={14} style={{color: 'var(--c-accent)'}} />
                   <span className="float-text">SEO</span>
                 </div>
                 <div className="floating-module float-forms">
-                  <span className="float-icon">📬</span>
+                  <Mail size={14} style={{color: 'var(--c-accent-cyan)'}} />
                   <span className="float-text">Formlar</span>
                 </div>
                 <div className="floating-module float-content">
-                  <span className="float-icon">✏️</span>
+                  <FileText size={14} style={{color: 'var(--c-accent)'}} />
                   <span className="float-text">İçerikler</span>
                 </div>
                 <div className="floating-module float-products">
-                  <span className="float-icon">📦</span>
+                  <Database size={14} style={{color: 'var(--c-accent-cyan)'}} />
                   <span className="float-text">Ürünler</span>
                 </div>
                 <div className="floating-module float-media">
-                  <span className="float-icon">🖼️</span>
+                  <Image size={14} style={{color: 'var(--c-accent)'}} />
                   <span className="float-text">Medya</span>
                 </div>
                 <div className="floating-module float-security">
-                  <span className="float-icon">🛡️</span>
+                  <Shield size={14} style={{color: 'var(--c-accent-cyan)'}} />
                   <span className="float-text">Güvenlik</span>
                 </div>
                 <div className="floating-module float-hosting">
-                  <span className="float-icon">🌐</span>
+                  <Globe size={14} style={{color: 'var(--c-accent)'}} />
                   <span className="float-text">Hosting</span>
                 </div>
                 <div className="floating-module float-analytics">
-                  <span className="float-icon">📈</span>
+                  <LineChart size={14} style={{color: 'var(--c-accent-cyan)'}} />
                   <span className="float-text">Analiz</span>
                 </div>
               </div>
@@ -395,25 +606,36 @@ export default function CoreWebHome() {
                       <div className="mock-stats-grid">
                         <div className="mock-stat-card">
                           <span className="mock-stat-card__label">Altyapı Durumu</span>
-                          <span className="mock-stat-card__val">Aktif</span>
+                          <span className="mock-stat-card__val" style={{color: '#10b981'}}>Aktif</span>
                         </div>
                         <div className="mock-stat-card">
-                          <span className="mock-stat-card__label">SSL Sertifikası</span>
-                          <span className="mock-stat-card__val">Güvenli</span>
+                          <span className="mock-stat-card__label">Mobil / Masaüstü Hız</span>
+                          <span className={`mock-stat-card__val ${isSpeedOptimized ? 'text-speed-100' : 'text-speed-45'}`}>
+                            {isSpeedOptimized ? '100 / 100' : '45 / 100'}
+                          </span>
                         </div>
                       </div>
+                      
+                      <div className="mock-interactive-banner">
+                        <p className="mock-interactive-text">
+                          CoreWeb hız farkını test etmek için optimizasyon motorunu açın.
+                        </p>
+                        <button 
+                          className={`mock-action-btn ${isSpeedOptimized ? 'mock-action-btn--active' : ''}`}
+                          onClick={() => setIsSpeedOptimized(!isSpeedOptimized)}
+                        >
+                          {isSpeedOptimized ? '⚡ Optimizasyon Aktif' : '⚡ Optimizasyonu Aç'}
+                        </button>
+                      </div>
+
                       <div className="mock-security-status">
                         <div className="mock-security-stat">
                           <span>Form Güvenliği</span>
                           <strong className="mock-badge">Aktif</strong>
                         </div>
                         <div className="mock-security-stat">
-                          <span>Spam Koruması</span>
+                          <span>Edge SSL Sertifikası</span>
                           <strong className="mock-badge">Etkin</strong>
-                        </div>
-                        <div className="mock-security-stat">
-                          <span>Sayfa Hızı (Mobil/Masaüstü)</span>
-                          <strong>A+ Seviyesi</strong>
                         </div>
                       </div>
                     </div>
@@ -449,37 +671,47 @@ export default function CoreWebHome() {
                     <div className={`mock-tab-content ${panelTab === 'content' ? 'mock-tab-content--active' : ''}`} id="mock-tab-content" role="tabpanel">
                       <div className="mock-content-editor">
                         <div className="mock-editor-group">
-                          <span className="mock-editor-label">Anasayfa Başlığı</span>
-                          <div className="mock-editor-input">Web siteniz bir sayfa değil. İşletmenizin dijital işletim sistemi olmalı.</div>
+                          <label className="mock-editor-label" htmlFor="mock-headline-input">Anasayfa Başlık Düzenleme</label>
+                          <input 
+                            id="mock-headline-input"
+                            type="text" 
+                            className="mock-editor-text-input" 
+                            value={mockHeadline} 
+                            onChange={(e) => setMockHeadline(e.target.value)} 
+                          />
                         </div>
-                        <div className="mock-editor-group">
-                          <span className="mock-editor-label">Alt Metin</span>
-                          <div className="mock-editor-input">CoreWeb; özel tasarım web sitelerini müşteri paneli...</div>
-                        </div>
-                        <div className="mock-editor-status">
-                          <span>İçerik Durumu:</span>
-                          <strong className="mock-badge">İçerik güncel</strong>
+                        
+                        <div className="mock-live-preview-box">
+                          <span className="mock-preview-tag">Müşteri Sitesi Canlı Önizleme:</span>
+                          <div className="mock-preview-screen">
+                            <h4 className="mock-preview-title">{mockHeadline || 'Başlık yazın...'}</h4>
+                            <p className="mock-preview-desc">CoreWeb altyapısı ile anlık içerik güncellemeleri saniyesinde yayında.</p>
+                          </div>
                         </div>
                       </div>
                     </div>
                     
                     {/* Tab Content: SEO Kontrolü */}
                     <div className={`mock-tab-content ${panelTab === 'seo' ? 'mock-tab-content--active' : ''}`} id="mock-tab-seo" role="tabpanel">
-                      <div className="mock-seo-checklist">
-                        <div className="mock-seo-item">
-                          <span className="mock-seo-check">✓</span>
-                          <span>Meta Başlık ve Açıklamalar</span>
-                          <strong className="mock-badge">SEO kontrol edildi</strong>
+                      <div className="mock-content-editor">
+                        <div className="mock-editor-group">
+                          <label className="mock-editor-label" htmlFor="mock-seo-desc-input">Meta Açıklaması (Meta Description)</label>
+                          <textarea 
+                            id="mock-seo-desc-input"
+                            rows="2"
+                            className="mock-editor-text-input mock-editor-textarea" 
+                            value={mockSeoDesc} 
+                            onChange={(e) => setMockSeoDesc(e.target.value)} 
+                          />
                         </div>
-                        <div className="mock-seo-item">
-                          <span className="mock-seo-check">✓</span>
-                          <span>Site Haritası ve Robots.txt Dosyaları</span>
-                          <strong className="mock-badge">Oluşturuldu</strong>
-                        </div>
-                        <div className="mock-seo-item">
-                          <span className="mock-seo-check">✓</span>
-                          <span>Semantik HTML5 Sayfa İskeleti</span>
-                          <strong className="mock-badge">Doğrulandı</strong>
+                        
+                        <div className="mock-google-snippet">
+                          <span className="mock-preview-tag">Arama Motoru (Google) Görünümü:</span>
+                          <div className="google-result-card">
+                            <span className="google-url">https://www.siteniz.com</span>
+                            <h4 className="google-title">Sitenizin Başlığı | Sektörel Lider</h4>
+                            <p className="google-desc">{mockSeoDesc || 'Lütfen meta açıklaması girin...'}</p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -490,7 +722,7 @@ export default function CoreWebHome() {
                         <div className="mock-media-grid">
                           <div className="mock-media-card">
                             <div className="mock-media-thumb">🖼️</div>
-                            <span>logo.png</span>
+                            <span>logo-white.svg</span>
                           </div>
                           <div className="mock-media-card">
                             <div className="mock-media-thumb">📄</div>
@@ -498,7 +730,7 @@ export default function CoreWebHome() {
                           </div>
                           <div className="mock-media-card">
                             <div className="mock-media-thumb">🖼️</div>
-                            <span>hero-banner.jpg</span>
+                            <span>hero-banner.webp</span>
                           </div>
                         </div>
                         <div className="mock-media-status">
@@ -512,19 +744,49 @@ export default function CoreWebHome() {
                     <div className={`mock-tab-content ${panelTab === 'build' ? 'mock-tab-content--active' : ''}`} id="mock-tab-build" role="tabpanel">
                       <div className="mock-build-status">
                         <div className="mock-build-header">
-                          <span className="mock-build-pulse"></span>
+                          <span className={`mock-build-pulse ${buildStatus === 'building' ? 'mock-build-pulse--busy' : buildStatus === 'success' ? 'mock-build-pulse--success' : ''}`}></span>
                           <div>
-                            <strong>Vercel Edge Distribution</strong>
-                            <p>Küresel kenar ağ bağlantısı kararlı.</p>
+                            <strong>Küresel Yayın Altyapısı (Edge Network)</strong>
+                            <p>
+                              {buildStatus === 'idle' && 'Değişiklikler dağıtıma hazır.'}
+                              {buildStatus === 'building' && 'Derleme yapılıyor ve Vercel Edge sunucularına dağıtılıyor...'}
+                              {buildStatus === 'success' && 'Tebrikler! Siteniz küresel ağda güncellendi.'}
+                            </p>
                           </div>
                         </div>
-                        <div className="mock-security-stat">
-                          <span>Yayın Altyapısı</span>
-                          <strong>Vercel Edge Network</strong>
+
+                        {buildStatus === 'building' && (
+                          <div className="mock-progress-container">
+                            <div className="mock-progress-bar" style={{width: `${buildProgress}%`}}></div>
+                            <span className="mock-progress-text">{buildProgress}%</span>
+                          </div>
+                        )}
+
+                        <div className="mock-action-row" style={{marginTop: '1rem'}}>
+                          <button 
+                            className="mock-action-btn mock-action-btn--primary"
+                            onClick={startBuildSimulation}
+                            disabled={buildStatus === 'building'}
+                          >
+                            {buildStatus === 'idle' && 'Değişiklikleri Canlıya Al'}
+                            {buildStatus === 'building' && 'Derleniyor...'}
+                            {buildStatus === 'success' && 'Yeniden Dağıt'}
+                          </button>
                         </div>
-                        <div className="mock-security-stat">
-                          <span>Son Güncelleme</span>
-                          <strong>Yayın hazır</strong>
+
+                        <div className="mock-security-status" style={{marginTop: '1.25rem'}}>
+                          <div className="mock-security-stat">
+                            <span>Dağıtım Altyapısı</span>
+                            <strong>Vercel Edge</strong>
+                          </div>
+                          <div className="mock-security-stat">
+                            <span>Durum</span>
+                            <strong style={{color: buildStatus === 'success' ? '#10b981' : '#f59e0b'}}>
+                              {buildStatus === 'idle' && 'Beklemede'}
+                              {buildStatus === 'building' && 'Yükleniyor'}
+                              {buildStatus === 'success' && 'Yayında'}
+                            </strong>
+                          </div>
                         </div>
                       </div>
                     </div>
