@@ -101,7 +101,7 @@ export default function ViolaFooter() {
               <p><span style={{ fontWeight: 600 }}>&copy; {new Date().getFullYear()}</span> Viola Ofis Mobilyaları. Tüm hakları saklıdır.</p>
             </div>
             <div className="footer-bottom-right">
-              <p><span style={{ fontWeight: 400 }}>Tasarım&amp;Yazılım</span> <span style={{ fontWeight: 600 }}>Kreatiffikirler.com</span></p>
+              <p><span style={{ fontWeight: 400 }}>Tasarım&amp;Yazılım</span> <span style={{ fontWeight: 600 }}>CoreWeb</span></p>
             </div>
           </div>
         </div>

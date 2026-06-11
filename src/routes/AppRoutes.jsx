@@ -111,40 +111,31 @@ function RouteResolver() {
     <SiteLayout tenantMapping={tenantMapping} activeLang={resolvedLang}>
       <Routes>
         <Route path="/" element={<Home />} />
-        
-        {tenantSlug !== 'burckaplama' && (
+        <Route path="/anasayfa" element={<Anasayfa />} />
+        <Route path="/blog" element={<BlogList />} />
+        <Route path="/blog/:slug" element={<BlogDetail />} />
+        <Route path="/haberler" element={<NewsList />} />
+        <Route path="/haberler/:slug" element={<NewsDetail />} />
+        <Route path="/urunler" element={<ProductList />} />
+        <Route path="/urunler/:slug" element={<ProductDetail />} />
+        <Route path="/ust-yonetici" element={<ProductList />} />
+        <Route path="/ofis-koltuklari" element={<ProductList />} />
+        <Route path="/operasyonel-masalar" element={<ProductList />} />
+        <Route path="/toplanti-masalari" element={<ProductList />} />
+        <Route path="/tasarimcilar" element={<Designers />} />
+        <Route path="/kurumsal" element={<Navigate to="/hikayemiz" replace />} />
+        <Route path="/hikayemiz" element={<History />} />
+        <Route path="/tasarim-sureci" element={<DesignProcess />} />
+        <Route path="/tasarim-felsefesi" element={<DesignPhilosophy />} />
+        <Route path="/manifesto" element={<Manifesto />} />
+        <Route path="/kalite-politikamiz" element={<QualityPolicy />} />
+        <Route path="/surdurulebilirlik" element={<Sustainability />} />
+        <Route path="/iletisim" element={<Contact />} />
+        <Route path="/magazalarimiz" element={<Stores />} />
+        {themeRegistry[tenantSlug]?.Collections && (
           <>
-            <Route path="/anasayfa" element={<Anasayfa />} />
-            <Route path="/blog" element={<BlogList />} />
-            <Route path="/blog/:slug" element={<BlogDetail />} />
-            <Route path="/haberler" element={<NewsList />} />
-            <Route path="/haberler/:slug" element={<NewsDetail />} />
-            <Route path="/urunler" element={<ProductList />} />
-            <Route path="/urunler/:slug" element={<ProductDetail />} />
-            {tenantSlug === 'burobig' && (
-              <>
-                <Route path="/ust-yonetici" element={<ProductList />} />
-                <Route path="/ofis-koltuklari" element={<ProductList />} />
-                <Route path="/operasyonel-masalar" element={<ProductList />} />
-                <Route path="/toplanti-masalari" element={<ProductList />} />
-              </>
-            )}
-            <Route path="/tasarimcilar" element={<Designers />} />
-            <Route path="/kurumsal" element={<Navigate to="/hikayemiz" replace />} />
-            <Route path="/hikayemiz" element={<History />} />
-            <Route path="/tasarim-sureci" element={<DesignProcess />} />
-            <Route path="/tasarim-felsefesi" element={<DesignPhilosophy />} />
-            <Route path="/manifesto" element={<Manifesto />} />
-            <Route path="/kalite-politikamiz" element={<QualityPolicy />} />
-            <Route path="/surdurulebilirlik" element={<Sustainability />} />
-            <Route path="/iletisim" element={<Contact />} />
-            <Route path="/magazalarimiz" element={<Stores />} />
-            {themeRegistry[tenantSlug]?.Collections && (
-              <>
-                <Route path="/koleksiyonlar" element={<CollectionsPage />} />
-                <Route path="/koleksiyonlar/:slug" element={<CollectionsPage />} />
-              </>
-            )}
+            <Route path="/koleksiyonlar" element={<CollectionsPage />} />
+            <Route path="/koleksiyonlar/:slug" element={<CollectionsPage />} />
           </>
         )}
         
