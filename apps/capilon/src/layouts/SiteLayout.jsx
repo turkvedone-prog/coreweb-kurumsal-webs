@@ -30,11 +30,13 @@ export default function SiteLayout({ children, activeLang }) {
 
   return (
     <SiteContext.Provider value={{ tenantMapping, activeLang }}>
-      <CapilonHeader />
-      <main id="main-content">
-        {children}
-      </main>
-      <CapilonFooter />
+      <div className="capilon-theme">
+        <CapilonHeader />
+        <main id="main-content">
+          {children}
+        </main>
+        <CapilonFooter />
+      </div>
     </SiteContext.Provider>
   );
 }
