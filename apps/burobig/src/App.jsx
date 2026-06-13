@@ -53,10 +53,15 @@ function BurobigBlogPage() {
   };
 
   useEffect(() => {
+    // localhost'ta Firebase API key restriction — blog şimdilik boş
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      setBlogs([]);
+      setLoading(false);
+      return;
+    }
     import('./blogService').then(({ getPublishedBlogs }) => {
       getPublishedBlogs()
         .then(raw => {
-          // Dil içeriğini lokalize et (tr_content / en_content desteği)
           const localized = raw.map(b => ({
             ...b,
             title: (activeLang === 'tr' ? b.title_tr : b.title_en) || b.title || '',
@@ -89,6 +94,12 @@ function BurobigProductPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // localhost'ta Firebase API key restriction nedeniyle bloke — demo data kullan
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      setProducts(DEMO_PRODUCTS);
+      setLoading(false);
+      return;
+    }
     import('./productService').then(({ getActiveProducts }) => {
       getActiveProducts()
         .then(raw => {
@@ -120,6 +131,12 @@ function BurobigProductDetailPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // localhost'ta Firebase blocked — demo ürün göster
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      setProduct(DEMO_PRODUCT);
+      setLoading(false);
+      return;
+    }
     getActiveProductBySlug(tenantMapping.tenantId, slug, activeLang)
       .then((data) => setProduct(data || DEMO_PRODUCT))
       .catch(() => setProduct(DEMO_PRODUCT))
