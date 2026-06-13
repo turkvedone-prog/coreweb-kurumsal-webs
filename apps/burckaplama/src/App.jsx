@@ -19,6 +19,9 @@ export default function App() {
         <BurcKaplamaHeader />
         <Routes>
           <Route path="/" element={<BurcKaplamaHome />} />
+          {/* Eski monolith /tr ve /en path'lerini karşıla */}
+          <Route path="/tr" element={<BurcKaplamaHome />} />
+          <Route path="/en" element={<BurcKaplamaHome />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <BurcKaplamaFooter />

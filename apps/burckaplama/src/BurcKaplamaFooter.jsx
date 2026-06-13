@@ -135,8 +135,8 @@ export default function BurcKaplamaFooter() {
               </span>
             </div>
             <div className="bk-footer-bottom-right">
-              <a href="https://www.coreweb.tr/" target="_blank" rel="noopener noreferrer" aria-label="CoreWeb">
-                <img src="/assets/coreweb/coreweb-logo-dark.svg" alt="CoreWeb Logo" className="bk-footer-agency-logo" />
+              <a href="https://www.coreweb.tr/" target="_blank" rel="noopener noreferrer" aria-label="CoreWeb" style={{ color: 'inherit', textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem', opacity: 0.7 }}>
+                CoreWeb
               </a>
               <button onClick={scrollToTop} className="bk-scroll-top-btn" aria-label={activeLang === 'tr' ? 'Yukarı Git' : 'Scroll to Top'}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
