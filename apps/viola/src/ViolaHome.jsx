@@ -33,8 +33,8 @@ export default function ViolaHome() {
     return () => clearInterval(timer);
   }, [slides.length]);
 
-  const tenantSlug = tenantMapping?.tenantSlug || 'viola';
-  const prefix = `/${tenantSlug}/${activeLang}`;
+  // Standalone app — no tenant/lang prefix
+  const prefix = '';
 
   return (
     <div className="viola-home-page">
