@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import BurcKaplamaHeader from './BurcKaplamaHeader.jsx';
 import BurcKaplamaHome from './BurcKaplamaHome.jsx';
 import BurcKaplamaFooter from './BurcKaplamaFooter.jsx';
@@ -18,7 +18,8 @@ export default function App() {
       <BrowserRouter>
         <BurcKaplamaHeader />
         <Routes>
-          <Route path="/" element={<BurcKaplamaHome />} />
+          {/* Ana sayfa → /tr'ye yönlendir */}
+          <Route path="/" element={<Navigate to="/tr" replace />} />
           {/* Eski monolith /tr ve /en path'lerini karşıla */}
           <Route path="/tr" element={<BurcKaplamaHome />} />
           <Route path="/en" element={<BurcKaplamaHome />} />

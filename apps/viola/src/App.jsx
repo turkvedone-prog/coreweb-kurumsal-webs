@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ViolaHeader from './ViolaHeader.jsx';
 import ViolaHome from './ViolaHome.jsx';
 import ViolaFooter from './ViolaFooter.jsx';
@@ -34,13 +34,17 @@ export default function App() {
       <BrowserRouter>
         <ViolaHeader />
         <Routes>
-          <Route path="/" element={<ViolaHome />} />
-          {/* Direct product route (new format) */}
+          {/* Ana sayfa → /tr'ye yönlendir */}
+          <Route path="/" element={<Navigate to="/tr" replace />} />
+          {/* Dil bazlı ana sayfa */}
+          <Route path="/tr" element={<ViolaHome />} />
+          <Route path="/en" element={<ViolaHome />} />
+          {/* Ürün detay sayfaları */}
+          <Route path="/tr/urunler/:slug" element={<ViolaProductDetail product={betaProduct} />} />
+          <Route path="/en/urunler/:slug" element={<ViolaProductDetail product={betaProduct} />} />
           <Route path="/urunler/:slug" element={<ViolaProductDetail product={betaProduct} />} />
-          {/* Legacy monolith format: /viola/tr/urunler/:slug */}
+          {/* Legacy monolith format */}
           <Route path="/:tenant/:lang/urunler/:slug" element={<ViolaProductDetail product={betaProduct} />} />
-          {/* Lang-only format: /tr/urunler/:slug */}
-          <Route path="/:lang/urunler/:slug" element={<ViolaProductDetail product={betaProduct} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <ViolaFooter />
