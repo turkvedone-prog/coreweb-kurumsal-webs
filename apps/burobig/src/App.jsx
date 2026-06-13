@@ -19,20 +19,43 @@ import BurobigManifesto from './BurobigManifesto';
 import BurobigQualityPolicy from './BurobigQualityPolicy';
 import BurobigSustainability from './BurobigSustainability';
 
-// ─── Blog Page Wrapper (provides required props to BurobigBlogList) ──────────
+// ─── Blog Page Wrapper (fetches blogs from Firebase) ─────────────────────────
 function BurobigBlogPage() {
   const { activeLang } = useSite();
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const getLocalizedPath = (path) => `/${activeLang}${path}`;
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
+    const ts = dateStr?.seconds ? dateStr.seconds * 1000 : new Date(dateStr).getTime();
     try {
-      return new Date(dateStr).toLocaleDateString(activeLang === 'tr' ? 'tr-TR' : 'en-US', {
+      return new Date(ts).toLocaleDateString(activeLang === 'tr' ? 'tr-TR' : 'en-US', {
         year: 'numeric', month: 'long', day: 'numeric'
       });
-    } catch { return dateStr; }
+    } catch { return ''; }
   };
-  // Blog içeriği gelene kadar boş liste — sayfa çökmez
-  return <BurobigBlogList blogs={[]} formatDate={formatDate} getLocalizedPath={getLocalizedPath} />;
+
+  useEffect(() => {
+    import('./blogService').then(({ getPublishedBlogs }) => {
+      getPublishedBlogs()
+        .then(raw => {
+          // Dil içeriğini lokalize et (tr_content / en_content desteği)
+          const localized = raw.map(b => ({
+            ...b,
+            title: (activeLang === 'tr' ? b.title_tr : b.title_en) || b.title || '',
+            summary: (activeLang === 'tr' ? b.summary_tr : b.summary_en) || b.summary || '',
+          }));
+          setBlogs(localized);
+        })
+        .catch(() => setBlogs([]))
+        .finally(() => setLoading(false));
+    });
+  }, [activeLang]);
+
+  if (loading) return <div style={{ padding: '4rem', textAlign: 'center' }}>Yükleniyor...</div>;
+
+  return <BurobigBlogList blogs={blogs} formatDate={formatDate} getLocalizedPath={getLocalizedPath} />;
 }
 
 // ─── Language Wrapper (Outlet pattern) ───────────────────────────────────────
