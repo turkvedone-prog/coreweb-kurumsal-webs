@@ -1,74 +1,80 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
 import BurobigEcoBanner from './BurobigEcoBanner';
 
 import { getActiveProducts } from '../../services/publicContentService';
 import { getLocalizedContent } from '../../utils/i18nContent';
 
-export default function BurobigProductDetail({ product }) {
+export default function BurobigProductDetail() {
+  const { slug } = useParams();
   const { tenantMapping, activeLang } = useSite();
   const { tenantId, tenantSlug } = tenantMapping;
 
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [activeHeroIdx, setActiveHeroIdx] = useState(0);
-  const [activeDetailImage, setActiveDetailImage] = useState(product.coverImageUrl || '');
+  const [activeDetailImage, setActiveDetailImage] = useState('');
   const [activeDetailIdx, setActiveDetailIdx] = useState(0);
-  const [openAccordion, setOpenAccordion] = useState(null); // 'docs', 'materials', 'specs'
+  const [openAccordion, setOpenAccordion] = useState(null);
   const detailImgRef = useRef(null);
 
-  // Storing information from previous renders to adjust state on product change without useEffect
-  const [prevProduct, setPrevProduct] = useState(product);
-  if (product.slug !== prevProduct.slug) {
-    setPrevProduct(product);
-    setActiveDetailImage(product.coverImageUrl || '');
-    setActiveDetailIdx(0);
-    setActiveHeroIdx(0);
-  }
+  // Fetch product by slug
+  useEffect(() => {
+    if (!tenantId || !slug) return;
+    setLoading(true);
+    const fetchProduct = async () => {
+      try {
+        const raw = await getActiveProducts(tenantId);
+        const localized = raw
+          .map(doc => getLocalizedContent(doc, activeLang))
+          .filter(Boolean);
+        const found = localized.find(p => p.slug === slug);
+        setProduct(found || null);
+        if (found) {
+          setActiveDetailImage(found.coverImageUrl || '');
+          setRelatedProducts(localized.filter(p => p.slug !== slug));
+        }
+      } catch (e) {
+        console.error('Failed to load product:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProduct();
+  }, [slug, tenantId, activeLang]);
 
   const hostname = window.location.hostname;
   const isLocalOrPortal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.vercel.app');
 
-  const translate = (tr, en) => {
-    return activeLang === 'tr' ? tr : en;
-  };
+  const translate = (tr, en) => activeLang === 'tr' ? tr : en;
 
   const getLocalizedPath = (path) => {
     const prefix = isLocalOrPortal ? `/${tenantSlug}/${activeLang}` : `/${activeLang}`;
     return `${prefix}${path}`;
   };
 
-  // Determine Hero image slider list
+  // Hero images list
   const heroImages = useMemo(() => {
+    if (!product) return [];
     return product.slug === 'inka'
       ? ['/assets/burobig/images/Deneme 001-1.webp', '/assets/burobig/images/Deneme 002-1.webp']
-      : (product.gallery && product.gallery.length > 0 
+      : (product.gallery && product.gallery.length > 0
          ? product.gallery.map(img => img.url)
          : [product.coverImageUrl || '']);
   }, [product]);
 
-  // Determine Detail gallery thumbnails (cover image + gallery images)
-  const detailGallery = product.gallery && product.gallery.length > 0
-    ? Array.from(new Set([product.coverImageUrl, ...product.gallery.map(img => img.url)])).filter(Boolean)
-    : [product.coverImageUrl].filter(Boolean);
+  const detailGallery = useMemo(() => {
+    if (!product) return [];
+    return product.gallery && product.gallery.length > 0
+      ? Array.from(new Set([product.coverImageUrl, ...product.gallery.map(img => img.url)])).filter(Boolean)
+      : [product.coverImageUrl].filter(Boolean);
+  }, [product]);
 
-  // Fetch Related Products
-  useEffect(() => {
-    if (!tenantId) return;
-    const fetchRelated = async () => {
-      try {
-        const raw = await getActiveProducts(tenantId);
-        const localized = raw
-          .map(doc => getLocalizedContent(doc, activeLang))
-          .filter(Boolean)
-          .filter(item => item.slug !== product.slug); // Exclude current product
-        setRelatedProducts(localized);
-      } catch (err) {
-        console.error('Error fetching related products:', err);
-      }
-    };
-    fetchRelated();
-  }, [tenantId, product.slug, activeLang]);
+  // Loading / Not Found states
+  if (loading) return <div style={{ padding: '4rem', textAlign: 'center' }}>Yükleniyor...</div>;
+  if (!product) return <div style={{ padding: '4rem', textAlign: 'center' }}>Ürün bulunamadı.</div>;
 
   // Handle Detail image thumbnail click with fade transition
   const handleDetailImageChange = (src, idx) => {
