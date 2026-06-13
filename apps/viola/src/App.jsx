@@ -30,14 +30,16 @@ const betaProduct = {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <ViolaHeader />
-      <Routes>
-        <Route path="/" element={<ViolaHome />} />
-        <Route path="/urunler/beta" element={<ViolaProductDetail product={betaProduct} />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <ViolaFooter />
-    </BrowserRouter>
+    <div className="viola-theme">
+      <BrowserRouter>
+        <ViolaHeader />
+        <Routes>
+          <Route path="/" element={<ViolaHome />} />
+          <Route path="/urunler/beta" element={<ViolaProductDetail product={betaProduct} />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <ViolaFooter />
+      </BrowserRouter>
+    </div>
   );
 }
