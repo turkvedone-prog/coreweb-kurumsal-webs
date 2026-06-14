@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npx vite build",
-  "outputDirectory": "dist",
+  "buildCommand": "cd apps/coreweb && npm run build",
+  "outputDirectory": "apps/coreweb/dist",
   "redirects": [
     {
       "source": "/tr",
