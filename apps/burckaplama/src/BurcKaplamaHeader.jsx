@@ -72,6 +72,8 @@ export default function BurcKaplamaHeader() {
     location.pathname === getLocalizedPath('/') || 
     location.pathname === getLocalizedPath('') || 
     location.pathname === '/' ||
+    location.pathname === `/${activeLang}/` ||
+    location.pathname === `/${activeLang}` ||
     location.pathname.endsWith('/anasayfa') ||
     location.pathname.endsWith('/anasayfa/');
 
