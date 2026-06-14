@@ -4,10 +4,10 @@ import CoreWebFooter from './CoreWebFooter';
 
 export default function App() {
   return (
-    <>
+    <div className="coreweb-theme">
       <CoreWebHeader />
       <CoreWebHome />
       <CoreWebFooter />
-    </>
+    </div>
   );
 }

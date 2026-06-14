@@ -6,63 +6,50 @@ import BurobigEcoBanner from './BurobigEcoBanner';
 import { getActiveProducts } from '../../services/publicContentService';
 import { getLocalizedContent } from '../../utils/i18nContent';
 
-export default function BurobigProductDetail() {
-  const { slug } = useParams();
+export default function BurobigProductDetail({ product }) {
   const { tenantMapping, activeLang } = useSite();
   const { tenantId, tenantSlug } = tenantMapping;
 
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [activeHeroIdx, setActiveHeroIdx] = useState(0);
-  const [activeDetailImage, setActiveDetailImage] = useState('');
+  const [activeDetailImage, setActiveDetailImage] = useState(product?.coverImageUrl || '');
   const [activeDetailIdx, setActiveDetailIdx] = useState(0);
   const [openAccordion, setOpenAccordion] = useState(null);
   const detailImgRef = useRef(null);
 
-  // Fetch product by slug
+  // Storing information from previous renders to adjust state on product change without useEffect
+  const [prevProduct, setPrevProduct] = useState(product);
+  if (product.slug !== prevProduct.slug) {
+    setPrevProduct(product);
+    setActiveDetailImage(product.coverImageUrl || '');
+    setActiveDetailIdx(0);
+    setActiveHeroIdx(0);
+  }
+
+  // Fetch related products
   useEffect(() => {
-    if (!tenantId || !slug) return;
-    setLoading(true);
-    const fetchProduct = async () => {
-      try {
-        const raw = await getActiveProducts(tenantId);
+    if (!tenantId || !product?.slug) return;
+    getActiveProducts(tenantId)
+      .then(raw => {
         const localized = raw
           .map(doc => getLocalizedContent(doc, activeLang))
           .filter(Boolean);
-        const found = localized.find(p => p.slug === slug);
-        setProduct(found || null);
-        if (found) {
-          setActiveDetailImage(found.coverImageUrl || '');
-          setRelatedProducts(localized.filter(p => p.slug !== slug));
-        }
-      } catch (e) {
-        console.error('Failed to load product:', e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProduct();
-  }, [slug, tenantId, activeLang]);
+        setRelatedProducts(localized.filter(p => p.slug !== product.slug));
+      })
+      .catch(e => console.error(e));
+  }, [tenantId, product?.slug, activeLang]);
 
-  const hostname = window.location.hostname;
-  const isLocalOrPortal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.vercel.app');
-
-  const translate = (tr, en) => activeLang === 'tr' ? tr : en;
-
-  const getLocalizedPath = (path) => {
-    const prefix = isLocalOrPortal ? `/${tenantSlug}/${activeLang}` : `/${activeLang}`;
-    return `${prefix}${path}`;
+  const translate = (tr, en) => {
+    return activeLang === 'tr' ? tr : en;
   };
 
-  // Hero images list
+  const getLocalizedPath = (path) => `/${activeLang}${path}`;
+
+  // Determine Hero image slider list — tüm ürünler Firebase gallery kullanır
   const heroImages = useMemo(() => {
-    if (!product) return [];
-    return product.slug === 'inka'
-      ? ['/assets/burobig/images/Deneme 001-1.webp', '/assets/burobig/images/Deneme 002-1.webp']
-      : (product.gallery && product.gallery.length > 0
-         ? product.gallery.map(img => img.url)
-         : [product.coverImageUrl || '']);
+    return product.gallery && product.gallery.length > 0
+      ? product.gallery.map(img => img.url)
+      : [product.coverImageUrl || ''];
   }, [product]);
 
   const detailGallery = useMemo(() => {

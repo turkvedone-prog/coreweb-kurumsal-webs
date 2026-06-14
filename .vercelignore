@@ -1,0 +1,10 @@
+node_modules
+.git
+.turbo
+dist
+apps/*/dist
+apps/*/node_modules
+packages/*/node_modules
+scratch
+.DS_Store
+*.log

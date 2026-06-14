@@ -6,29 +6,10 @@ import { getActiveProducts } from '../../services/publicContentService';
 import { getLocalizedContent } from '../../utils/i18nContent';
 
 
-export default function BurobigProductList() {
-  const { tenantMapping, activeLang } = useSite();
-  const { tenantId, tenantSlug } = tenantMapping;
-  const [products, setProducts] = useState([]);
+export default function BurobigProductList({ products }) {
+  const { activeLang } = useSite();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
-
-  useEffect(() => {
-    if (!tenantId) return;
-    const fetchProducts = async () => {
-      try {
-        const raw = await getActiveProducts(tenantId);
-        const localized = (raw || [])
-          .map(doc => getLocalizedContent(doc, activeLang))
-          .filter(Boolean);
-        setProducts(localized);
-      } catch (e) {
-        console.error('Failed to load products:', e);
-        setProducts([]);
-      }
-    };
-    fetchProducts();
-  }, [tenantId, activeLang]);
 
 
   const isUstYoneticiPath = location.pathname.endsWith('/ust-yonetici');
@@ -36,9 +17,6 @@ export default function BurobigProductList() {
   const isOperasyonelPath = location.pathname.endsWith('/operasyonel-masalar');
   const isToplantiPath = location.pathname.endsWith('/toplanti-masalari');
   const isCleanPath = isUstYoneticiPath || isOfisKoltuklariPath || isOperasyonelPath || isToplantiPath;
-
-  const hostname = window.location.hostname;
-  const isLocalOrPortal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.vercel.app');
 
   const catParam = searchParams.get('cat');
   const subParam = searchParams.get('sub');
@@ -48,10 +26,7 @@ export default function BurobigProductList() {
     return activeLang === 'tr' ? tr : en;
   };
 
-  const getLocalizedPath = (path) => {
-    const prefix = isLocalOrPortal ? `/${tenantSlug}/${activeLang}` : `/${activeLang}`;
-    return `${prefix}${path}`;
-  };
+  const getLocalizedPath = (path) => `/${activeLang}${path}`;
 
   // Determine current active filter tab
   const getActiveTab = () => {

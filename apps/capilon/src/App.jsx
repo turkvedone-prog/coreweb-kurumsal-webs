@@ -22,19 +22,13 @@ function CapilonLangWrapper() {
   const { lang } = useParams();
   const navigate = useNavigate();
 
-  const hostname = window.location.hostname;
-  const isLocalOrPortal =
-    hostname === 'localhost' ||
-    hostname === '127.0.0.1' ||
-    hostname.endsWith('.vercel.app');
-
   const enabledLangs = ['tr', 'en'];
 
   useEffect(() => {
     if (!enabledLangs.includes(lang)) {
-      navigate(isLocalOrPortal ? '/capilon/tr' : '/tr', { replace: true });
+      navigate('/tr', { replace: true });
     }
-  }, [lang, isLocalOrPortal, navigate]);
+  }, [lang, navigate]);
 
   if (!enabledLangs.includes(lang)) return null;
 
@@ -99,14 +93,9 @@ function CapilonContactPage() {
 // ─── App ─────────────────────────────────────────────────────────────────────
 export default function App() {
   const hostname = window.location.hostname;
-  const isLocalOrPortal =
-    hostname === 'localhost' ||
-    hostname === '127.0.0.1' ||
-    hostname.endsWith('.vercel.app');
-
-  // /capilon/:lang on Vercel preview, /:lang on custom domain
-  const langPath = isLocalOrPortal ? '/capilon/:lang' : '/:lang';
-  const defaultRedirect = isLocalOrPortal ? '/capilon/tr' : '/tr';
+  // Her ortamda /:lang kullan (local = production ile aynı)
+  const langPath = '/:lang';
+  const defaultRedirect = '/tr';
 
   return (
     <BrowserRouter>
@@ -117,7 +106,7 @@ export default function App() {
           <Route path="blog" element={<CapilonBlogList />} />
           <Route path="blog/:slug" element={<CapilonBlogDetail />} />
           <Route path="koleksiyonlar" element={<CapilonCollectionsPage />} />
-          <Route path="koleksiyonlar/:slug" element={<CapilonCollectionsPage />} />
+          <Route path="koleksiyonlar/:slug" element={<CapilonCategoryDetail />} />
           <Route path="urunler/:slug" element={<CapilonProductDetail />} />
           <Route path="magazalarimiz" element={<CapilonStores />} />
           <Route path="iletisim" element={<CapilonContactPage />} />
