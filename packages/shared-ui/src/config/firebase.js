@@ -2,13 +2,13 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD7_smZYZ9JSDJq0sBtjdRkSiFaEMQRZos",
-  authDomain: "coreweb-panel.firebaseapp.com",
-  projectId: "coreweb-panel",
-  storageBucket: "coreweb-panel.firebasestorage.app",
-  messagingSenderId: "136936905582",
-  appId: "1:136936905582:web:db0e83b19c468d9bdabf7f",
-  measurementId: "G-0Y4JN4MERK"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyD7_smZYZ9JSDJq0sBtjdRkSiFaEMQRZos",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "coreweb-panel.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "coreweb-panel",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "coreweb-panel.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "136936905582",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:136936905582:web:db0e83b19c468d9bdabf7f",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-0Y4JN4MERK"
 };
 
 const app = initializeApp(firebaseConfig);

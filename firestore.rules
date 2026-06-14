@@ -1,86 +1,546 @@
+// ==========================================
+// FIRESTORE SECURITY RULES - MONOREPO MIRROR
+// Source of Truth: coreweb-panel/firestore.rules
+// Please keep both files in sync!
+// ==========================================
+
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ─── PUBLIC: Site Mappings (domain → tenant resolution) ──────────────────
-    match /siteMappings/{docId} {
-      allow read: if true;
-      allow write: if request.auth != null;
+    // ── YARDIMCI GÜVENLİK FONKSİYONLARI (HELPERS) ──
+    
+    // Kullanıcı giriş yapmış mı?
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    // Kullanıcının /users/{uid} dökümanının verilerini çeker
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    // Kullanıcının veritabanı rolünü getirir
+    function userRole() {
+      return isSignedIn() && 'role' in userDoc() ? userDoc().role : null;
+    }
+    
+    // Giriş yapan kullanıcı Süper Admin mi? (Yalnızca Firestore profil rolü denetlenir)
+    function isSuperAdmin() {
+      return isSignedIn() && (
+        userRole() == 'super_admin' || 
+        ('isSuperAdmin' in userDoc() && userDoc().isSuperAdmin == true)
+      );
+    }
+    
+    // Rol bazlı kontrol yardımcıları
+    function isTenantAdmin() {
+      return isSignedIn() && userRole() == 'tenant_admin';
+    }
+    
+    // Kiracı sahibi mi?
+    function isTenantOwner() {
+      return isSignedIn() && userRole() == 'tenant_owner';
+    }
+    
+    // Kiracı editörü mü?
+    function isTenantEditor() {
+      return isSignedIn() && userRole() == 'tenant_editor';
+    }
+    
+    // Kiracı izleyicisi mi?
+    function isTenantViewer() {
+      return isSignedIn() && userRole() == 'tenant_viewer';
+    }
+    
+    // Müşteri son kullanıcısı mı?
+    function isCustomerUser() {
+      return isSignedIn() && userRole() == 'customer_user';
+    }
+    
+    // Kullanıcının yetkili olduğu tenantId
+    function userTenantId() {
+      return isSignedIn() && 'tenantId' in userDoc() ? userDoc().tenantId : null;
+    }
+    
+    // Kullanıcının yetkili olduğu tenantSlug
+    function userTenantSlug() {
+      return isSignedIn() && 'tenantSlug' in userDoc() ? userDoc().tenantSlug : null;
+    }
+    
+    // İlgili belgenin kullanıcının kendi şirketine ait olduğunu doğrular
+    function belongsToTenant(tenantId) {
+      return isSignedIn() && userTenantId() == tenantId;
     }
 
-    // ─── PUBLIC: Tenant Content (products, blogs, navigation, settings) ───────
-    match /tenants/{tenantId} {
-      // Tenant document itself — sadece authenticated okuyabilir
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;
-
-      // Products — public read (müşteri sitesi için)
-      match /products/{productId} {
-        allow read: if true;
-        allow write: if request.auth != null;
-      }
-
-      // Blogs — public read
-      match /blogs/{blogId} {
-        allow read: if true;
-        allow write: if request.auth != null;
-      }
-
-      // News — public read
-      match /news/{newsId} {
-        allow read: if true;
-        allow write: if request.auth != null;
-      }
-
-      // Navigation — public read
-      match /navigation/{docId} {
-        allow read: if true;
-        allow write: if request.auth != null;
-      }
-
-      // Sliders — public read
-      match /sliders/{docId} {
-        allow read: if true;
-        allow write: if request.auth != null;
-      }
-
-      // Settings / Company info — public read
-      match /settings/{docId} {
-        allow read: if true;
-        allow write: if request.auth != null;
-      }
-
-      // Projects — public read
-      match /projects/{projectId} {
-        allow read: if true;
-        allow write: if request.auth != null;
-      }
-
-      // Collections (koleksiyonlar) — public read
-      match /collections/{collectionId} {
-        allow read: if true;
-        allow write: if request.auth != null;
-      }
-
-      // Diğer tüm sub-collection'lar — authenticated
-      match /{subcollection}/{docId} {
-        allow read: if request.auth != null;
-        allow write: if request.auth != null;
-      }
+    // siteMappings yardımıyla Kiracı Aktiflik Kontrolü
+    function isMappingActive(tId) {
+      let mapping = get(/databases/$(database)/documents/siteMappings/$(tId)).data;
+      return mapping.status == 'active' &&
+             (mapping.publishStatus == 'published' ||
+              (mapping.publishStatus == 'preview' && mapping.isStaging == true));
     }
 
-    // ─── PROTECTED: Admin / Panel verileri ───────────────────────────────────
+
+    // ── KOLEKSİYON YETKİLENDİRME KURALLARI ──
+
+    // 1. users Koleksiyonu
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isSignedIn() && (request.auth.uid == userId || isSuperAdmin());
+      allow create: if isSignedIn() && (
+        isSuperAdmin() ||
+        (request.auth.uid == userId && 
+         !request.resource.data.keys().hasAny(['role', 'tenantId', 'tenantSlug', 'status', 'isSuperAdmin']))
+      );
+      allow update: if isSignedIn() && (
+        isSuperAdmin() || 
+        (request.auth.uid == userId && 
+         !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'tenantId', 'tenantSlug', 'status', 'isSuperAdmin']))
+      );
+      allow delete: if isSuperAdmin();
     }
 
-    match /adminSettings/{docId} {
-      allow read, write: if request.auth != null;
+    // 2. customers Koleksiyonu
+    match /customers/{customerId} {
+      allow read: if isSuperAdmin();
+      allow create, update: if isSuperAdmin();
+      allow delete: if false; // Yanlışlıkla silme engellenir, soft-delete tercih edilmelidir
     }
 
-    // ─── DEFAULT: Her şeyi kapat ──────────────────────────────────────────────
-    match /{document=**} {
-      allow read, write: if false;
+    // 2.1 siteMappings Koleksiyonu
+    match /siteMappings/{tenantId} {
+      allow read: if resource.data.status == 'active' && 
+                   (resource.data.publishStatus == 'published' || 
+                    (resource.data.publishStatus == 'preview' && resource.data.isStaging == true));
+      allow write: if isSignedIn() && isSuperAdmin();
+    }
+
+    // 3. tenants Koleksiyonu
+    match /tenants/{tenantId} {
+      allow read: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer() || isCustomerUser()))
+      );
+      allow create, delete: if isSuperAdmin();
+      allow update: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner()) &&
+         userTenantSlug() != null &&
+         !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+           'tenantId', 'tenantSlug', 'customerId', 'demoDomain', 'productionDomain', 
+           'publishStatus', 'domainStatus', 'dnsStatus', 'sslStatus', 
+           'recaptchaStatus', 'formApiStatus', 'lastPublishedAt'
+         ]))
+      );
+    }
+
+    // 3.1 tenants/{tenantId}/sliders Alt Koleksiyonu
+    match /tenants/{tenantId}/sliders/{sliderId} {
+      allow read: if (resource.data.status == 'active' && isMappingActive(tenantId)) || (
+        isSignedIn() && (
+          isSuperAdmin() || 
+          (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer()))
+        )
+      );
+      allow write: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor()))
+      );
+    }
+
+    // 3.2 tenants/{tenantId}/showcases Alt Koleksiyonu
+    match /tenants/{tenantId}/showcases/{showcaseId} {
+      allow read: if (resource.data.status == 'active' && isMappingActive(tenantId)) || (
+        isSignedIn() && (
+          isSuperAdmin() || 
+          (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer()))
+        )
+      );
+      allow write: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor()))
+      );
+    }
+
+    // 3.3 tenants/{tenantId}/featured_services Alt Koleksiyonu
+    match /tenants/{tenantId}/featured_services/{serviceId} {
+      allow read: if (resource.data.status == 'active' && isMappingActive(tenantId)) || (
+        isSignedIn() && (
+          isSuperAdmin() || 
+          (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer()))
+        )
+      );
+      allow write: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor()))
+      );
+    }
+
+    // 3.4 tenants/{tenantId}/settings Alt Koleksiyonu
+    match /tenants/{tenantId}/settings/{settingId} {
+      allow read: if (settingId == 'company' && isMappingActive(tenantId)) || (
+        isSignedIn() && (
+          isSuperAdmin() || (
+            belongsToTenant(tenantId) && (
+              (settingId == 'company' && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer())) ||
+              (settingId != 'company' && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer() || isCustomerUser()))
+            )
+          )
+        )
+      );
+      
+      allow create: if isSignedIn() && (
+        isSuperAdmin() || (
+          settingId != 'company' &&
+          belongsToTenant(tenantId) &&
+          (isTenantAdmin() || isTenantOwner() || isTenantEditor())
+        )
+      );
+
+      allow update: if isSignedIn() && (
+        isSuperAdmin() || (
+          belongsToTenant(tenantId) &&
+          (isTenantAdmin() || isTenantOwner() || isTenantEditor()) &&
+          (
+            settingId != 'company' || (
+              // Resmi alan koruması: Kiracı resmi alanları değiştiremez (Eski değerlere eşit olmalı)
+              request.resource.data.companyName == resource.data.companyName &&
+              request.resource.data.taxOffice == resource.data.taxOffice &&
+              request.resource.data.taxNumber == resource.data.taxNumber &&
+              request.resource.data.mersisNo == resource.data.mersisNo &&
+              // Veri doğrulama
+              request.resource.data.logos is map &&
+              request.resource.data.contact is map &&
+              request.resource.data.socials is map &&
+              request.resource.data.workingHours is map &&
+              request.resource.data.updatedAt is timestamp &&
+              request.resource.data.updatedByUid == request.auth.uid
+            )
+          )
+        )
+      );
+
+      allow delete: if isSignedIn() && (
+        isSuperAdmin() || (
+          settingId != 'company' &&
+          belongsToTenant(tenantId) &&
+          (isTenantAdmin() || isTenantOwner())
+        )
+      );
+    }
+
+    // 3.5 tenants/{tenantId}/references Alt Koleksiyonu
+    match /tenants/{tenantId}/references/{referenceId} {
+      allow read: if (resource.data.status == 'active' && isMappingActive(tenantId)) || (
+        isSignedIn() && (
+          isSuperAdmin() || 
+          (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer()))
+        )
+      );
+      allow write: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor()))
+      );
+    }
+
+    // 3.6 tenants/{tenantId}/testimonials Alt Koleksiyonu
+    match /tenants/{tenantId}/testimonials/{testimonialId} {
+      allow read: if (resource.data.status == 'active' && isMappingActive(tenantId)) || (
+        isSignedIn() && (
+          isSuperAdmin() || 
+          (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer()))
+        )
+      );
+      allow write: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor()))
+      );
+    }
+
+    // 3.7 tenants/{tenantId}/news Alt Koleksiyonu
+    match /tenants/{tenantId}/news/{newsId} {
+      allow read: if (resource.data.status == 'published' && isMappingActive(tenantId)) || (
+        isSignedIn() && (
+          isSuperAdmin() || 
+          (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer()))
+        )
+      );
+      allow write: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor()))
+      );
+    }
+
+    // 3.8 tenants/{tenantId}/blogs Alt Koleksiyonu
+    match /tenants/{tenantId}/blogs/{blogId} {
+      allow read: if (resource.data.status == 'published' && isMappingActive(tenantId)) || (
+        isSignedIn() && (
+          isSuperAdmin() || 
+          (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer()))
+        )
+      );
+      allow write: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor()))
+      );
+    }
+
+    // 3.9 tenants/{tenantId}/products Alt Koleksiyonu
+    match /tenants/{tenantId}/products/{productId} {
+      allow read: if (resource.data.status == 'active' && isMappingActive(tenantId)) || (
+        isSignedIn() && (
+          isSuperAdmin() || 
+          (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer()))
+        )
+      );
+      allow write: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor()))
+      );
+    }
+
+    // 3.10 tenants/{tenantId}/leads Alt Koleksiyonu (Faz 5.2)
+    match /tenants/{tenantId}/leads/{leadId} {
+      function isValidLead(tId) {
+        return request.resource.data.tenantId == tId &&
+          request.resource.data.type in ['contact', 'proposal', 'whatsapp', 'appointment'] &&
+          request.resource.data.status in ['new', 'reviewing', 'replied', 'completed', 'rejected', 'archived', 'spam'] &&
+          request.resource.data.priority in ['low', 'medium', 'high'] &&
+          request.resource.data.name is string &&
+          request.resource.data.kvkkConsent is bool &&
+          request.resource.data.marketingConsent is bool &&
+          request.resource.data.updatedAt is timestamp;
+      }
+
+      allow read: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer()))
+      );
+
+      allow delete: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner()))
+      );
+
+      allow create: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner()))
+      ) && isValidLead(tenantId) && request.resource.data.createdAt is timestamp;
+
+      allow update: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (
+          ((isTenantAdmin() || isTenantOwner()) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['createdAt', 'tenantId', 'type'])) ||
+          (isTenantEditor() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'notes', 'assignedTo', 'staff', 'priority', 'updatedAt', 'updatedByUid']))
+        ))
+      ) && isValidLead(tenantId);
+    }
+
+    // 3.11 tenants/{tenantId}/pages Alt Koleksiyonu
+    match /tenants/{tenantId}/pages/{pageId} {
+      allow read: if (resource.data.status == 'published' && isMappingActive(tenantId)) || (
+        isSignedIn() && (
+          isSuperAdmin() || 
+          (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer()))
+        )
+      );
+      allow write: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor()))
+      );
+    }
+
+    // 3.12 tenants/{tenantId}/subscribers Alt Koleksiyonu
+    match /tenants/{tenantId}/subscribers/{subscriberId} {
+      allow read: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer()))
+      );
+      
+      allow delete: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner()))
+      );
+
+      allow create, update: if isSignedIn() && (
+        isSuperAdmin() || (
+          belongsToTenant(tenantId) &&
+          (isTenantAdmin() || isTenantOwner() || isTenantEditor()) &&
+          request.resource.data.tenantId == tenantId &&
+          request.resource.data.email is string &&
+          request.resource.data.status in ['active', 'pending', 'unsubscribed'] &&
+          request.resource.data.consentKvkk is bool &&
+          request.resource.data.consentMarketing is bool
+        )
+      );
+    }
+
+    // 3.13 tenants/{tenantId}/media Alt Koleksiyonu (Faz 8.6B-Rules)
+    match /tenants/{tenantId}/media/{mediaId} {
+      function isValidMedia(tId) {
+        return request.resource.data.tenantId == tId &&
+          request.resource.data.type in ['image', 'video', 'document'] &&
+          request.resource.data.status in ['active', 'archived'] &&
+          request.resource.data.downloadURL is string &&
+          request.resource.data.storagePath is string;
+      }
+
+      allow read: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer()))
+      );
+      
+      allow create: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor()))
+      ) && request.resource.data.uploadedBy == request.auth.uid 
+        && isValidMedia(tenantId);
+
+      allow update: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor()))
+      ) && request.resource.data.uploadedBy == resource.data.uploadedBy 
+        && isValidMedia(tenantId);
+      
+      allow delete: if isSuperAdmin();
+    }
+
+    // 3.14 tenants/{tenantId}/navigation Alt Koleksiyonu (Faz 8.6D-Rules)
+    match /tenants/{tenantId}/navigation/{menuId} {
+      function isValidNavigation(tId) {
+        return request.resource.data.tenantId == tId &&
+          request.resource.data.location in ['header', 'footer', 'mobile'] &&
+          request.resource.data.lang in ['tr', 'en'] &&
+          request.resource.data.items is list;
+      }
+
+      allow read: if isMappingActive(tenantId) || (
+        isSignedIn() && (
+          isSuperAdmin() ||
+          (
+            belongsToTenant(tenantId) &&
+            (
+              isTenantAdmin() ||
+              isTenantOwner() ||
+              isTenantEditor() ||
+              isTenantViewer()
+            )
+          )
+        )
+      );
+
+      allow create, update: if isSignedIn() && (
+        isSuperAdmin() ||
+        (
+          belongsToTenant(tenantId) &&
+          (
+            isTenantAdmin() ||
+            isTenantOwner() ||
+            isTenantEditor()
+          )
+        )
+      ) && isValidNavigation(tenantId);
+
+      allow delete: if isSuperAdmin();
+    }
+
+    // 4. tenantData Koleksiyonu
+    match /tenantData/{tenantId} {
+      allow read: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer() || isCustomerUser()))
+      );
+      allow create, delete: if isSuperAdmin();
+      allow update: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor()) &&
+         !request.resource.data.diff(resource.data).affectedKeys().hasAny(['tenantId']))
+      );
+    }
+
+    // 5. tenantModules Koleksiyonu
+    match /tenantModules/{tenantId} {
+      allow read: if isSignedIn() && (
+        isSuperAdmin() || 
+        (belongsToTenant(tenantId) && (isTenantAdmin() || isTenantOwner() || isTenantEditor() || isTenantViewer() || isCustomerUser()))
+      );
+      allow write: if isSuperAdmin(); // Sadece Süper Admin lisans modüllerini açıp kapatabilir
+    }
+
+    // 6. requests Koleksiyonu (Destek ve form talepleri)
+    match /requests/{requestId} {
+      allow read: if isSignedIn() && (resource.data.tenantId == userTenantId() || isSuperAdmin());
+      allow create: if isSignedIn() && 
+        (request.resource.data.tenantId == userTenantId() || isSuperAdmin()) &&
+        request.resource.data.keys().hasAll(['tenantId', 'createdBy', 'createdAt', 'status']);
+      allow update: if isSignedIn() && (
+        isSuperAdmin() || 
+        (resource.data.tenantId == userTenantId() && (isTenantAdmin() || isTenantOwner() || isTenantEditor()) &&
+         !request.resource.data.diff(resource.data).affectedKeys().hasAny(['tenantId', 'createdBy', 'createdAt']))
+      );
+      allow delete: if false; // Silme işlemi tamamen kapatılmıştır
+    }
+
+    // 7. Audit Log Koleksiyonları (Append-Only)
+    match /systemAuditLogs/{logId} {
+      allow read: if isSuperAdmin();
+      allow create: if isSignedIn() && (isSuperAdmin() || request.resource.data.actorUid == request.auth.uid);
+      allow update, delete: if false; // Kesin olarak güncellenemez ve silinemez
+    }
+
+    match /tenantActivityLogs/{logId} {
+      allow read: if isSignedIn() && (resource.data.tenantId == userTenantId() || isSuperAdmin());
+      allow create: if isSignedIn() && (request.resource.data.tenantId == userTenantId() || isSuperAdmin());
+      allow update, delete: if false; // Kesin olarak güncellenemez ve silinemez
+    }
+
+    match /financeAuditLogs/{logId} {
+      allow read: if isSuperAdmin();
+      allow create: if isSuperAdmin();
+      allow update, delete: if false; // Kesin olarak güncellenemez ve silinemez
+    }
+
+    // 8. deliveryOperations Koleksiyonu (Faz 12-8B Aktif)
+    match /deliveryOperations/{tenantId} {
+      allow read: if isSignedIn() && isSuperAdmin();
+      allow write: if isSignedIn() && isSuperAdmin() &&
+        (tenantId.matches('^TEST-.*') || tenantId.matches('^DRY-RUN-.*') || tenantId.matches('^TEN-DELIVERY-OPS-TEST.*')) &&
+        request.resource.data.isTestOperation == true &&
+        request.resource.data.tenantId == tenantId &&
+        request.resource.data.deliveryStage in [
+          'customer_created', 'staging_created', 'content_preparing', 'internal_review',
+          'customer_review', 'revision_requested', 'approved_for_domain', 'domain_preparing',
+          'dns_waiting', 'ssl_waiting', 'domain_applied', 'post_apply_smoke', 'delivered',
+          'support_monitoring', 'cancelled', 'archived'
+        ] &&
+        (!('riskLevel' in request.resource.data) || request.resource.data.riskLevel in ['none', 'warning', 'critical', 'blocked']) &&
+        (!('priorityLevel' in request.resource.data) || request.resource.data.priorityLevel in ['normal', 'takip', 'yüksek', 'kritik']) &&
+        !(tenantId in ['TEN-507', 'TEN-BUROBIG', 'TEN-CAPILON', 'TEN-243', 'TEN-TEST-LOJISTIK']) &&
+        !(request.resource.data.tenantSlug in ['coreweb', 'burobig', 'capilon', 'kreatiffikirler', 'test-lojistik']);
+
+      // ── GERÇEK MÜŞTERİ YAZMA KURALLARI PROPOSAL (FAZ 12-10C - DONDURULMUŞ) ──
+      allow write: if isSignedIn() && isSuperAdmin() &&
+        (tenantId == 'TEN-BUROBIG' || tenantId == 'TEN-CAPILON') && // Pilot kiracılar Burobig ve Capilon
+        request.resource.data.isTestOperation == false &&
+        request.resource.data.operationWriteMode == "real_customer" &&
+        request.resource.data.writeRiskLevel == "low" &&
+        request.resource.data.auditRequired == true &&
+        'auditPayload' in request.resource.data &&
+        request.resource.data.auditPayload.note != "" &&
+        request.resource.data.tenantId == tenantId &&
+        // Aşamaların değişmesi kesinlikle engellenir (Stage update kapalı)
+        (resource == null || request.resource.data.deliveryStage == resource.data.deliveryStage) &&
+        // Öncelik ve risk seviyesi değişiklikleri engellenir
+        (resource == null || (request.resource.data.priorityLevel == resource.data.priorityLevel && request.resource.data.riskLevel == resource.data.riskLevel)) &&
+        // Domain ile ilgili alanların güncellenmesi engellenir
+        (resource == null || (request.resource.data.productionDomain == resource.data.productionDomain && request.resource.data.customDomain == resource.data.customDomain && request.resource.data.activeDomain == resource.data.activeDomain)) &&
+        // Yalnızca düşük riskli checklist maddelerine (previewLinkSent, revisionsClosed) izin verilir, diğerleri (companyInfo dahil) kapalıdır
+        !(request.resource.data.checklist.keys().hasAny([
+           'companyInfo', 'tenantProvisioned', 'stagingPublished', 'noindexVerified', 'minimumContentCompleted',
+           'seoMetaCompleted', 'responsiveTested', 'domainApprovalReceived', 'domainOwnershipVerified',
+           'dnsInstructionsSent', 'vercelValidConfig', 'sslActive', 'domainApplyCompleted',
+           'postApplySmokeCompleted', 'deliveryMessageSent'
+        ]));
     }
   }
 }
