@@ -76,6 +76,8 @@ CRITICAL_ROOT_FILES=(
   "package-lock.json"
   "turbo.json"
   "vercel.json"
+  ".vercelignore"
+  "scripts/vercel-build-filter.sh"
 )
 
 for file in "${CRITICAL_ROOT_FILES[@]}"; do
