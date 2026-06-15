@@ -19,20 +19,23 @@ import BurobigManifesto from './BurobigManifesto';
 import BurobigQualityPolicy from './BurobigQualityPolicy';
 import BurobigSustainability from './BurobigSustainability';
 import { getActiveProducts, getActiveProductBySlug } from '../../services/publicContentService';
+import { submitLead } from '@coreweb/shared-ui';
+import { updateSEOMeta } from '../../utils/seo';
 
 // Demo ürün — Firebase'den veri gelmezse gösterilir
 const DEMO_PRODUCT = {
   slug: 'inka',
-  title: 'Inka Yönetici Masaı',
-  category: 'Üst Yönetici Masaı',
-  coverImageUrl: '/assets/burobig/images/inka_main.png',
+  title: 'Inka Yönetici Masası',
+  category: 'Üst Yönetici Masası',
+  coverImageUrl: '/assets/burobig/images/INKA 01.jpg',
   gallery: [
-    { url: '/assets/burobig/images/inka_main.png' },
-    { url: '/assets/burobig/images/inka_detail_1.png' },
+    { url: '/assets/burobig/images/INKA 01.jpg' },
+    { url: '/assets/burobig/images/INKA 02.jpg' },
   ],
-  description_tr: 'Doğadan ilham alan yenilikçi çizgilerle, geleçeğin premium ofis orta mına uygun Inka yönetici masaı.',
+  description_tr: 'Doğadan ilham alan yenilikçi çizgilerle, geleceğin premium ofis ortamına uygun Inka yönetici masası.',
   description_en: 'Inka executive desk, inspired by nature with innovative lines.',
 };
+
 
 
 // ─── Blog Page Wrapper (fetches blogs from Firebase) ─────────────────────────
@@ -51,6 +54,14 @@ function BurobigBlogPage() {
       });
     } catch { return ''; }
   };
+
+  useEffect(() => {
+    updateSEOMeta({
+      title: activeLang === 'tr' ? 'Blog & Haberler' : 'Blog & News',
+      description: activeLang === 'tr' ? 'Bürobig premium ofis mobilyaları hakkında en son haberler ve blog yazıları.' : 'Latest news and blog posts about Burobig premium office furniture.',
+      companyName: 'Bürobig'
+    });
+  }, [activeLang]);
 
   useEffect(() => {
     import('./blogService').then(({ getPublishedBlogs }) => {
@@ -75,11 +86,11 @@ function BurobigBlogPage() {
 
 // ─── Product Page Wrapper (fetches products from Firebase) ───────────────────
 const DEMO_PRODUCTS = [
-  { slug: 'inka',          title: 'Inka Yönetici Masası',  category: 'Üst Yönetici Masası', coverImageUrl: '/assets/burobig/images/inka_main.png' },
-  { slug: 'nero',          title: 'Nero Yönetici Masası',  category: 'Üst Yönetici Masası', coverImageUrl: '/assets/burobig/images/inka_main.png' },
-  { slug: 'atlas-calisma', title: 'Atlas Çalışma Masası',  category: 'Operasyonel Masa',    coverImageUrl: '/assets/burobig/images/inka_main.png' },
-  { slug: 'luna-toplanti', title: 'Luna Toplantı Masası',  category: 'Toplantı Masası',     coverImageUrl: '/assets/burobig/images/inka_main.png' },
-  { slug: 'forma-koltuk',  title: 'Forma Ofis Koltuğu',    category: 'Ofis Koltuğu',        coverImageUrl: '/assets/burobig/images/inka_main.png' },
+  { slug: 'inka',          title: 'Inka Yönetici Masası',  category: 'Üst Yönetici Masası', coverImageUrl: '/assets/burobig/images/INKA 01.jpg' },
+  { slug: 'nero',          title: 'Nero Yönetici Masası',  category: 'Üst Yönetici Masası', coverImageUrl: '/assets/burobig/images/INKA 02.jpg' },
+  { slug: 'atlas-calisma', title: 'Atlas Çalışma Masası',  category: 'Operasyonel Masa',    coverImageUrl: '/assets/burobig/images/product-vetra.png' },
+  { slug: 'luna-toplanti', title: 'Luna Toplantı Masası',  category: 'Toplantı Masası',     coverImageUrl: '/assets/burobig/images/product-elephant.png' },
+  { slug: 'forma-koltuk',  title: 'Forma Ofis Koltuğu',    category: 'Ofis Koltuğu',        coverImageUrl: '/assets/burobig/images/product-forma.png' },
 ];
 
 function BurobigProductPage() {
@@ -116,6 +127,27 @@ function BurobigProductDetailPage() {
       .finally(() => setLoading(false));
   }, [slug, activeLang, tenantMapping.tenantId]);
 
+  useEffect(() => {
+    if (product) {
+      const prodTitle = (activeLang === 'tr' ? product.title_tr : product.title_en) || product.title || '';
+      const prodDesc = (activeLang === 'tr' ? product.description_tr : product.description_en) || product.description || '';
+      
+      const titleText = prodTitle 
+        ? `${prodTitle} | Bürobig` 
+        : (activeLang === 'tr' ? 'Bürobig Ürün Detay' : 'Burobig Product Detail');
+      
+      const descText = prodDesc 
+        ? prodDesc 
+        : (activeLang === 'tr' ? 'Bürobig premium ofis mobilyası ürün detayları.' : 'Burobig premium office furniture product details.');
+
+      updateSEOMeta({
+        title: titleText,
+        description: descText,
+        companyName: ''
+      });
+    }
+  }, [product, activeLang]);
+
   if (loading) return <div style={{ padding: '4rem', textAlign: 'center' }}>Yükleniyor...</div>;
   if (!product) return <div style={{ padding: '4rem', textAlign: 'center' }}>Ürün bulunamadı.</div>;
 
@@ -144,11 +176,11 @@ function BurobigLangWrapper() {
 
 // ─── Contact Page (self-contained state) ─────────────────────────────────────
 function BurobigContactPage() {
-  const { activeLang } = useSite();
+  const { activeLang, settings } = useSite();
   const translate = (tr, en) => (activeLang === 'tr' ? tr : en);
 
   const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', company: '', message: ''
+    name: '', email: '', phone: '', subject: '', message: '', website_dummy: ''
   });
   const [consentAccepted, setConsentAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -163,16 +195,76 @@ function BurobigContactPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    // Honeypot check: Fail silently/open if dummy field is filled
+    if (formData.website_dummy) {
+      setTimeout(() => {
+        setSuccess(true);
+        setLoading(false);
+      }, 400);
+      return;
+    }
+
+    // Validations
+    if (!formData.name || !formData.name.trim()) {
+      setError(translate('Lütfen adınızı ve soyadınızı girin.', 'Please enter your name.'));
+      setLoading(false);
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email || !emailRegex.test(formData.email)) {
+      setError(translate('Lütfen geçerli bir e-posta adresi girin.', 'Please enter a valid email address.'));
+      setLoading(false);
+      return;
+    }
+    const phoneDigits = formData.phone ? formData.phone.replace(/\D/g, '') : '';
+    if (!formData.phone || phoneDigits.length < 10) {
+      setError(translate('Lütfen en az 10 haneli geçerli bir telefon numarası girin.', 'Please enter a valid phone number with at least 10 digits.'));
+      setLoading(false);
+      return;
+    }
+    if (!formData.subject || !formData.subject.trim()) {
+      setError(translate('Lütfen mesaj konusunu girin.', 'Please enter the message subject.'));
+      setLoading(false);
+      return;
+    }
+    if (!formData.message || !formData.message.trim()) {
+      setError(translate('Lütfen mesajınızı girin.', 'Please enter your message.'));
+      setLoading(false);
+      return;
+    }
+    if (!consentAccepted) {
+      setError(translate('Lütfen KVKK onay metnini kabul edin.', 'Please accept the KVKK consent.'));
+      setLoading(false);
+      return;
+    }
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      const payload = {
+        tenantId: 'TEN-BUROBIG',
+        tenantSlug: 'burobig',
+        source: 'burobig-website',
+        type: 'contact',
+        formType: 'contact',
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        subject: formData.subject,
+        message: formData.message,
+        consentAccepted: consentAccepted,
+        website_dummy: formData.website_dummy,
+        pageUrl: window.location.href,
+        createdAt: new Date().toISOString(),
+        status: 'new'
+      };
+
+      await submitLead(payload);
       setSuccess(true);
-    } catch {
-      setError(
-        translate(
-          'Bir hata oluştu, lütfen tekrar deneyin.',
-          'An error occurred, please try again.'
-        )
-      );
+    } catch (err) {
+      setError(err.message || translate(
+        'Bir hata oluştu, lütfen tekrar deneyin.',
+        'An error occurred, please try again.'
+      ));
     } finally {
       setLoading(false);
     }
@@ -188,6 +280,7 @@ function BurobigContactPage() {
       error={error}
       handleSubmit={handleSubmit}
       handleChange={handleChange}
+      settings={settings}
     />
   );
 }

@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import BurobigHeader from '../BurobigHeader';
 import BurobigFooter from '../BurobigFooter';
+import { getCompanySettings } from '../../services/publicContentService';
 
 const SiteContext = createContext(null);
 
@@ -22,14 +23,25 @@ export default function SiteLayout({ children, activeLang }) {
     enabledLanguages: ['tr', 'en']
   };
 
+  const [settings, setSettings] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
+  useEffect(() => {
+    getCompanySettings(tenantMapping.tenantId)
+      .then((data) => {
+        if (data) setSettings(data);
+      })
+      .catch(() => {
+        // Silent catch to avoid console spam as per specification
+      });
+  }, [tenantMapping.tenantId]);
+
   return (
-    <SiteContext.Provider value={{ tenantMapping, activeLang }}>
+    <SiteContext.Provider value={{ tenantMapping, activeLang, settings }}>
       <div className="burobig-theme">
         <BurobigHeader />
         <main id="main-content">

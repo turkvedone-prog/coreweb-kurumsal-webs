@@ -10,18 +10,20 @@ export default function BurobigProductDetail({ product }) {
   const { tenantMapping, activeLang } = useSite();
   const { tenantId, tenantSlug } = tenantMapping;
 
+  const FALLBACK_IMAGE = '/assets/burobig/images/INKA 01.jpg';
+
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [activeHeroIdx, setActiveHeroIdx] = useState(0);
-  const [activeDetailImage, setActiveDetailImage] = useState(product?.coverImageUrl || '');
+  const [activeDetailImage, setActiveDetailImage] = useState(product?.coverImageUrl || FALLBACK_IMAGE);
   const [activeDetailIdx, setActiveDetailIdx] = useState(0);
   const [openAccordion, setOpenAccordion] = useState(null);
   const detailImgRef = useRef(null);
 
   // Storing information from previous renders to adjust state on product change without useEffect
   const [prevProduct, setPrevProduct] = useState(product);
-  if (product.slug !== prevProduct.slug) {
+  if (product && prevProduct && product.slug !== prevProduct.slug) {
     setPrevProduct(product);
-    setActiveDetailImage(product.coverImageUrl || '');
+    setActiveDetailImage(product.coverImageUrl || FALLBACK_IMAGE);
     setActiveDetailIdx(0);
     setActiveHeroIdx(0);
   }
@@ -47,21 +49,24 @@ export default function BurobigProductDetail({ product }) {
 
   // Determine Hero image slider list — tüm ürünler Firebase gallery kullanır
   const heroImages = useMemo(() => {
-    return product.gallery && product.gallery.length > 0
-      ? product.gallery.map(img => img.url)
-      : [product.coverImageUrl || ''];
+    const galleryImages = (product?.gallery || [])
+      .map(img => img?.url)
+      .filter(Boolean);
+    return galleryImages.length > 0 
+      ? galleryImages 
+      : [product?.coverImageUrl || FALLBACK_IMAGE];
   }, [product]);
 
   const detailGallery = useMemo(() => {
     if (!product) return [];
-    return product.gallery && product.gallery.length > 0
-      ? Array.from(new Set([product.coverImageUrl, ...product.gallery.map(img => img.url)])).filter(Boolean)
-      : [product.coverImageUrl].filter(Boolean);
+    const images = [];
+    if (product.coverImageUrl) images.push(product.coverImageUrl);
+    (product.gallery || []).forEach(img => {
+      if (img?.url) images.push(img.url);
+    });
+    const uniqueImages = Array.from(new Set(images)).filter(Boolean);
+    return uniqueImages.length > 0 ? uniqueImages : [FALLBACK_IMAGE];
   }, [product]);
-
-  // Loading / Not Found states
-  if (loading) return <div style={{ padding: '4rem', textAlign: 'center' }}>Yükleniyor...</div>;
-  if (!product) return <div style={{ padding: '4rem', textAlign: 'center' }}>Ürün bulunamadı.</div>;
 
   // Handle Detail image thumbnail click with fade transition
   const handleDetailImageChange = (src, idx) => {
@@ -97,6 +102,23 @@ export default function BurobigProductDetail({ product }) {
     }, 8000);
     return () => clearInterval(interval);
   }, [detailGallery, activeDetailIdx]);
+
+  // Early return for missing product placed AFTER all hooks
+  if (!product) {
+    return (
+      <div style={{ padding: '8rem 2rem', textAlign: 'center', backgroundColor: '#f8fafc' }}>
+        <h2 style={{ fontSize: '1.8rem', fontWeight: 600, color: '#1e293b', marginBottom: '1rem' }}>
+          {translate('Ürün Bulunamadı', 'Product Not Found')}
+        </h2>
+        <p style={{ color: '#64748b', marginBottom: '2rem' }}>
+          {translate('Aradığınız ürün sistemde bulunmamaktadır veya kaldırılmış olabilir.', 'The product you are looking for does not exist or may have been removed.')}
+        </p>
+        <Link to={getLocalizedPath('/urunler')} className="btn-primary-dark" style={{ display: 'inline-block' }}>
+          {translate('Tüm Ürünlere Dön', 'Back to All Products')}
+        </Link>
+      </div>
+    );
+  }
 
   // Toggle Accordion section
   const toggleAccordion = (section) => {
@@ -364,7 +386,7 @@ export default function BurobigProductDetail({ product }) {
                   return (
                     <Link key={`${item.id}-${idx}`} to={itemPath} className="carousel-item">
                       <span className="carousel-item-title">{item.title}</span>
-                      <img src={item.coverImageUrl} alt={item.title} />
+                      <img src={item.coverImageUrl || FALLBACK_IMAGE} alt={item.title || ''} />
                     </Link>
                   );
                 })}

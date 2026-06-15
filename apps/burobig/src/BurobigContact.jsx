@@ -1,3 +1,4 @@
+import React from 'react';
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function BurobigContact({
@@ -8,8 +9,17 @@ export default function BurobigContact({
   success,
   error,
   handleSubmit,
-  handleChange
+  handleChange,
+  settings
 }) {
+  const address = settings?.contact?.address || "Balıkhisar, Turgut Reis Cd. no 3, 06750 Akyurt/Ankara";
+  const phone = settings?.contact?.phone || "+90 312 351 07 97";
+  const phone2 = settings?.contact?.phones?.[1] || settings?.contact?.phone2 || "312 351 07 93";
+  const email = settings?.contact?.email || "info@burobig.com.tr";
+  
+  const rawWorkingHours = settings?.contact?.workingHours || settings?.workingHours || "Hafta İçi: 09:00 - 18:00\nCumartesi: 10:00 - 14:00\nPazar: Kapalı";
+  const workingHoursLines = typeof rawWorkingHours === 'string' ? rawWorkingHours.split('\n') : [];
+
   return (
     <main id="main-content" className="corporate-page contact-page">
       <div className="corporate-container">
@@ -37,7 +47,7 @@ export default function BurobigContact({
                   </div>
                   <div className="contact-detail-content">
                     <span className="contact-detail-label">Adres</span>
-                    <p className="contact-detail-value">Balıkhisar, Turgut Reis Cd. no 3, 06750 Akyurt/Ankara</p>
+                    <p className="contact-detail-value">{address}</p>
                   </div>
                 </div>
 
@@ -49,13 +59,17 @@ export default function BurobigContact({
                   <div className="contact-detail-content">
                     <span className="contact-detail-label">Telefon</span>
                     <div className="contact-detail-values">
-                      <a href="tel:+903123510797" className="contact-detail-value">
-                        +90 312 351 07 97
+                      <a href={`tel:${phone.replace(/\s+/g, '')}`} className="contact-detail-value">
+                        {phone}
                       </a>
-                      <span className="contact-detail-separator"> - </span>
-                      <a href="tel:+903123510793" className="contact-detail-value">
-                        312 351 07 93
-                      </a>
+                      {phone2 && (
+                        <>
+                          <span className="contact-detail-separator"> - </span>
+                          <a href={`tel:${phone2.replace(/\s+/g, '')}`} className="contact-detail-value">
+                            {phone2}
+                          </a>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -67,8 +81,8 @@ export default function BurobigContact({
                   </div>
                   <div className="contact-detail-content">
                     <span className="contact-detail-label">E-Posta</span>
-                    <a href="mailto:info@burobig.com.tr" className="contact-detail-value">
-                      info@burobig.com.tr
+                    <a href={`mailto:${email}`} className="contact-detail-value">
+                      {email}
                     </a>
                   </div>
                 </div>
@@ -81,9 +95,20 @@ export default function BurobigContact({
                   <div className="contact-detail-content">
                     <span className="contact-detail-label">Çalışma Saatleri</span>
                     <p className="contact-detail-value">
-                      Hafta İçi: 09:00 - 18:00<br />
-                      Cumartesi: 10:00 - 14:00<br />
-                      Pazar: Kapalı
+                      {workingHoursLines.length > 0 ? (
+                        workingHoursLines.map((line, idx) => (
+                          <React.Fragment key={idx}>
+                            {line}
+                            {idx < workingHoursLines.length - 1 && <br />}
+                          </React.Fragment>
+                        ))
+                      ) : (
+                        <>
+                          Hafta İçi: 09:00 - 18:00<br />
+                          Cumartesi: 10:00 - 14:00<br />
+                          Pazar: Kapalı
+                        </>
+                      )}
                     </p>
                   </div>
                 </div>

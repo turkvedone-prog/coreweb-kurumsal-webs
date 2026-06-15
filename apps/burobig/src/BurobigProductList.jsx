@@ -221,30 +221,31 @@ export default function BurobigProductList({ products }) {
                 const productSlug = product.slug || product.id;
                 const detailPath = getLocalizedPath(`/urunler/${productSlug}`);
                 const cardNumber = (index + 1).toString().padStart(2, '0');
+                const fallbackImage = '/assets/burobig/images/INKA 01.jpg';
 
                 return (
                   <article key={product.id} className="product-card">
                     <span className="product-card__number">{cardNumber}</span>
                     <div className="product-card__content">
                       <h2 className="product-card__title" style={{ fontSize: '20px', lineHeight: '1.2' }}>
-                        {product.title}
+                        {product.title || ''}
                       </h2>
                     </div>
                     <div className="product-card__image-wrapper">
                       <img 
-                        src={product.coverImageUrl} 
-                        alt={product.title} 
+                        src={product.coverImageUrl || fallbackImage} 
+                        alt={product.title || 'Bürobig Ürün'} 
                         loading="lazy"
                       />
                     </div>
                     <div className="product-card__footer" style={{ position: 'relative', top: '7px' }}>
                       <span className="product-card__explore">{translate('Keşfet →', 'Explore →')}</span>
-                      <span className="product-card__category">{product.category}</span>
+                      <span className="product-card__category">{product.category || ''}</span>
                     </div>
                     <Link 
                       to={detailPath} 
                       className="product-card__link" 
-                      aria-label={`${product.title} ${translate('Ürün Detayı', 'Product Detail')}`}
+                      aria-label={`${product.title || ''} ${translate('Ürün Detayı', 'Product Detail')}`}
                     />
                   </article>
                 );

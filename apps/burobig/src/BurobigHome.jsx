@@ -1,39 +1,137 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
 import './burobig.css';
 import BurobigEcoBanner from './BurobigEcoBanner';
+import { getSliders } from '../../services/publicContentService';
+import { updateSEOMeta } from '../../utils/seo';
 
+const DEFAULT_SLIDES = [
+  {
+    id: 'slide-1',
+    eyebrow: 'Yeni Koleksiyon',
+    title: 'İnka Yönetici\nSerisi',
+    description: 'Prestijli detaylar ve modern çizgilerle üst yönetici alanlarında yeni bir standart.',
+    image: '/assets/burobig/images/inka_yonetici_slider_bg.png',
+    ctaLabel: 'Koleksiyonu Keşfet',
+    ctaHref: '/ust-yonetici',
+    isInternalLink: true
+  },
+  {
+    id: 'slide-2',
+    eyebrow: '',
+    title: 'Tasarımda\nYeni Bir Boyut',
+    description: 'Çalışma ve yaşam alanlarınız için ilham veren, zamansız dokunuşlar.',
+    image: '/assets/burobig/images/hero-office-1.png',
+    ctaLabel: 'Koleksiyonu Keşfet',
+    ctaHref: '#koleksiyonlar',
+    isInternalLink: false
+  },
+  {
+    id: 'slide-3',
+    eyebrow: '',
+    title: 'Sakinliğin\nMimarisi',
+    description: 'Soft tonlar and minimalist çizgilerle ruhunuzu dinlendiren estetik alanlar.',
+    image: '/assets/burobig/images/hero-office-2.png',
+    ctaLabel: 'Koleksiyonu Keşfet',
+    ctaHref: '#koleksiyonlar',
+    isInternalLink: false
+  },
+  {
+    id: 'slide-4',
+    eyebrow: '',
+    title: 'İlham Veren\nÇalışma Alanları',
+    description: 'Ergonomi ve estetiğin mükemmel uyumuyla çalışma verimliliğinizi artırın.',
+    image: '/assets/burobig/images/hero-office-3.png',
+    ctaLabel: 'Koleksiyonu Keşfet',
+    ctaHref: '#koleksiyonlar',
+    isInternalLink: false
+  }
+];
+
+function normalizeSlide(slide, activeLang) {
+  const getField = (fieldBase) => {
+    if (activeLang === 'tr') {
+      return slide[`${fieldBase}_tr`] || slide[fieldBase] || '';
+    }
+    return slide[`${fieldBase}_en`] || slide[`${fieldBase}_tr`] || slide[fieldBase] || '';
+  };
+
+  const title = getField('title') || getField('headline') || '';
+  const description = getField('description') || getField('subtitle') || '';
+  const image = slide.image || slide.imageUrl || slide.backgroundImage || '';
+  const ctaLabel = getField('ctaLabel') || getField('buttonText') || (activeLang === 'tr' ? 'Keşfet' : 'Discover');
+  const ctaHref = slide.ctaHref || slide.link || '#';
+  const eyebrow = getField('eyebrow') || getField('category') || getField('tag') || '';
+  const id = slide.id || Math.random().toString();
+  const isInternalLink = ctaHref.startsWith('/') && !ctaHref.startsWith('http');
+  
+  return { id, eyebrow, title, description, image, ctaLabel, ctaHref, isInternalLink };
+}
 
 export default function BurobigHome() {
-  const { tenantMapping, activeLang } = useSite();
-    const getLocalizedPath = (path) => `/${activeLang}${path}`;
+  const { tenantMapping, activeLang, settings } = useSite();
+  const getLocalizedPath = (path) => `/${activeLang}${path}`;
 
   const [activeSlide, setActiveSlide] = useState(0);
-  const slideCount = 4;
+  const [slides, setSlides] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Set custom document title and description
+  // Set custom document title and description using updateSEOMeta
   useEffect(() => {
-    document.title = "Premium Mobilya | Modern Ofis ve Yaşam Alanları";
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.setAttribute('name', 'description');
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.setAttribute('content', 'Çalışma ve yaşam alanlarınız için ilham veren, zamansız dokunuşlar. Modern ofis ve ev mobilyaları koleksiyonunu keşfedin.');
-  }, []);
+    const seoTitle = settings?.seo?.title || (activeLang === 'tr' ? "Premium Mobilya | Modern Ofis ve Yaşam Alanları" : "Premium Furniture | Modern Office & Living Spaces");
+    const seoDesc = settings?.seo?.description || (activeLang === 'tr' 
+      ? 'Çalışma ve yaşam alanlarınız için ilham veren, zamansız dokunuşlar. Modern ofis ve ev mobilyaları koleksiyonunu keşfedin.'
+      : 'Inspiring, timeless touches for your work and living spaces. Discover the modern office and home furniture collection.');
+    
+    const resolvedCompany = settings?.companyName || 'Bürobig';
+    const hasCompany = seoTitle.toLowerCase().includes(resolvedCompany.toLowerCase()) || seoTitle.toLowerCase().includes('burobig');
 
-  
+    updateSEOMeta({
+      title: seoTitle,
+      description: seoDesc,
+      companyName: hasCompany ? '' : resolvedCompany
+    });
+  }, [settings, activeLang]);
+
+  // Fetch sliders from Firestore
+  useEffect(() => {
+    getSliders(tenantMapping.tenantId)
+      .then((raw) => {
+        if (raw && raw.length > 0) {
+          // Sort order validation/fallback just in case
+          const sorted = [...raw].sort((a, b) => {
+            const orderA = typeof a.order === 'number' ? a.order : parseInt(a.order || 0, 10);
+            const orderB = typeof b.order === 'number' ? b.order : parseInt(b.order || 0, 10);
+            if (orderA !== orderB) return orderA - orderB;
+            
+            const timeA = a.createdAt?.seconds ? a.createdAt.seconds * 1000 : new Date(a.createdAt || 0).getTime();
+            const timeB = b.createdAt?.seconds ? b.createdAt.seconds * 1000 : new Date(b.createdAt || 0).getTime();
+            return timeA - timeB;
+          });
+          const normalized = sorted.map(slide => normalizeSlide(slide, activeLang));
+          setSlides(normalized);
+        } else {
+          setSlides(DEFAULT_SLIDES);
+        }
+      })
+      .catch(() => {
+        setSlides(DEFAULT_SLIDES);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [tenantMapping.tenantId, activeLang]);
 
   // Safe Hero Slider Auto-play
   useEffect(() => {
+    if (slides.length <= 1) return;
     const interval = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % slideCount);
+      setActiveSlide((prev) => (prev + 1) % slides.length);
     }, 8000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [slides.length]);
 
   // Safe Intersection Observer for scroll animation reveal-up
   useEffect(() => {
@@ -66,71 +164,107 @@ export default function BurobigHome() {
     setActiveSlide(index);
   };
 
-
+  const renderSlides = slides.length > 0 ? slides : DEFAULT_SLIDES;
 
   return (
     <main id="main-content">
         {/* Hero Slider */}
         <section className="hero-section" aria-labelledby="hero-heading" id="hero">
           <div className="hero-slider" id="hero-slider">
-            {/* Slide 1 */}
-            <div className={`hero-slide ${activeSlide === 0 ? 'active' : ''}`}>
-              <img
-                src="/assets/burobig/images/inka_yonetici_slider_bg.png"
-                alt="İnka Yönetici Serisi"
-                className="hero-slide-bg"
-                width="1920"
-                height="1080"
-                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                fetchPriority="high"
-                loading="eager"
-                decoding="sync"
-              />
-              <div className="hero-content">
-                <span className="hero-subtitle" style={{ fontSize: '14px', fontWeight: 600, textTransform: 'uppercase', color: 'var(--color-accent)', letterSpacing: '2px', display: 'block', marginBottom: '1rem' }}>Yeni Koleksiyon</span>
-                <h1 id="hero-heading">İnka Yönetici<br />Serisi</h1>
-                <p>Prestijli detaylar ve modern çizgilerle üst yönetici alanlarında yeni bir standart.</p>
-                <Link to={getLocalizedPath('/ust-yonetici')} className="btn-primary" id="hero-cta-1">Koleksiyonu Keşfet</Link>
-              </div>
-            </div>
-
-            {/* Slide 2 */}
-            <div className={`hero-slide ${activeSlide === 1 ? 'active' : ''}`}>
-              <div className="hero-slide-bg" style={{ backgroundImage: "url('/assets/burobig/images/hero-office-1.png')" }}></div>
-              <div className="hero-content">
-                <h2>Tasarımda<br />Yeni Bir Boyut</h2>
-                <p>Çalışma ve yaşam alanlarınız için ilham veren, zamansız dokunuşlar.</p>
-                <a href="#koleksiyonlar" className="btn-primary" id="hero-cta-2">Koleksiyonu Keşfet</a>
-              </div>
-            </div>
-
-            {/* Slide 3 */}
-            <div className={`hero-slide ${activeSlide === 2 ? 'active' : ''}`}>
-              <div className="hero-slide-bg" style={{ backgroundImage: "url('/assets/burobig/images/hero-office-2.png')" }}></div>
-              <div className="hero-content">
-                <h2>Sakinliğin<br />Mimarisi</h2>
-                <p>Soft tonlar ve minimalist çizgilerle ruhunuzu dinlendiren estetik alanlar.</p>
-                <a href="#koleksiyonlar" className="btn-primary" id="hero-cta-3">Koleksiyonu Keşfet</a>
-              </div>
-            </div>
-
-            {/* Slide 4 */}
-            <div className={`hero-slide ${activeSlide === 3 ? 'active' : ''}`}>
-              <div className="hero-slide-bg" style={{ backgroundImage: "url('/assets/burobig/images/hero-office-3.png')" }}></div>
-              <div className="hero-content">
-                <h2>İlham Veren<br />Çalışma Alanları</h2>
-                <p>Ergonomi ve estetiğin mükemmel uyumuyla çalışma verimliliğinizi artırın.</p>
-                <a href="#koleksiyonlar" className="btn-primary" id="hero-cta-4">Koleksiyonu Keşfet</a>
-              </div>
-            </div>
+            {renderSlides.map((slide, index) => {
+              const isActive = activeSlide === index;
+              return (
+                <div key={slide.id} className={`hero-slide ${isActive ? 'active' : ''}`}>
+                  {index === 0 ? (
+                    <img
+                      src={slide.image}
+                      alt={slide.title.replace(/\n/g, ' ')}
+                      className="hero-slide-bg"
+                      width="1920"
+                      height="1080"
+                      style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                      fetchPriority="high"
+                      loading="eager"
+                      decoding="sync"
+                    />
+                  ) : (
+                    <div
+                      className="hero-slide-bg"
+                      style={{ backgroundImage: `url('${slide.image}')` }}
+                    ></div>
+                  )}
+                  <div className="hero-content">
+                    {slide.eyebrow && (
+                      <span
+                        className="hero-subtitle"
+                        style={{
+                          fontSize: '14px',
+                          fontWeight: 600,
+                          textTransform: 'uppercase',
+                          color: 'var(--color-accent)',
+                          letterSpacing: '2px',
+                          display: 'block',
+                          marginBottom: '1rem'
+                        }}
+                      >
+                        {slide.eyebrow}
+                      </span>
+                    )}
+                    {index === 0 ? (
+                      <h1 id="hero-heading">
+                        {slide.title.split('\n').map((line, idx) => (
+                          <React.Fragment key={idx}>
+                            {line}
+                            {idx < slide.title.split('\n').length - 1 && <br />}
+                          </React.Fragment>
+                        ))}
+                      </h1>
+                    ) : (
+                      <h2>
+                        {slide.title.split('\n').map((line, idx) => (
+                          <React.Fragment key={idx}>
+                            {line}
+                            {idx < slide.title.split('\n').length - 1 && <br />}
+                          </React.Fragment>
+                        ))}
+                      </h2>
+                    )}
+                    <p>{slide.description}</p>
+                    {slide.isInternalLink ? (
+                      <Link
+                        to={getLocalizedPath(slide.ctaHref)}
+                        className="btn-primary"
+                        id={`hero-cta-${index + 1}`}
+                      >
+                        {slide.ctaLabel}
+                      </Link>
+                    ) : (
+                      <a
+                        href={slide.ctaHref}
+                        className="btn-primary"
+                        id={`hero-cta-${index + 1}`}
+                      >
+                        {slide.ctaLabel}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
 
             {/* Slider Controls */}
-            <div className="slider-controls">
-              <button className={`slider-dot ${activeSlide === 0 ? 'active' : ''}`} aria-label="Slayt 1" onClick={() => handleDotClick(0)}></button>
-              <button className={`slider-dot ${activeSlide === 1 ? 'active' : ''}`} aria-label="Slayt 2" onClick={() => handleDotClick(1)}></button>
-              <button className={`slider-dot ${activeSlide === 2 ? 'active' : ''}`} aria-label="Slayt 3" onClick={() => handleDotClick(2)}></button>
-              <button className={`slider-dot ${activeSlide === 3 ? 'active' : ''}`} aria-label="Slayt 4" onClick={() => handleDotClick(3)}></button>
-            </div>
+            {renderSlides.length > 1 && (
+              <div className="slider-controls">
+                {renderSlides.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`slider-dot ${activeSlide === index ? 'active' : ''}`}
+                    aria-label={`Slayt ${index + 1}`}
+                    onClick={() => handleDotClick(index)}
+                  ></button>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
