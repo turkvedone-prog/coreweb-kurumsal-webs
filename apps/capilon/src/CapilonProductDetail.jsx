@@ -59,6 +59,31 @@ const capilonProducts = {
   }
 };
 
+const swatchesData = {
+  tr: {
+    fabrics: [
+      { name: "Krem Keten", color: "#EAE6D7" },
+      { name: "Kum Gri", color: "#A09E96" },
+      { name: "Adaçayı", color: "#788975" }
+    ],
+    legs: [
+      { name: "Doğal Meşe", color: "#C7A15C" },
+      { name: "Koyu Ceviz", color: "#6B4E38" }
+    ]
+  },
+  en: {
+    fabrics: [
+      { name: "Cream Linen", color: "#EAE6D7" },
+      { name: "Sand Grey", color: "#A09E96" },
+      { name: "Sage Green", color: "#788975" }
+    ],
+    legs: [
+      { name: "Natural Oak", color: "#C7A15C" },
+      { name: "Dark Walnut", color: "#6B4E38" }
+    ]
+  }
+};
+
 export default function CapilonProductDetail({ product }) {
   const { slug } = useParams();
   const { tenantMapping, activeLang } = useSite();
@@ -92,6 +117,12 @@ export default function CapilonProductDetail({ product }) {
 
   // React state for accordion open index (default 1st panel open)
   const [openAccordionIdx, setOpenAccordionIdx] = useState(null);
+
+  // Swatches and Tab States
+  const swatches = swatchesData[activeLang] || swatchesData.tr;
+  const [activeFabric, setActiveFabric] = useState(swatches.fabrics[0]?.name || '');
+  const [activeLeg, setActiveLeg] = useState(swatches.legs[0]?.name || '');
+  const [activeTab, setActiveTab] = useState('materials');
 
   useEffect(() => {
     updateSEOMeta({
@@ -441,6 +472,120 @@ export default function CapilonProductDetail({ product }) {
             </div>
           </div>
         </section>
+
+        {/* Tab & Swatches Block */}
+        <div className="white-bottom-area" style={{ width: '100%', marginTop: '3rem' }}>
+          <section className="product-details-tabs" style={{ width: '100%' }}>
+            <h2 className="apple-style-heading" style={{ color: '#414042' }}>
+              {translate('Özellikler & Materyal', 'Specifications & Materials')}
+            </h2>
+            
+            <div className="tab-buttons">
+              <button 
+                className={`tab-btn ${activeTab === 'materials' ? 'active' : ''}`} 
+                onClick={() => setActiveTab('materials')}
+              >
+                {translate('Kumaş & Renkler', 'Fabrics & Colors')}
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'specs' ? 'active' : ''}`} 
+                onClick={() => setActiveTab('specs')}
+              >
+                {translate('Teknik Detaylar', 'Technical Details')}
+              </button>
+            </div>
+
+            <div className="tab-content-container" style={{ minHeight: '200px' }}>
+              
+              {/* Tab: Materials & Swatches */}
+              <div className={`tab-content ${activeTab === 'materials' ? 'active' : ''}`}>
+                <div className="material-group">
+                  <h4>{translate('Kumaş Seçenekleri', 'Fabric Options')}</h4>
+                  <div className="swatch-grid">
+                    {swatches.fabrics.map((item) => (
+                      <div 
+                        key={item.name} 
+                        className="swatch-item" 
+                        onClick={() => setActiveFabric(item.name)}
+                        title={item.name}
+                      >
+                        <div 
+                          className="swatch-color" 
+                          style={{ 
+                            backgroundColor: item.color,
+                            border: activeFabric === item.name ? '2px solid #1a1a1a' : '1px solid #e5e5e5',
+                            boxShadow: activeFabric === item.name ? '0 0 0 2px rgba(26,26,26,0.1)' : 'none',
+                            transform: activeFabric === item.name ? 'scale(1.05)' : 'none'
+                          }}
+                        />
+                        <span style={{ fontWeight: activeFabric === item.name ? '600' : '400' }}>
+                          {item.name}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="material-group" style={{ marginTop: '2.5rem' }}>
+                  <h4>{translate('Ahşap Ayak Seçenekleri', 'Wooden Leg Options')}</h4>
+                  <div className="swatch-grid">
+                    {swatches.legs.map((item) => (
+                      <div 
+                        key={item.name} 
+                        className="swatch-item" 
+                        onClick={() => setActiveLeg(item.name)}
+                        title={item.name}
+                      >
+                        <div 
+                          className="swatch-color" 
+                          style={{ 
+                            backgroundColor: item.color,
+                            border: activeLeg === item.name ? '2px solid #1a1a1a' : '1px solid #e5e5e5',
+                            boxShadow: activeLeg === item.name ? '0 0 0 2px rgba(26,26,26,0.1)' : 'none',
+                            transform: activeLeg === item.name ? 'scale(1.05)' : 'none',
+                            borderRadius: '50%'
+                          }}
+                        />
+                        <span style={{ fontWeight: activeLeg === item.name ? '600' : '400' }}>
+                          {item.name}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Tab: Specs */}
+              <div className={`tab-content ${activeTab === 'specs' ? 'active' : ''}`}>
+                <ul className="doc-list" style={{ listStyle: 'none', padding: 0 }}>
+                  {(pData.technicalDetails || product?.technicalDetails || "İskelet: Fırınlanmış gürgen ağacı ve kontrplak\nSünger: 35 Dansite HR Soft Sünger + Kaz Tüyü Elyaf Katman\nKumaş: Su itici, leke tutmaz, kolay silinebilir premium dokuma").split('\n').map((line, idx) => {
+                    const parts = line.split(':');
+                    if (parts.length > 1) {
+                      return (
+                        <li key={idx} style={{ padding: '1.2rem 0', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <strong>{parts[0].trim()}:</strong>
+                          <span style={{ color: '#666' }}>{parts.slice(1).join(':').trim()}</span>
+                        </li>
+                      );
+                    }
+                    return (
+                      <li key={idx} style={{ padding: '1.2rem 0', borderBottom: '1px solid #f0f0f0', color: '#666', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        {line}
+                      </li>
+                    );
+                  })}
+                  {(pData.usageAreas || product?.usageAreas) && (
+                    <li style={{ padding: '1.2rem 0', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <strong>{translate('Kullanım Alanları', 'Usage Areas')}:</strong>
+                      <span style={{ color: '#666' }}>{pData.usageAreas || product?.usageAreas}</span>
+                    </li>
+                  )}
+                </ul>
+              </div>
+
+            </div>
+          </section>
+        </div>
 
         {/* Alternative Products Section (Infinite Loop Marquee Track) */}
         <section className="alternative-products-section">

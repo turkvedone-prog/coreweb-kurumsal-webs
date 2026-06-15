@@ -108,7 +108,7 @@ export default function CapilonHome() {
               <img 
                 src="/assets/capilon/images/hero_living_room_1779477814666.png" 
                 alt="" 
-                fetchPriority="high" 
+                fetchpriority="high" 
                 loading="eager"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
