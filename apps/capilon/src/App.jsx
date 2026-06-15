@@ -15,6 +15,7 @@ import CapilonHistory from './CapilonHistory';
 import CapilonProductDetail from './CapilonProductDetail';
 import CapilonStores from './CapilonStores';
 import CapilonCategoryDetail from './CapilonCategoryDetail';
+import CapilonDiningRoomPage from './CapilonDiningRoomPage';
 
 // ─── Language Wrapper (Outlet pattern) ───────────────────────────────────────
 // Validates :lang param and renders SiteLayout + child routes via <Outlet />
@@ -106,6 +107,7 @@ export default function App() {
           <Route path="blog" element={<CapilonBlogList />} />
           <Route path="blog/:slug" element={<CapilonBlogDetail />} />
           <Route path="koleksiyonlar" element={<CapilonCollectionsPage />} />
+          <Route path="koleksiyonlar/yemek-odalari" element={<CapilonDiningRoomPage />} />
           <Route path="koleksiyonlar/:slug" element={<CapilonCategoryDetail />} />
           <Route path="urunler/:slug" element={<CapilonProductDetail />} />
           <Route path="magazalarimiz" element={<CapilonStores />} />

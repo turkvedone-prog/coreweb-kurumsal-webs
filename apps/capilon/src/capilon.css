@@ -6236,7 +6236,7 @@ header:has(.nav-list li.has-mega-menu:hover) .mega-menu-backdrop {
 }
 
 .collections-page-grid.dining-page-grid {
-    row-gap: 81px;
+    row-gap: 100px;
 }
 
 /* ============================================================
