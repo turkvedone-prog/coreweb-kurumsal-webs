@@ -473,7 +473,8 @@ export default function CapilonProductDetail({ product }) {
           </div>
         </section>
 
-        {/* Tab & Swatches Block */}
+        {/* Tab & Swatches Block disabled per FAZ 19.5 */}
+        {false && (
         <div className="white-bottom-area" style={{ width: '100%', marginTop: '3rem' }}>
           <section className="product-details-tabs" style={{ width: '100%' }}>
             <h2 className="apple-style-heading" style={{ color: '#414042' }}>
@@ -586,6 +587,7 @@ export default function CapilonProductDetail({ product }) {
             </div>
           </section>
         </div>
+        )}
 
         {/* Alternative Products Section (Infinite Loop Marquee Track) */}
         <section className="alternative-products-section">

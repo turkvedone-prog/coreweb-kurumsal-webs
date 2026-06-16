@@ -6,7 +6,6 @@ import './burckaplama.css';
 
 export default function BurcKaplamaHeader() {
   const { tenantMapping, activeLang } = useSite();
-  const { tenantSlug } = tenantMapping;
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
@@ -15,11 +14,8 @@ export default function BurcKaplamaHeader() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const hostname = window.location.hostname;
-  const isLocalOrPortal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.vercel.app');
-
   const getLocalizedPath = (path) => {
-    const prefix = isLocalOrPortal ? `/${tenantSlug}/${activeLang}` : `/${activeLang}`;
+    const prefix = `/${activeLang}`;
     if (path === '/') return prefix + '/';
     return `${prefix}${path}`;
   };
@@ -27,18 +23,7 @@ export default function BurcKaplamaHeader() {
   const handleLangChange = (newLang) => {
     if (newLang === activeLang) return;
     const pathSegments = location.pathname.split('/').filter(Boolean);
-    const langIndex = isLocalOrPortal ? 1 : 0;
-    
-    if (pathSegments.length > langIndex) {
-      pathSegments[langIndex] = newLang;
-    } else {
-      if (isLocalOrPortal) {
-        pathSegments[0] = tenantSlug;
-        pathSegments[1] = newLang;
-      } else {
-        pathSegments[0] = newLang;
-      }
-    }
+    pathSegments[0] = newLang;
     navigate('/' + pathSegments.join('/'));
     setLangDropdownOpen(false);
     setMobileMenuOpen(false);

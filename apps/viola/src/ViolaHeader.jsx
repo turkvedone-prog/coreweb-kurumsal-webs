@@ -70,8 +70,7 @@ export default function ViolaHeader() {
     setMobileMenuOpen(false);
   };
 
-  const tenantSlug = tenantMapping?.tenantSlug || 'viola';
-  const prefix = `/${tenantSlug}/${activeLang}`;
+  const prefix = `/${activeLang}`;
 
   return (
     <header 
