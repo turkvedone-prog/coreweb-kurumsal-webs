@@ -9,6 +9,17 @@ export default function BurobigHeader() {
   // Her ortamda /:lang prefix kullan (local = production ile aynı)
   const getLocalizedPath = (path) => `/${activeLang}${path}`;
 
+  const handleLogoClick = (e) => {
+    const currentPath = window.location.pathname;
+    const homePath = getLocalizedPath('/');
+    const cleanHomePath = `/${activeLang}`;
+
+    if (currentPath === homePath || currentPath === cleanHomePath || currentPath === `${cleanHomePath}/`) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   // Safe header scroll event listener with animation frames and cleanup
   useEffect(() => {
     const header = document.getElementById('site-header');
@@ -50,7 +61,7 @@ export default function BurobigHeader() {
         <div className="header-container">
           {/* LOGO */}
           <div className="logo">
-            <Link to={getLocalizedPath('/')} aria-label="Ana Sayfa — Bürobig">
+            <Link to={getLocalizedPath('/')} onClick={handleLogoClick} aria-label="Ana Sayfa — Bürobig">
               <img
                 src={logoUrl}
                 alt="Bürobig"
