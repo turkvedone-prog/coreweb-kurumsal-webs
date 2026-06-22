@@ -327,6 +327,8 @@ export default function App() {
           <Route path="urunler/*" element={<BurobigProductDetailPage />} />
           <Route path="ust-yonetici" element={<BurobigProductPage />} />
           <Route path="yonetici" element={<BurobigProductPage />} />
+          <Route path="calisma-masalari" element={<BurobigProductPage />} />
+          <Route path="calisma" element={<BurobigProductPage />} />
           <Route path="ofis-koltuklari" element={<BurobigProductPage />} />
           <Route path="operasyonel-masalar" element={<BurobigProductPage />} />
           <Route path="toplanti-masalari" element={<BurobigProductPage />} />
