@@ -376,11 +376,18 @@ export default function BurobigProductDetail({ product }) {
                 <div className="acc-toggle-icon"></div>
               </button>
               <div className={`accordion-content ${openAccordion === 'specs' ? 'active' : ''}`}>
-                {technicalDetails ? (
+                {technicalDetails && technicalDetails.replace(/<[^>]*>/g, '').trim() !== '' ? (
                   <div className="specs-placeholder" style={{ marginBottom: '2rem' }}>
-                    <p style={{ fontWeight: 300, lineHeight: 1.8, color: '#1a1a1a', whiteSpace: 'pre-line' }}>
-                      {technicalDetails}
-                    </p>
+                    {technicalDetails.trim().startsWith('<') ? (
+                      <div 
+                        style={{ fontWeight: 300, lineHeight: 1.8, color: '#1a1a1a' }} 
+                        dangerouslySetInnerHTML={{ __html: technicalDetails }} 
+                      />
+                    ) : (
+                      <p style={{ fontWeight: 300, lineHeight: 1.8, color: '#1a1a1a', whiteSpace: 'pre-line' }}>
+                        {technicalDetails}
+                      </p>
+                    )}
                   </div>
                 ) : null}
                 <ul className="doc-list">
