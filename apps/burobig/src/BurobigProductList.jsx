@@ -110,11 +110,20 @@ export default function BurobigProductList({ products }) {
     }
 
     if (targetSubcatSlug) {
-      const isSubcatMatch = subcatSlug.includes(targetSubcatSlug) || 
-                            targetSubcatSlug.includes(subcatSlug) ||
-                            (targetSubcatSlug === 'ust-yonetici' && (subcatSlug.includes('ust') || subcatSlug.includes('exec'))) ||
-                            (targetSubcatSlug === 'calisma' && (subcatSlug.includes('calis') || subcatSlug.includes('work')));
-      if (!isSubcatMatch) return false;
+      if (targetSubcatSlug === 'yonetici') {
+        // Strict matching for manager: subcat must be 'yonetici' and cannot be 'ust-yonetici'
+        if (subcatSlug === 'ust-yonetici' || catSlug.includes('ust-yonetici')) return false;
+        if (subcatSlug !== 'yonetici' && !catSlug.includes('yonetici-masasi')) return false;
+      } else if (targetSubcatSlug === 'ust-yonetici') {
+        // Strict matching for executive: subcat must be 'ust-yonetici'
+        if (subcatSlug !== 'ust-yonetici' && !catSlug.includes('ust-yonetici-masasi')) return false;
+      } else {
+        // General dynamic matching for other categories (e.g. calisma)
+        const isSubcatMatch = subcatSlug === targetSubcatSlug ||
+                              (subcatSlug && subcatSlug.includes(targetSubcatSlug)) ||
+                              (targetSubcatSlug === 'calisma' && (subcatSlug.includes('calis') || subcatSlug.includes('work') || catSlug.includes('calis') || catSlug.includes('work')));
+        if (!isSubcatMatch) return false;
+      }
     }
 
     return true;
