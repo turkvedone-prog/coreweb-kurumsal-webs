@@ -2745,13 +2745,19 @@ body, html, ul, ol {
 
 .detail-showcase__subtitle {
     display: block; /* Ensure block display to respect margins */
-    font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 400;
     color: var(--color-text-muted);
     letter-spacing: 2px;
     text-transform: uppercase;
     margin-top: -4px; /* Shifted 4px up */
     margin-bottom: 50px; /* Shifted description 25px up (from 75px to 50px) */
+    text-decoration: none;
+    transition: color var(--transition-base, 0.3s ease);
+}
+
+.detail-showcase__subtitle:hover {
+    color: var(--color-accent);
 }
 
 .detail-showcase__desc {

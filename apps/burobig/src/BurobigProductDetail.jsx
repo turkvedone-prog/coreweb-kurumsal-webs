@@ -18,6 +18,27 @@ export default function BurobigProductDetail({ product }) {
   const technicalDetails = resolveField(product, activeLang, 'technicalDetails') || product?.technicalDetails || '';
   const usageAreas = resolveField(product, activeLang, 'usageAreas') || product?.usageAreas || '';
 
+  const getCategoryPath = (cat, subcat) => {
+    const c = (cat || '').toLowerCase().trim();
+    const s = (subcat || '').toLowerCase().trim();
+
+    if (s.includes('üst yönetici') || c.includes('üst yönetici') || s.includes('ust yonetici') || c.includes('ust yonetici')) {
+      return '/ust-yonetici';
+    }
+    if (s.includes('koltuk') || c.includes('koltuk')) {
+      return '/ofis-koltuklari';
+    }
+    if (s.includes('operasyonel') || c.includes('operasyonel')) {
+      return '/operasyonel-masalar';
+    }
+    if (s.includes('toplantı') || c.includes('toplantı') || s.includes('toplanti') || c.includes('toplanti')) {
+      return '/toplanti-masalari';
+    }
+    return '/urunler';
+  };
+
+  const categoryPath = getCategoryPath(product?.category, product?.subcategory);
+
   const FALLBACK_IMAGE = '/assets/burobig/images/INKA 01.jpg';
 
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -250,9 +271,9 @@ export default function BurobigProductDetail({ product }) {
           {/* Description & Action Column */}
           <div className="detail-showcase__content">
             <h2 className="detail-showcase__title">{productTitle}</h2>
-            <span className="detail-showcase__subtitle">
+            <Link to={getLocalizedPath(categoryPath)} className="detail-showcase__subtitle">
               {(product.subcategory || product.category)?.toUpperCase()}
-            </span>
+            </Link>
             <div className="detail-showcase__desc">
               {productDescription ? (
                 productDescription.startsWith('<') ? (
