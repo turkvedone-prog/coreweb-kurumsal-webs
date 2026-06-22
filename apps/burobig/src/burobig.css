@@ -2547,6 +2547,10 @@ body, html, ul, ol {
     transition: opacity 0.8s ease-in-out, visibility 0.8s;
 }
 
+.product-premium-gallery.initial-mount .hero-premium-img {
+    transition: none !important;
+}
+
 .product-premium-gallery .hero-premium-img.active {
     opacity: 1;
     visibility: visible;

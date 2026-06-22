@@ -1,6 +1,8 @@
 import { db } from '../config/firebase';
 import { doc, getDoc, collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 
+const activeProductsCache = {};
+
 export async function getCompanySettings(tenantId) {
   if (!tenantId) return null;
   if (tenantId === 'TEN-VIOLA' && import.meta.env.DEV) {
@@ -197,6 +199,9 @@ export async function getActiveProducts(tenantId) {
       }
     ];
   }
+  if (activeProductsCache[tenantId]) {
+    return activeProductsCache[tenantId];
+  }
   try {
     const productsRef = collection(db, 'tenants', tenantId, 'products');
     let q;
@@ -210,6 +215,7 @@ export async function getActiveProducts(tenantId) {
           products.push({ id: doc.id, ...data });
         }
       });
+      activeProductsCache[tenantId] = products;
       return products;
     } catch (indexError) {
       console.warn('Index not found for products, falling back to client-side sorting:', indexError);
@@ -232,6 +238,7 @@ export async function getActiveProducts(tenantId) {
         const dateB = b.createdAt?.seconds ? b.createdAt.seconds * 1000 : (b.createdAt ? new Date(b.createdAt).getTime() : 0);
         return dateB - dateA;
       });
+      activeProductsCache[tenantId] = products;
       return products;
     }
   } catch (error) {

@@ -27,6 +27,7 @@ export default function BurobigProductDetail({ product }) {
   const [thumbStartIndex, setThumbStartIndex] = useState(0);
   const [openAccordion, setOpenAccordion] = useState(null);
   const detailImgRef = useRef(null);
+  const [isInitial, setIsInitial] = useState(true);
 
   // Storing information from previous renders to adjust state on product change without useEffect
   const [prevProduct, setPrevProduct] = useState(product);
@@ -37,6 +38,12 @@ export default function BurobigProductDetail({ product }) {
     setActiveHeroIdx(0);
     setThumbStartIndex(0);
   }
+
+  useEffect(() => {
+    setIsInitial(true);
+    const timer = setTimeout(() => setIsInitial(false), 200);
+    return () => clearTimeout(timer);
+  }, [product?.slug]);
 
   // Fetch related products
   useEffect(() => {
@@ -179,7 +186,7 @@ export default function BurobigProductDetail({ product }) {
     <main className="product-page">
       {/* Product Hero Premium (Full-Bleed Showcase) */}
       <section className="product-hero-premium">
-        <div className="product-premium-gallery">
+        <div className={`product-premium-gallery ${isInitial ? 'initial-mount' : ''}`}>
           {heroImages.map((src, index) => (
             <img
               key={index}
