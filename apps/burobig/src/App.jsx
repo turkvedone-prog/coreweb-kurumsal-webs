@@ -91,11 +91,7 @@ function BurobigBlogPage() {
   }, [activeLang]);
 
   if (loading) {
-    return (
-      <div style={{ padding: '8rem 2rem', textAlign: 'center', minHeight: '65vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', color: '#8c9094' }}>
-        Yükleniyor...
-      </div>
-    );
+    return <div style={{ minHeight: '75vh' }} />;
   }
 
   return <BurobigBlogList blogs={blogs} formatDate={formatDate} getLocalizedPath={getLocalizedPath} />;
@@ -127,11 +123,7 @@ function BurobigProductPage() {
   }, [activeLang, tenantMapping]);
 
   if (loading) {
-    return (
-      <div style={{ padding: '8rem 2rem', textAlign: 'center', minHeight: '65vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', color: '#8c9094' }}>
-        Yükleniyor...
-      </div>
-    );
+    return <div style={{ minHeight: '75vh' }} />;
   }
   return <BurobigProductList products={products} />;
 }
@@ -172,11 +164,7 @@ function BurobigProductDetailPage() {
   }, [product, activeLang]);
 
   if (loading) {
-    return (
-      <div style={{ padding: '8rem 2rem', textAlign: 'center', minHeight: '65vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', color: '#8c9094' }}>
-        Yükleniyor...
-      </div>
-    );
+    return <div style={{ minHeight: '75vh' }} />;
   }
   if (!product) return <div style={{ padding: '4rem', textAlign: 'center' }}>Ürün bulunamadı.</div>;
 

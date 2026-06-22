@@ -57,9 +57,7 @@ export default function BurobigBlogDetail() {
 
   if (loading) {
     return (
-      <main id="main-content" style={{ padding: '8rem 2rem', textAlign: 'center', minHeight: '65vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ color: '#8c9094', fontSize: '1.25rem' }}>{translate('Yükleniyor...', 'Loading...')}</div>
-      </main>
+      <main id="main-content" style={{ minHeight: '75vh' }} />
     );
   }
 
