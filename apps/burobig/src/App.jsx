@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
 import {
   BrowserRouter, Routes, Route, Outlet,
   useParams, useNavigate, Navigate
@@ -6,19 +6,21 @@ import {
 
 import SiteLayout from './layouts/SiteLayout';
 import { useSite } from './layouts/SiteLayout';
-import BurobigHome from './BurobigHome';
-import BurobigBlogList from './BurobigBlogList';
-import BurobigBlogDetail from './BurobigBlogDetail';
-import BurobigProductList from './BurobigProductList';
-import BurobigProductDetail from './BurobigProductDetail';
-import BurobigContact from './BurobigContact';
-import BurobigDesigners from './BurobigDesigners';
-import BurobigHistory from './BurobigHistory';
-import BurobigDesignProcess from './BurobigDesignProcess';
-import BurobigDesignPhilosophy from './BurobigDesignPhilosophy';
-import BurobigManifesto from './BurobigManifesto';
-import BurobigQualityPolicy from './BurobigQualityPolicy';
-import BurobigSustainability from './BurobigSustainability';
+
+const BurobigHome = lazy(() => import('./BurobigHome'));
+const BurobigBlogList = lazy(() => import('./BurobigBlogList'));
+const BurobigBlogDetail = lazy(() => import('./BurobigBlogDetail'));
+const BurobigProductList = lazy(() => import('./BurobigProductList'));
+const BurobigProductDetail = lazy(() => import('./BurobigProductDetail'));
+const BurobigContact = lazy(() => import('./BurobigContact'));
+const BurobigDesigners = lazy(() => import('./BurobigDesigners'));
+const BurobigHistory = lazy(() => import('./BurobigHistory'));
+const BurobigDesignProcess = lazy(() => import('./BurobigDesignProcess'));
+const BurobigDesignPhilosophy = lazy(() => import('./BurobigDesignPhilosophy'));
+const BurobigManifesto = lazy(() => import('./BurobigManifesto'));
+const BurobigQualityPolicy = lazy(() => import('./BurobigQualityPolicy'));
+const BurobigSustainability = lazy(() => import('./BurobigSustainability'));
+
 import { getActiveProducts, getActiveProductBySlug } from '../../services/publicContentService';
 import { submitLead, resolveField } from '@coreweb/shared-ui';
 import { updateSEOMeta } from '../../utils/seo';
@@ -130,7 +132,11 @@ function BurobigProductPage() {
 
 // ─── Product Detail Page Wrapper (fetches product by slug) ──────────────────
 function BurobigProductDetailPage() {
-  const { slug } = useParams();
+  const params = useParams();
+  let slug = params["*"] || params.slug || '';
+  if (slug.endsWith('/')) {
+    slug = slug.slice(0, -1);
+  }
   const { tenantMapping, activeLang } = useSite();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -186,7 +192,9 @@ function BurobigLangWrapper() {
 
   return (
     <SiteLayout activeLang={lang}>
-      <Outlet />
+      <Suspense fallback={<div style={{ minHeight: '75vh' }} />}>
+        <Outlet />
+      </Suspense>
     </SiteLayout>
   );
 }
@@ -316,8 +324,9 @@ export default function App() {
           <Route path="blog" element={<BurobigBlogPage />} />
           <Route path="blog/:slug" element={<BurobigBlogDetail />} />
           <Route path="urunler" element={<BurobigProductPage />} />
-          <Route path="urunler/:slug" element={<BurobigProductDetailPage />} />
+          <Route path="urunler/*" element={<BurobigProductDetailPage />} />
           <Route path="ust-yonetici" element={<BurobigProductPage />} />
+          <Route path="yonetici" element={<BurobigProductPage />} />
           <Route path="ofis-koltuklari" element={<BurobigProductPage />} />
           <Route path="operasyonel-masalar" element={<BurobigProductPage />} />
           <Route path="toplanti-masalari" element={<BurobigProductPage />} />

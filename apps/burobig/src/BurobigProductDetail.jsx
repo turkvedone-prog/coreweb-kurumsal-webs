@@ -17,13 +17,17 @@ export default function BurobigProductDetail({ product }) {
   const productDescription = resolveField(product, activeLang, 'description') || resolveField(product, activeLang, 'content') || '';
   const technicalDetails = resolveField(product, activeLang, 'technicalDetails') || product?.technicalDetails || '';
   const usageAreas = resolveField(product, activeLang, 'usageAreas') || product?.usageAreas || '';
+  const productSlug = resolveField(product, activeLang, 'slug') || product?.slug || product?.id;
 
   const getCategoryPath = (cat, subcat) => {
-    const c = (cat || '').toLowerCase().trim();
-    const s = (subcat || '').toLowerCase().trim();
+    const c = (cat || '').toLocaleLowerCase('tr-TR').trim();
+    const s = (subcat || '').toLocaleLowerCase('tr-TR').trim();
 
     if (s.includes('üst yönetici') || c.includes('üst yönetici') || s.includes('ust yonetici') || c.includes('ust yonetici')) {
       return '/ust-yonetici';
+    }
+    if (s.includes('yönetici') || c.includes('yönetici') || s.includes('yonetici') || c.includes('yonetici')) {
+      return '/yonetici';
     }
     if (s.includes('koltuk') || c.includes('koltuk')) {
       return '/ofis-koltuklari';
@@ -52,7 +56,8 @@ export default function BurobigProductDetail({ product }) {
 
   // Storing information from previous renders to adjust state on product change without useEffect
   const [prevProduct, setPrevProduct] = useState(product);
-  if (product && prevProduct && product.slug !== prevProduct.slug) {
+  const prevSlug = resolveField(prevProduct, activeLang, 'slug') || prevProduct?.slug || prevProduct?.id;
+  if (product && prevProduct && productSlug !== prevSlug) {
     setPrevProduct(product);
     setActiveDetailImage(product.coverImageUrl || FALLBACK_IMAGE);
     setActiveDetailIdx(0);
@@ -64,20 +69,20 @@ export default function BurobigProductDetail({ product }) {
     setIsInitial(true);
     const timer = setTimeout(() => setIsInitial(false), 200);
     return () => clearTimeout(timer);
-  }, [product?.slug]);
+  }, [productSlug]);
 
   // Fetch related products
   useEffect(() => {
-    if (!tenantId || !product?.slug) return;
+    if (!tenantId || !productSlug) return;
     getActiveProducts(tenantId)
       .then(raw => {
         const localized = raw
           .map(doc => getLocalizedContent(doc, activeLang))
           .filter(Boolean);
-        setRelatedProducts(localized.filter(p => p.slug !== product.slug));
+        setRelatedProducts(localized.filter(p => p.slug !== productSlug));
       })
       .catch(e => console.error(e));
-  }, [tenantId, product?.slug, activeLang]);
+  }, [tenantId, productSlug, activeLang]);
 
   const translate = (tr, en) => {
     return activeLang === 'tr' ? tr : en;

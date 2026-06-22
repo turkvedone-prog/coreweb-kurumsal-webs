@@ -56,7 +56,7 @@ export default function BurobigHome() {
           const latest = sorted.slice(0, 20).map(p => ({
             ...p,
             title: resolveField(p, activeLang, 'title') || resolveField(p, activeLang, 'name') || '',
-            slug: p.slug || p.id,
+            slug: resolveField(p, activeLang, 'slug') || p.slug || p.id,
           }));
           setLatestProducts(latest);
         } else {

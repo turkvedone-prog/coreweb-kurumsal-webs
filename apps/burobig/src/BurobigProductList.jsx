@@ -14,10 +14,11 @@ export default function BurobigProductList({ products }) {
 
 
   const isUstYoneticiPath = location.pathname.endsWith('/ust-yonetici');
+  const isYoneticiPath = location.pathname.endsWith('/yonetici');
   const isOfisKoltuklariPath = location.pathname.endsWith('/ofis-koltuklari');
   const isOperasyonelPath = location.pathname.endsWith('/operasyonel-masalar');
   const isToplantiPath = location.pathname.endsWith('/toplanti-masalari');
-  const isCleanPath = isUstYoneticiPath || isOfisKoltuklariPath || isOperasyonelPath || isToplantiPath;
+  const isCleanPath = isUstYoneticiPath || isYoneticiPath || isOfisKoltuklariPath || isOperasyonelPath || isToplantiPath;
 
   const catParam = searchParams.get('cat');
   const subParam = searchParams.get('sub');
@@ -33,6 +34,9 @@ export default function BurobigProductList({ products }) {
   const getActiveTab = () => {
     if (isUstYoneticiPath || subParam === 'ust-yonetici') {
       return 'ust-yonetici';
+    }
+    if (isYoneticiPath || subParam === 'yonetici') {
+      return 'yonetici';
     }
     if (isOfisKoltuklariPath || catParam === 'ofis-koltuklari') {
       return 'ofis-koltuklari';
@@ -88,6 +92,9 @@ export default function BurobigProductList({ products }) {
     if (activeTab === 'ust-yonetici') {
       return subcatSlug === 'ust-yonetici' || product.category === 'Üst Yönetici Masası';
     }
+    if (activeTab === 'yonetici') {
+      return subcatSlug === 'yonetici' || product.category === 'Yönetici Masası';
+    }
     if (activeTab === 'ofis-koltuklari') {
       return catSlug === 'ofis-koltuklari' || product.category === 'Ofis Koltuğu';
     }
@@ -115,6 +122,12 @@ export default function BurobigProductList({ products }) {
       return {
         title: translate('Üst Yönetici Masaları', 'Executive Desks'),
         subtitle: translate('Masalar / Üst Yönetici', 'Desks / Executive')
+      };
+    }
+    if (activeTab === 'yonetici') {
+      return {
+        title: translate('Yönetici Masaları', 'Manager Desks'),
+        subtitle: translate('Masalar / Yönetici', 'Desks / Manager')
       };
     }
     if (activeTab === 'ofis-koltuklari') {
@@ -161,6 +174,11 @@ export default function BurobigProductList({ products }) {
         'Bürobig premium üst yönetici masaları koleksiyonu.',
         'Bürobig premium executive desks collection.'
       );
+    } else if (isYoneticiPath) {
+      seoDesc = translate(
+        'Bürobig premium yönetici masaları koleksiyonu.',
+        'Bürobig premium manager desks collection.'
+      );
     } else if (isOfisKoltuklariPath) {
       seoDesc = translate(
         'Bürobig ergonomik ve estetik ofis koltukları koleksiyonu.',
@@ -184,7 +202,7 @@ export default function BurobigProductList({ products }) {
       companyName: 'Bürobig'
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeLang, title, isUstYoneticiPath, isOfisKoltuklariPath, isOperasyonelPath, isToplantiPath]);
+  }, [activeLang, title, isUstYoneticiPath, isYoneticiPath, isOfisKoltuklariPath, isOperasyonelPath, isToplantiPath]);
 
   return (
     <main className="category-page">
@@ -246,7 +264,7 @@ export default function BurobigProductList({ products }) {
           ) : (
             <div className="product-grid">
               {filteredProducts.map((product, index) => {
-                const productSlug = product.slug || product.id;
+                const productSlug = resolveField(product, activeLang, 'slug') || product.slug || product.id;
                 const detailPath = getLocalizedPath(`/urunler/${productSlug}`);
                 const cardNumber = (index + 1).toString().padStart(2, '0');
                 const fallbackImage = '/assets/burobig/images/INKA 01.jpg';

@@ -92,10 +92,10 @@ export default function BurobigHeader() {
                       <h5 className="mega-menu__title">MASALAR</h5>
                       <ul className="mega-menu__list">
                         <li><Link to={getLocalizedPath('/ust-yonetici')}>Üst Yönetici</Link></li>
-                        <li><Link to={getLocalizedPath('/urunler?cat=masalar&sub=yonetici')}>Yönetici</Link></li>
+                        <li><Link to={getLocalizedPath('/yonetici')}>Yönetici</Link></li>
                         <li><Link to={getLocalizedPath('/urunler?cat=masalar&sub=calisma')}>Çalışma</Link></li>
-                        <li><Link to={getLocalizedPath('/urunler?cat=masalar&sub=operasyonel')}>Operasyonel</Link></li>
-                        <li><Link to={getLocalizedPath('/urunler?cat=masalar&sub=toplanti')}>Toplantı</Link></li>
+                        <li><Link to={getLocalizedPath('/operasyonel-masalar')}>Operasyonel</Link></li>
+                        <li><Link to={getLocalizedPath('/toplanti-masalari')}>Toplantı</Link></li>
                       </ul>
                     </div>
                     {/* Ofis Koltukları */}

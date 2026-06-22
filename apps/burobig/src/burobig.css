@@ -2360,9 +2360,9 @@ body, html, ul, ol {
 .product-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1px; /* 1px sınır çizgilerini oluşturur */
-    background-color: rgba(0, 0, 0, 0.06); /* Çizgi rengi */
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    gap: 0;
+    border-left: 1px solid rgba(0, 0, 0, 0.06);
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
     box-sizing: border-box;
 }
 
@@ -2378,6 +2378,8 @@ body, html, ul, ol {
     transition: box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), z-index 0.1s;
     box-sizing: border-box;
     z-index: 1;
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .product-grid .product-card:hover {
@@ -2655,6 +2657,7 @@ body, html, ul, ol {
     object-fit: contain;
     mix-blend-mode: multiply; /* Blends white background images nicely */
     transition: opacity 0.15s ease-in-out, transform 0.4s ease;
+    transform: scale(1.2);
 }
 
 .detail-gallery__thumbs {
