@@ -551,7 +551,7 @@ export default function BurobigHome() {
                 <Link to={getLocalizedPath('/urunler/duet')} className="award-card__link">
                   <div className="award-card__image-wrapper">
                     <figure className="award-card__figure">
-                      <img src="/assets/burobig/images/award_product_1.jpg" alt="Duet" loading="lazy" className="award-card__img" style={{ objectPosition: '16% center' }} />
+                      <img src="/assets/burobig/images/award_product_1.jpg" alt="Duet" loading="lazy" className="award-card__img" style={{ '--default-pos': '10%', '--hover-pos': '90%' }} />
                     </figure>
                     <div className="award-card__badge-if">
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="if-logo-svg" aria-hidden="true">
@@ -580,7 +580,7 @@ export default function BurobigHome() {
                 <Link to={getLocalizedPath('/urunler/graf')} className="award-card__link">
                   <div className="award-card__image-wrapper">
                     <figure className="award-card__figure">
-                      <img src="/assets/burobig/images/award_product_2.jpg" alt="Graf" loading="lazy" className="award-card__img" style={{ objectPosition: '42% center' }} />
+                      <img src="/assets/burobig/images/award_product_2.jpg" alt="Graf" loading="lazy" className="award-card__img" style={{ '--default-pos': '30%', '--hover-pos': '85%' }} />
                     </figure>
                     <div className="award-card__badge-if">
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="if-logo-svg" aria-hidden="true">
