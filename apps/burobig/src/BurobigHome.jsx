@@ -548,7 +548,7 @@ export default function BurobigHome() {
             <div className="awards-grid">
               {/* Award 1: Duet */}
               <article className="award-card">
-                <Link to={getLocalizedPath('/urunler/duet')} className="award-card__link">
+                <div className="award-card__link">
                   <div className="award-card__image-wrapper">
                     <figure className="award-card__figure">
                       <img src="/assets/burobig/images/award_product_1.jpg" alt="Duet" loading="lazy" className="award-card__img" style={{ '--default-pos': '10%', '--hover-pos': '90%' }} />
@@ -572,12 +572,12 @@ export default function BurobigHome() {
                     <h3 className="award-card__title">Duet</h3>
                     <p className="award-card__subtitle">{activeLang === 'tr' ? 'Tasarım - Klan Studio' : 'Design - Klan Studio'}</p>
                   </div>
-                </Link>
+                </div>
               </article>
 
               {/* Award 2: Graf */}
               <article className="award-card">
-                <Link to={getLocalizedPath('/urunler/graf')} className="award-card__link">
+                <div className="award-card__link">
                   <div className="award-card__image-wrapper">
                     <figure className="award-card__figure">
                       <img src="/assets/burobig/images/award_product_2.jpg" alt="Graf" loading="lazy" className="award-card__img" style={{ '--default-pos': '30%', '--hover-pos': '85%' }} />
@@ -601,7 +601,7 @@ export default function BurobigHome() {
                     <h3 className="award-card__title">Graf</h3>
                     <p className="award-card__subtitle">{activeLang === 'tr' ? 'Tasarım - Klan Studio' : 'Design - Klan Studio'}</p>
                   </div>
-                </Link>
+                </div>
               </article>
             </div>
           </div>
