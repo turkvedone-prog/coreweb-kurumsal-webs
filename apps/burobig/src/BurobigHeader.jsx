@@ -1,10 +1,24 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
 import './burobig.css';
 
 export default function BurobigHeader() {
   const { tenantMapping, activeLang, settings } = useSite();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSubmenu, setActiveSubmenu] = useState(null); // 'urunler' | 'kurumsal' | null
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
 
   // Her ortamda /:lang prefix kullan (local = production ile aynı)
   const getLocalizedPath = (path) => `/${activeLang}${path}`;
@@ -209,6 +223,104 @@ export default function BurobigHeader() {
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
             </button>
+
+            {/* Mobile Hamburger Menu Toggle Button */}
+            <button 
+              className={`menu-toggle ${isMobileMenuOpen ? 'active' : ''}`} 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Menüyü Aç/Kapat"
+              aria-expanded={isMobileMenuOpen}
+            >
+              <span className="menu-toggle__line"></span>
+              <span className="menu-toggle__line"></span>
+              <span className="menu-toggle__line"></span>
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation Drawer */}
+        <div className={`mobile-drawer ${isMobileMenuOpen ? 'active' : ''}`}>
+          <div className="mobile-drawer__content">
+            <nav className="mobile-nav" aria-label="Mobil Menü">
+              <ul className="mobile-nav__list">
+                {/* Ürünler Accordion */}
+                <li className="mobile-nav__item">
+                  <button 
+                    className={`mobile-nav__link mobile-nav__accordion-header ${activeSubmenu === 'urunler' ? 'active' : ''}`}
+                    onClick={() => setActiveSubmenu(activeSubmenu === 'urunler' ? null : 'urunler')}
+                  >
+                    Ürünler
+                    <svg className="nav__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ transform: activeSubmenu === 'urunler' ? 'rotate(180deg)' : 'none' }}>
+                      <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                  <div className={`mobile-nav__accordion-content ${activeSubmenu === 'urunler' ? 'active' : ''}`}>
+                    {/* Masalar */}
+                    <div className="mobile-submenu__section">
+                      <h6 className="mobile-submenu__title">MASALAR</h6>
+                      <ul>
+                        <li><Link to={getLocalizedPath('/ust-yonetici')} onClick={() => setIsMobileMenuOpen(false)}>Üst Yönetici</Link></li>
+                        <li><Link to={getLocalizedPath('/yonetici')} onClick={() => setIsMobileMenuOpen(false)}>Yönetici</Link></li>
+                        <li><Link to={getLocalizedPath('/calisma-masalari')} onClick={() => setIsMobileMenuOpen(false)}>Çalışma</Link></li>
+                        <li><Link to={getLocalizedPath('/operasyonel-masalar')} onClick={() => setIsMobileMenuOpen(false)}>Operasyonel</Link></li>
+                        <li><Link to={getLocalizedPath('/toplanti-masalari')} onClick={() => setIsMobileMenuOpen(false)}>Toplantı</Link></li>
+                      </ul>
+                    </div>
+                    {/* Ofis Koltukları */}
+                    <div className="mobile-submenu__section">
+                      <h6 className="mobile-submenu__title">OFİS KOLTUKLARI</h6>
+                      <ul>
+                        <li><Link to={getLocalizedPath('/ofis-koltuklari')} onClick={() => setIsMobileMenuOpen(false)}>Yönetici Koltukları</Link></li>
+                        <li><Link to={getLocalizedPath('/ofis-koltuklari')} onClick={() => setIsMobileMenuOpen(false)}>Çalışma Koltukları</Link></li>
+                        <li><Link to={getLocalizedPath('/ofis-koltuklari')} onClick={() => setIsMobileMenuOpen(false)}>Misafir ve Bekleme Koltukları</Link></li>
+                      </ul>
+                    </div>
+                    {/* Diğer Kategoriler */}
+                    <div className="mobile-submenu__section">
+                      <h6 className="mobile-submenu__title">DİĞER KATEGORİLER</h6>
+                      <ul>
+                        <li><Link to={getLocalizedPath('/urunler')} onClick={() => setIsMobileMenuOpen(false)}>Koltuklar & Kanepeler</Link></li>
+                        <li><Link to={getLocalizedPath('/urunler?cat=depolama-sistemleri')} onClick={() => setIsMobileMenuOpen(false)}>Depolama Sistemleri</Link></li>
+                        <li><Link to={getLocalizedPath('/urunler?cat=tamamlayicilar')} onClick={() => setIsMobileMenuOpen(false)}>Tamamlayıcılar</Link></li>
+                      </ul>
+                    </div>
+                  </div>
+                </li>
+
+                {/* Kurumsal Accordion */}
+                <li className="mobile-nav__item">
+                  <button 
+                    className={`mobile-nav__link mobile-nav__accordion-header ${activeSubmenu === 'kurumsal' ? 'active' : ''}`}
+                    onClick={() => setActiveSubmenu(activeSubmenu === 'kurumsal' ? null : 'kurumsal')}
+                  >
+                    Kurumsal
+                    <svg className="nav__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ transform: activeSubmenu === 'kurumsal' ? 'rotate(180deg)' : 'none' }}>
+                      <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                  <div className={`mobile-nav__accordion-content ${activeSubmenu === 'kurumsal' ? 'active' : ''}`}>
+                    <ul>
+                      <li><Link to={getLocalizedPath('/hikayemiz')} onClick={() => setIsMobileMenuOpen(false)}>Hikayemiz</Link></li>
+                      <li><Link to={getLocalizedPath('/tasarim-sureci')} onClick={() => setIsMobileMenuOpen(false)}>Tasarım Süreci</Link></li>
+                      <li><Link to={getLocalizedPath('/manifesto')} onClick={() => setIsMobileMenuOpen(false)}>Manifesto</Link></li>
+                      <li><Link to={getLocalizedPath('/tasarim-felsefesi')} onClick={() => setIsMobileMenuOpen(false)}>Tasarım Felsefesi</Link></li>
+                      <li><Link to={getLocalizedPath('/kalite-politikamiz')} onClick={() => setIsMobileMenuOpen(false)}>Kalite Politikamız</Link></li>
+                      <li><Link to={getLocalizedPath('/surdurulebilirlik')} onClick={() => setIsMobileMenuOpen(false)}>Sürdürülebilirlik</Link></li>
+                    </ul>
+                  </div>
+                </li>
+
+                <li className="mobile-nav__item">
+                  <Link to={getLocalizedPath('/tasarimcilar')} className="mobile-nav__link" onClick={() => setIsMobileMenuOpen(false)}>Tasarımcılar</Link>
+                </li>
+                <li className="mobile-nav__item">
+                  <Link to={getLocalizedPath('/blog')} className="mobile-nav__link" onClick={() => setIsMobileMenuOpen(false)}>Blog</Link>
+                </li>
+                <li className="mobile-nav__item">
+                  <Link to={getLocalizedPath('/iletisim')} className="mobile-nav__link" onClick={() => setIsMobileMenuOpen(false)}>İletişim</Link>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
       </header>
