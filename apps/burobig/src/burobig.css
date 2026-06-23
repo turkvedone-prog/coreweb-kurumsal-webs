@@ -1828,6 +1828,21 @@ body, html, ul, ol {
     }
 }
 
+.scroll-navigation-fixed {
+    position: fixed;
+    bottom: 140px; /* WhatsApp ikonundan koparıldı, 35px yukarı alındı */
+    right: 38px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 9999;
+}
+
+.scroll-navigation-fixed .control-btn {
+    border: none;
+    box-shadow: none;
+}
+
 /* ============================================================
    WHATSAPP LEAD WIDGET
    ============================================================ */

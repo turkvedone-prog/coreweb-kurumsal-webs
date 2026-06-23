@@ -10,6 +10,10 @@ export default function BurobigFooter() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const scrollToBottom = () => {
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+  };
+
   const footerText = settings?.footerDescription || "Doğadan ilham alan yenilikçi çizgilerle, geleceğin premium ofis ve yaşam alanlarını tasarlıyoruz. İhtiyacınıza göre şekillenen, kalite ve konforla buluşan özgün çözümler.";
   const logoUrl = settings?.logos?.footer || "/assets/burobig/images/Burobig%20Logo%20Beyaz.svg";
 
@@ -105,17 +109,26 @@ export default function BurobigFooter() {
             </div>
             <div className="footer-bottom-right">
               <a href="https://www.coreweb.tr/" target="_blank" rel="noopener noreferrer" aria-label="CoreWeb">
-                <img src="/assets/coreweb/coreweb-logo-dark.svg" alt="CoreWeb Logo" className="footer-agency-logo" />
+                <img src="/assets/coreweb/coreweb-logo-color.svg" alt="CoreWeb Logo" className="footer-agency-logo" />
               </a>
-              <button onClick={scrollToTop} className="scroll-top-btn" aria-label="Yukarı Git">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="18 15 12 9 6 15"></polyline>
-                </svg>
-              </button>
             </div>
           </div>
         </div>
       </footer>
+
+      {/* Floating Scroll Navigation Widget */}
+      <div className="scroll-navigation-fixed">
+        <button onClick={scrollToTop} className="control-btn" aria-label="Yukarı Git">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+        </button>
+        <button onClick={scrollToBottom} className="control-btn" aria-label="Aşağı Git">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+      </div>
 
       {/* WhatsApp Lead Widget */}
       <div className="wa-widget">
