@@ -378,7 +378,17 @@ export default function BurobigProductList({ products }) {
 
                 return (
                   <article key={product.id} className="product-card">
-                    <span className="product-card__number">{cardNumber}</span>
+                    {product.isNewProduct ? (
+                      product.newProductBadgeStyle === 'pill' ? (
+                        <div className="badge-pill-new">{translate('YENİ', 'NEW')}</div>
+                      ) : (
+                        <div className="badge-ribbon-container">
+                          <div className="badge-ribbon-new">{translate('YENİ', 'NEW')}</div>
+                        </div>
+                      )
+                    ) : (
+                      <span className="product-card__number">{cardNumber}</span>
+                    )}
                     <div className="product-card__content">
                       <h2 className="product-card__title" style={{ fontSize: '20px', lineHeight: '1.2' }}>
                         {productTitle}

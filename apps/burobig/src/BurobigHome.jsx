@@ -53,11 +53,14 @@ export default function BurobigHome() {
             const timeB = b.createdAt?.seconds ? b.createdAt.seconds * 1000 : (b.createdAt ? new Date(b.createdAt).getTime() : 0);
             return timeB - timeA;
           });
-          const latest = sorted.slice(0, 20).map(p => ({
-            ...p,
-            title: resolveField(p, activeLang, 'title') || resolveField(p, activeLang, 'name') || '',
-            slug: resolveField(p, activeLang, 'slug') || p.slug || p.id,
-          }));
+          const latest = sorted
+            .filter(p => p.isNewProduct)
+            .slice(0, 20)
+            .map(p => ({
+              ...p,
+              title: resolveField(p, activeLang, 'title') || resolveField(p, activeLang, 'name') || '',
+              slug: resolveField(p, activeLang, 'slug') || p.slug || p.id,
+            }));
           setLatestProducts(latest);
         } else {
           setLatestProducts([]);
