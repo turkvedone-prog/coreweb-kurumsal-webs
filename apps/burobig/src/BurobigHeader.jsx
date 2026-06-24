@@ -218,7 +218,7 @@ export default function BurobigHeader() {
               </svg>
               Shop
             </a>
-            <a href="#" onClick={(e) => e.preventDefault()} className="utility-link utility-link--has-line" id="util-portal" style={{ display: 'inline-flex', alignItems: 'center', paddingLeft: '0.75rem', gap: '0.35rem' }}>
+            <a href="#" onClick={(e) => e.preventDefault()} className="utility-link utility-link--has-line" id="util-portal" style={{ display: 'inline-flex', alignItems: 'center', paddingLeft: '0.75rem', gap: '0.15rem' }}>
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 viewBox="28.76 59.77 28 22" 
