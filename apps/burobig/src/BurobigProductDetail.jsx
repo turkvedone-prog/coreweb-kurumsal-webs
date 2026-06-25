@@ -348,6 +348,9 @@ export default function BurobigProductDetail({ product }) {
                 src={activeDetailImage}
                 alt={`${productTitle} Detay`}
                 className="detail-gallery__main-img"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
                 style={{ transition: 'opacity 0.15s ease-in-out' }}
               />
             </div>
@@ -401,7 +404,7 @@ export default function BurobigProductDetail({ product }) {
                         className={`detail-gallery__thumb ${item.index === activeDetailIdx ? 'active' : ''}`}
                         aria-label={`Görsel ${item.index + 1}`}
                       >
-                        <img src={item.src} alt={`Küçük Görsel ${item.index + 1}`} />
+                        <img src={item.src} alt={`Küçük Görsel ${item.index + 1}`} loading="lazy" decoding="async" />
                       </button>
                     ));
                   })()}
@@ -618,7 +621,7 @@ export default function BurobigProductDetail({ product }) {
                         )
                       )}
                       <span className="carousel-item-title">{item.title}</span>
-                      <img src={item.coverImageUrl || FALLBACK_IMAGE} alt={item.title || ''} />
+                      <img src={item.coverImageUrl || FALLBACK_IMAGE} alt={item.title || ''} loading="lazy" decoding="async" />
                     </Link>
                   );
                 })}
