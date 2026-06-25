@@ -8,10 +8,12 @@ export default function BurobigHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState(null); // 'urunler' | 'kurumsal' | null
   const [isUrunlerOpen, setIsUrunlerOpen] = useState(false);
+  const [isKurumsalOpen, setIsKurumsalOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     setIsUrunlerOpen(false);
+    setIsKurumsalOpen(false);
   }, [location]);
 
   useEffect(() => {
@@ -19,6 +21,10 @@ export default function BurobigHeader() {
       const navUrunlerLi = document.getElementById('nav-urunler-li');
       if (navUrunlerLi && !navUrunlerLi.contains(event.target)) {
         setIsUrunlerOpen(false);
+      }
+      const navKurumsalLi = document.getElementById('nav-kurumsal-li');
+      if (navKurumsalLi && !navKurumsalLi.contains(event.target)) {
+        setIsKurumsalOpen(false);
       }
     };
     document.addEventListener('click', handleOutsideClick);
@@ -113,6 +119,8 @@ export default function BurobigHeader() {
               <li 
                 id="nav-urunler-li" 
                 className={`has-dropdown ${isUrunlerOpen ? 'is-open' : ''}`}
+                onMouseEnter={() => setIsUrunlerOpen(true)}
+                onMouseLeave={() => setIsUrunlerOpen(false)}
               >
                 <a 
                   href="#" 
@@ -130,7 +138,11 @@ export default function BurobigHeader() {
                   </svg>
                 </a>
                 {/* Mega Menu */}
-                <div className="mega-menu" aria-label="Ürün Kategorileri">
+                <div 
+                  className="mega-menu" 
+                  aria-label="Ürün Kategorileri"
+                  onClick={() => setIsUrunlerOpen(false)}
+                >
                   <div className="mega-menu__container">
                     {/* Masalar */}
                     <div className="mega-menu__col">
@@ -184,14 +196,29 @@ export default function BurobigHeader() {
                   </div>
                 </div>
               </li>
-              <li className="has-dropdown">
-                <Link to={getLocalizedPath('/hikayemiz')} id="nav-kurumsal" aria-haspopup="true" aria-expanded="false">
+              <li 
+                id="nav-kurumsal-li"
+                className={`has-dropdown ${isKurumsalOpen ? 'is-open' : ''}`}
+                onMouseEnter={() => setIsKurumsalOpen(true)}
+                onMouseLeave={() => setIsKurumsalOpen(false)}
+              >
+                <Link 
+                  to={getLocalizedPath('/hikayemiz')} 
+                  id="nav-kurumsal" 
+                  aria-haspopup="true" 
+                  aria-expanded={isKurumsalOpen}
+                  onClick={() => setIsKurumsalOpen(!isKurumsalOpen)}
+                >
                   Kurumsal
                   <svg className="nav__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
                     <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                   </svg>
                 </Link>
-                <div className="dropdown-menu" aria-label="Kurumsal Alt Menüsü">
+                <div 
+                  className="dropdown-menu" 
+                  aria-label="Kurumsal Alt Menüsü"
+                  onClick={() => setIsKurumsalOpen(false)}
+                >
                   <ul className="dropdown-list">
                     <li><Link to={getLocalizedPath('/hikayemiz')}>Hikayemiz</Link></li>
                     <li><Link to={getLocalizedPath('/tasarim-sureci')}>Tasarım Süreci</Link></li>

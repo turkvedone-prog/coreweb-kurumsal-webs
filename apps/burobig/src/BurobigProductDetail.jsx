@@ -608,6 +608,15 @@ export default function BurobigProductDetail({ product }) {
 
                   return (
                     <Link key={`${item.id}-${idx}`} to={itemPath} className="carousel-item">
+                      {item.isNewProduct && (
+                        item.newProductBadgeStyle === 'pill' ? (
+                          <div className="badge-pill-new" style={{ top: '1rem', right: '1rem' }}>{translate('YENİ', 'NEW')}</div>
+                        ) : (
+                          <div className="badge-ribbon-container">
+                            <div className="badge-ribbon-new">{translate('YENİ', 'NEW')}</div>
+                          </div>
+                        )
+                      )}
                       <span className="carousel-item-title">{item.title}</span>
                       <img src={item.coverImageUrl || FALLBACK_IMAGE} alt={item.title || ''} />
                     </Link>

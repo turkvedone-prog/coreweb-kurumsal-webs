@@ -31,7 +31,7 @@ export default function BurobigDesigners() {
     {
       name: 'Işık Oral & F. Akın Oral',
       title: translate('Klan Studio', 'Klan Studio'),
-      image: '/assets/burobig/images/designer-klan.png',
+      image: '/assets/burobig/images/designer-klan.jpg',
       bio: translate(
         'Klan Studio, mimari hassasiyet ile sanatsal özgürlüğü birleştiren tasarımlara imza atmaktadır. Mekanın enerjisini ve insan hareketlerini merkeze alan çalışma disiplinleri sayesinde Bürobig koleksiyonlarına derinlik katmaktadırlar.',
         'Klan Studio creates designs that combine architectural precision with artistic freedom. Thanks to their working discipline centered on spatial energy and human movements, they add depth to Bürobig collections.'
@@ -44,7 +44,7 @@ export default function BurobigDesigners() {
     {
       name: 'A. Baki Çelik',
       title: translate('Tasarımcı', 'Designer'),
-      image: '/assets/burobig/images/designer-baki.png',
+      image: '/assets/burobig/images/designer-baki.jpg',
       bio: translate(
         'A. Baki Çelik, endüstriyel tasarım dünyasında işlevsellik ile heykelsi formları buluşturan özgün diliyle tanınır. Tasarımlarında keskin hatlar, doğal ahşap dokular ve modern metal detaylar bir araya gelerek prestijli ve zamansız alanlar yaratır.',
         'A. Baki Çelik is known for his unique design language that combines functionality with sculptural forms in industrial design. In his designs, sharp lines, natural wood textures, and modern metal details come together to create prestigious and timeless spaces.'
@@ -57,7 +57,7 @@ export default function BurobigDesigners() {
     {
       name: 'Yunus Emre Pektaş',
       title: translate('Tasarımcı', 'Designer'),
-      image: '/assets/burobig/images/designer-pektas.png',
+      image: '/assets/burobig/images/designer-pektas.jpg',
       bio: translate(
         'Yunus Emre Pektaş, insan ergonomisi ve modern çalışma dinamikleri üzerine yoğunlaşan tasarımlar üretmektedir. Ofis yaşamında konfor ile estetiğin sınırlarını zorlayan, kullanıcı dostu ve akıllı mekanizmaları ürünlerine entegre etmesiyle bilinir.',
         'Yunus Emre Pektaş produces designs focusing on human ergonomics and modern working dynamics. He is known for integrating user-friendly and intelligent mechanisms into his products, pushing the boundaries of comfort and aesthetics in office life.'
@@ -70,7 +70,7 @@ export default function BurobigDesigners() {
     {
       name: 'Rıza Özdemir',
       title: translate('Tasarımcı', 'Designer'),
-      image: '/assets/burobig/images/designer-ozdemir.png',
+      image: '/assets/burobig/images/designer-ozdemir.jpg',
       bio: translate(
         'Rıza Özdemir, minimalist modernizmin temsilcilerinden olup tasarımlarında yalınlık, rasyonalite ve malzeme kalitesini ön planda tutar. Göz yormayan, dingin fakat güçlü bir prestij yansıtan çizgileriyle Bürobig tasarım felsefesini simgeler.',
         'Rıza Özdemir is a representative of minimalist modernism and prioritizes simplicity, rationality, and material quality in his designs. He symbolizes the Bürobig design philosophy with lines that reflect an easy-on-the-eyes, serene yet strong prestige.'
@@ -83,7 +83,7 @@ export default function BurobigDesigners() {
     {
       name: 'Bürobig Design Team',
       title: translate('Tasarım Ekibi', 'Design Team'),
-      image: '/assets/burobig/images/designer-team.png',
+      image: '/assets/burobig/images/designer-team.jpg',
       bio: translate(
         'Bürobig Tasarım Ekibi, markanın inovasyon vizyonunu ve uluslararası kalite standartlarını tüm ürün gruplarına yaymak için ortaklaşa çalışan multidisipliner bir ekiptir. Ergonomi, malzeme teknolojileri ve estetiği bütünsel olarak ele alırlar.',
         'Bürobig Design Team is a multidisciplinary team working collaboratively to extend the brand\'s innovation vision and international quality standards to all product groups. They handle ergonomics, material technologies, and aesthetics holistically.'

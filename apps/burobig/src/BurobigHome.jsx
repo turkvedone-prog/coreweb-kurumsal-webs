@@ -335,7 +335,7 @@ export default function BurobigHome() {
                 <Link to={getLocalizedPath('/ust-yonetici-masalari')} className="collection-card__link" id="card-makam" aria-label="Üst Yönetici Masaları koleksiyonunu keşfet">
                   <figure className="collection-card__figure">
                     <img
-                      src="/assets/burobig/images/collection-makam.png"
+                      src="/assets/burobig/images/collection-makam.jpg"
                       alt="Prestijli makam takımı ve yönetici ofisi"
                       width="900"
                       height="1100"
@@ -362,7 +362,7 @@ export default function BurobigHome() {
                 <Link to={getLocalizedPath('/operasyonel-masalar')} className="collection-card__link" id="card-operasyonel" aria-label="Operasyonel Masalar koleksiyonunu keşfet">
                   <figure className="collection-card__figure">
                     <img
-                      src="/assets/burobig/images/collection-operasyonel.png"
+                      src="/assets/burobig/images/collection-operasyonel.jpg"
                       alt="Modern operasyonel masalar ve açık ofis"
                       width="700"
                       height="550"
@@ -443,7 +443,7 @@ export default function BurobigHome() {
                 <Link to={getLocalizedPath('/urunler')} className="collection-card__link" id="card-bekleme" aria-label="Bekleme Alanları koleksiyonunu keşfet">
                   <figure className="collection-card__figure">
                     <img
-                      src="/assets/burobig/images/collection-bekleme.png"
+                      src="/assets/burobig/images/collection-bekleme.jpg"
                       alt="Lüks bekleme salonu ve lobi mobilyaları"
                       width="700"
                       height="550"
@@ -513,6 +513,15 @@ export default function BurobigHome() {
                       >
                         <Link to={getLocalizedPath(`/urunler/${product.slug}`)} className="product-card__link">
                           <figure className="product-card__figure">
+                            {product.isNewProduct && (
+                              product.newProductBadgeStyle === 'pill' ? (
+                                <div className="badge-pill-new" style={{ top: '1rem', right: '1rem' }}>{activeLang === 'tr' ? 'YENİ' : 'NEW'}</div>
+                              ) : (
+                                <div className="badge-ribbon-container">
+                                  <div className="badge-ribbon-new">{activeLang === 'tr' ? 'YENİ' : 'NEW'}</div>
+                                </div>
+                              )
+                            )}
                             <img 
                               src={product.coverImageUrl || fallbackImage} 
                               alt={product.title} 
