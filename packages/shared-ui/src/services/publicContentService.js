@@ -3,7 +3,7 @@ import { doc, getDoc, collection, query, where, getDocs, orderBy } from 'firebas
 
 // ─── Cache Yardımcıları ───────────────────────────────────────────
 const IS_DEV = typeof import.meta !== 'undefined' && import.meta.env?.DEV;
-const CACHE_TTL = IS_DEV ? 30 * 1000 : 5 * 60 * 1000; // Dev: 30sn, Prod: 5dk
+const CACHE_TTL = IS_DEV ? 3 * 60 * 1000 : 5 * 60 * 1000; // Dev: 3dk, Prod: 5dk
 const NO_CACHE = typeof window !== 'undefined' && window.location?.search?.includes('nocache');
 
 function getCached(key) {
