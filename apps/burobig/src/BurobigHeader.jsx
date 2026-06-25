@@ -8,6 +8,23 @@ import './burobig.css';
 export default function BurobigHeader() {
   const { tenantMapping, activeLang, settings } = useSite();
   const translate = (tr, en) => activeLang === 'tr' ? tr : en;
+  
+  const getSplitProducts = (items) => {
+    if (!items || items.length === 0) return { popular: [], featured: [] };
+    if (items.length <= 3) {
+      const half = Math.ceil(items.length / 2);
+      return {
+        popular: items.slice(0, half),
+        featured: items.slice(half)
+      };
+    }
+    const limit = Math.min(3, Math.ceil(items.length / 2));
+    return {
+      popular: items.slice(0, limit),
+      featured: items.slice(limit, limit + 3)
+    };
+  };
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState(null); // 'urunler' | 'kurumsal' | null
   const [isUrunlerOpen, setIsUrunlerOpen] = useState(false);
@@ -165,6 +182,7 @@ export default function BurobigHeader() {
   }, []);
 
   const logoUrl = settings?.logos?.header || "/assets/burobig/images/Burobig%20Logo%20Siyah.svg";
+  const { popular: popularProducts, featured: featuredProducts } = getSplitProducts(products);
 
   return (
     <>
@@ -516,25 +534,30 @@ export default function BurobigHeader() {
                   <div className="search-overlay__suggestions">
                     <div className="search-overlay__suggest-col">
                       <h3 className="search-overlay__section-title">
-                        {translate('Popüler Aramalar', 'Popular Searches')}
+                        {translate('Popüler Ürünler', 'Popular Products')}
                       </h3>
-                      <div className="search-overlay__tags">
-                        {[
-                          translate('İnka', 'Inka'),
-                          translate('Vetra', 'Vetra'),
-                          translate('Masa', 'Desk'),
-                          translate('Koltuk', 'Chair'),
-                          translate('Toplantı', 'Meeting'),
-                          translate('Keson', 'Pedestal')
-                        ].map(tag => (
-                          <button 
-                            key={tag} 
-                            className="search-overlay__tag-btn"
-                            onClick={() => setSearchQuery(tag)}
-                          >
-                            {tag}
-                          </button>
-                        ))}
+                      <div className="search-overlay__featured-grid">
+                        {popularProducts.map(p => {
+                          const productSlug = resolveField(p, activeLang, 'slug') || p.slug || p.id;
+                          const pTitle = resolveField(p, activeLang, 'title') || resolveField(p, activeLang, 'name') || '';
+                          const pImage = p.coverImageUrl || '/assets/burobig/images/INKA 01.jpg';
+                          return (
+                            <Link 
+                              key={p.id}
+                              to={getLocalizedPath(`/urunler/${productSlug}`)} 
+                              className="search-overlay__featured-item"
+                              onClick={() => setIsSearchOpen(false)}
+                            >
+                              <img src={pImage} alt={pTitle} />
+                              <div>
+                                <span className="search-overlay__featured-name">{pTitle}</span>
+                                <span className="search-overlay__featured-cat">
+                                  {resolveField(p, activeLang, 'subcategory') || resolveField(p, activeLang, 'category') || ''}
+                                </span>
+                              </div>
+                            </Link>
+                          );
+                        })}
                       </div>
                     </div>
                     <div className="search-overlay__suggest-col">
@@ -542,7 +565,7 @@ export default function BurobigHeader() {
                         {translate('Öne Çıkan Ürünler', 'Featured Products')}
                       </h3>
                       <div className="search-overlay__featured-grid">
-                        {products.slice(0, 3).map(p => {
+                        {featuredProducts.map(p => {
                           const productSlug = resolveField(p, activeLang, 'slug') || p.slug || p.id;
                           const pTitle = resolveField(p, activeLang, 'title') || resolveField(p, activeLang, 'name') || '';
                           const pImage = p.coverImageUrl || '/assets/burobig/images/INKA 01.jpg';
