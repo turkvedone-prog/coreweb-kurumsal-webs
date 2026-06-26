@@ -2784,8 +2784,15 @@ body, html, ul, ol {
 @media (max-width: 600px) {
     .product-grid {
         grid-template-columns: 1fr;
+        max-width: 100%;
     }
-    .product-grid .product-card {
+    .product-grid:has(> .product-card:first-child:last-child),
+    .product-grid:has(> .product-card:nth-child(2):last-child) {
+        max-width: 100%;
+        grid-template-columns: 1fr;
+    }
+    .product-grid .product-card,
+    .product-grid:has(> .product-card:first-child:last-child) .product-card {
         padding: 2rem 1.5rem 2.5rem;
         min-height: 400px;
         border-right: 1px solid rgba(0, 0, 0, 0.06);
