@@ -1,6 +1,18 @@
 import { useEffect } from 'react';
+import { useSite } from './layouts/SiteLayout';
+import { updateSEOMeta } from '../../utils/seo';
 
 export default function BurobigDesignProcess() {
+  const { activeLang } = useSite();
+
+  useEffect(() => {
+    updateSEOMeta({
+      title: activeLang === 'tr' ? 'Tasarım Süreci' : 'Design Process',
+      description: activeLang === 'tr' ? 'İlk karalamadan bitmiş premium ofis ürününe kadar Bürobig tasarım ve üretim süreci.' : 'The Bürobig design and production process from initial sketch to finished premium office product.',
+      companyName: 'Bürobig Mobilya'
+    });
+  }, [activeLang]);
+
   useEffect(() => {
     // Reveal Animation
     const observer = new IntersectionObserver((entries, obs) => {

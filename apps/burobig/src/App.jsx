@@ -25,28 +25,53 @@ import { getActiveProducts, getActiveProductBySlug } from '../../services/public
 import { submitLead, resolveField } from '@coreweb/shared-ui';
 import { updateSEOMeta } from '../../utils/seo';
 
-// Demo ürün — Firebase'den veri gelmezse gösterilir
-const DEMO_PRODUCT = {
-  slug: 'inka',
-  title: 'Inka Yönetici Masası',
-  category: 'Üst Yönetici Masası',
-  coverImageUrl: '/assets/burobig/images/INKA 01.jpg',
-  gallery: [
-    { url: '/assets/burobig/images/INKA 01.jpg' },
-    { url: '/assets/burobig/images/INKA 02.jpg' },
-  ],
-  defaultLanguage: 'tr',
-  translations: {
-    tr: {
-      name: 'Inka Yönetici Masası',
-      description: 'Doğadan ilham alan yenilikçi çizgilerle, geleceğin premium ofis ortamına uygun Inka yönetici masası.',
-    },
-    en: {
-      name: 'Inka Executive Desk',
-      description: 'Inka executive desk, inspired by nature with innovative lines.',
-    }
-  }
-};
+// ─── 404 Not Found Page ──────────────────────────────────────────────────────
+function BurobigNotFound() {
+  const { activeLang } = useSite();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    updateSEOMeta({
+      title: activeLang === 'tr' ? 'Sayfa Bulunamadı | Bürobig Mobilya' : 'Page Not Found | Bürobig Mobilya',
+      description: activeLang === 'tr' ? 'Aradığınız sayfa bulunamadı.' : 'The page you are looking for could not be found.',
+      companyName: ''
+    });
+  }, [activeLang]);
+
+  return (
+    <main id="main-content" className="corporate-page" style={{ minHeight: '75vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="corporate-container" style={{ textAlign: 'center', padding: '6rem 2rem' }}>
+        <h1 className="corporate-large-title" style={{ fontSize: '6rem', margin: 0, fontWeight: '300', opacity: 0.15 }}>404</h1>
+        <h2 className="corporate-sub-title" style={{ fontSize: '1.5rem', marginBottom: '2rem', marginTop: '1rem' }}>
+          {activeLang === 'tr' ? 'Aradığınız Sayfa Bulunamadı' : 'Page Not Found'}
+        </h2>
+        <p style={{ maxWidth: '500px', margin: '0 auto 3rem auto', opacity: 0.7, fontSize: '0.95rem', lineHeight: '1.6' }}>
+          {activeLang === 'tr' 
+            ? 'Ulaşmaya çalıştığınız sayfa kaldırılmış, adı değiştirilmiş veya geçici olarak kullanım dışı olabilir.' 
+            : 'The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.'}
+        </p>
+        <button 
+          onClick={() => navigate(`/${activeLang}`)}
+          style={{ 
+            background: '#000', 
+            color: '#fff', 
+            border: 'none', 
+            padding: '1rem 2.5rem', 
+            fontSize: '0.85rem', 
+            letterSpacing: '1px', 
+            textTransform: 'uppercase', 
+            cursor: 'pointer',
+            transition: 'opacity 0.2s'
+          }}
+          onMouseOver={(e) => e.currentTarget.style.opacity = 0.8}
+          onMouseOut={(e) => e.currentTarget.style.opacity = 1}
+        >
+          {activeLang === 'tr' ? 'Ana Sayfaya Dön' : 'Back to Home'}
+        </button>
+      </div>
+    </main>
+  );
+}
 
 
 
@@ -100,14 +125,6 @@ function BurobigBlogPage() {
 }
 
 // ─── Product Page Wrapper (fetches products from Firebase) ───────────────────
-const DEMO_PRODUCTS = [
-  { slug: 'inka',          title: 'Inka Yönetici Masası',  category: 'Üst Yönetici Masası', coverImageUrl: '/assets/burobig/images/INKA 01.jpg' },
-  { slug: 'nero',          title: 'Nero Yönetici Masası',  category: 'Üst Yönetici Masası', coverImageUrl: '/assets/burobig/images/INKA 02.jpg' },
-  { slug: 'atlas-calisma', title: 'Atlas Çalışma Masası',  category: 'Operasyonel Masa',    coverImageUrl: '/assets/burobig/images/product-vetra.png' },
-  { slug: 'luna-toplanti', title: 'Luna Toplantı Masası',  category: 'Toplantı Masası',     coverImageUrl: '/assets/burobig/images/product-elephant.png' },
-  { slug: 'forma-koltuk',  title: 'Forma Ofis Koltuğu',    category: 'Ofis Koltuğu',        coverImageUrl: '/assets/burobig/images/product-forma.png' },
-];
-
 function BurobigProductPage() {
   const { activeLang, tenantMapping } = useSite();
   const [products, setProducts] = useState([]);
@@ -118,9 +135,9 @@ function BurobigProductPage() {
     getActiveProducts(tenantId)
       .then(raw => {
         if (raw && raw.length > 0) setProducts(raw);
-        else setProducts(DEMO_PRODUCTS);
+        else setProducts([]);
       })
-      .catch(() => setProducts(DEMO_PRODUCTS))
+      .catch(() => setProducts([]))
       .finally(() => setLoading(false));
   }, [activeLang, tenantMapping]);
 
@@ -143,8 +160,8 @@ function BurobigProductDetailPage() {
 
   useEffect(() => {
     getActiveProductBySlug(tenantMapping.tenantId, slug, activeLang)
-      .then((data) => setProduct(data || DEMO_PRODUCT))
-      .catch(() => setProduct(DEMO_PRODUCT))
+      .then((data) => setProduct(data || null))
+      .catch(() => setProduct(null))
       .finally(() => setLoading(false));
   }, [slug, activeLang, tenantMapping.tenantId]);
 
@@ -357,7 +374,7 @@ export default function App() {
           <Route path="kalite-politikamiz" element={<BurobigQualityPolicy />} />
           <Route path="surdurulebilirlik" element={<BurobigSustainability />} />
           <Route path="iletisim" element={<BurobigContactPage />} />
-          <Route path="*" element={<Navigate to={defaultRedirect} replace />} />
+          <Route path="*" element={<BurobigNotFound />} />
         </Route>
         <Route path="*" element={<Navigate to={defaultRedirect} replace />} />
       </Routes>

@@ -1,6 +1,18 @@
 import { useEffect } from 'react';
+import { useSite } from './layouts/SiteLayout';
+import { updateSEOMeta } from '../../utils/seo';
 
 export default function BurobigQualityPolicy() {
+  const { activeLang } = useSite();
+
+  useEffect(() => {
+    updateSEOMeta({
+      title: activeLang === 'tr' ? 'Kalite Politikamız' : 'Our Quality Policy',
+      description: activeLang === 'tr' ? 'Uluslararası standartlarda, sürdürülebilir ve yüksek standartlı Bürobig kalite güvencesi.' : 'International standard, sustainable and high-standard Bürobig quality assurance.',
+      companyName: 'Bürobig Mobilya'
+    });
+  }, [activeLang]);
+
   useEffect(() => {
     // Reveal Animation
     const observer = new IntersectionObserver((entries, obs) => {

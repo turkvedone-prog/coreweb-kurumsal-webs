@@ -1,6 +1,18 @@
 import { useEffect } from 'react';
+import { useSite } from './layouts/SiteLayout';
+import { updateSEOMeta } from '../../utils/seo';
 
 export default function BurobigDesignPhilosophy() {
+  const { activeLang } = useSite();
+
+  useEffect(() => {
+    updateSEOMeta({
+      title: activeLang === 'tr' ? 'Tasarım Felsefesi' : 'Design Philosophy',
+      description: activeLang === 'tr' ? 'Ergonomi, estetik ve işlevselliği zamansız çizgilerle birleştiren Bürobig tasarım felsefesi.' : 'The Bürobig design philosophy combining ergonomics, aesthetics, and functionality with timeless lines.',
+      companyName: 'Bürobig Mobilya'
+    });
+  }, [activeLang]);
+
   useEffect(() => {
     // Reveal Animation
     const observer = new IntersectionObserver((entries, obs) => {

@@ -1,6 +1,18 @@
 import { useEffect } from 'react';
+import { useSite } from './layouts/SiteLayout';
+import { updateSEOMeta } from '../../utils/seo';
 
 export default function BurobigHistory() {
+  const { activeLang } = useSite();
+
+  useEffect(() => {
+    updateSEOMeta({
+      title: activeLang === 'tr' ? 'Hikayemiz' : 'Our Story',
+      description: activeLang === 'tr' ? 'Bürobig premium ofis mobilyalarının 1986 yılından günümüze uzanan başarı hikayesi.' : 'The success story of Bürobig premium office furniture from 1986 to the present.',
+      companyName: 'Bürobig Mobilya'
+    });
+  }, [activeLang]);
+
   useEffect(() => {
     // Reveal Animation
     const observer = new IntersectionObserver((entries, obs) => {

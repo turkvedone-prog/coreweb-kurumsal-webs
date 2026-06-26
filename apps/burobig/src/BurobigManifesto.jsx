@@ -1,6 +1,18 @@
 import { useEffect } from 'react';
+import { useSite } from './layouts/SiteLayout';
+import { updateSEOMeta } from '../../utils/seo';
 
 export default function BurobigManifesto() {
+  const { activeLang } = useSite();
+
+  useEffect(() => {
+    updateSEOMeta({
+      title: activeLang === 'tr' ? 'Manifesto' : 'Manifesto',
+      description: activeLang === 'tr' ? 'Çalışma alanlarının geleceğine dair inancımızı ve tasarım manifestomuzu keşfedin.' : 'Discover our belief in the future of work spaces and our design manifesto.',
+      companyName: 'Bürobig Mobilya'
+    });
+  }, [activeLang]);
+
   useEffect(() => {
     // Reveal Animation
     const observer = new IntersectionObserver((entries, obs) => {

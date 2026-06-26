@@ -1,10 +1,19 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSite } from './layouts/SiteLayout';
+import { updateSEOMeta } from '../../utils/seo';
 
 export default function BurobigDesigners() {
   const [selectedIdx, setSelectedIdx] = useState(0);
   const detailRef = useRef(null);
   const { activeLang } = useSite();
+
+  useEffect(() => {
+    updateSEOMeta({
+      title: activeLang === 'tr' ? 'Tasarımcılar' : 'Designers',
+      description: activeLang === 'tr' ? 'Bürobig ürünlerine heykelsi formlar ve minimalist modernizm katan dünyaca ünlü ödüllü tasarımcılarımız.' : 'Our world-renowned award-winning designers who add sculptural forms and minimalist modernism to Bürobig products.',
+      companyName: 'Bürobig Mobilya'
+    });
+  }, [activeLang]);
 
   const translate = (tr, en) => (activeLang === 'tr' ? tr : en);
 

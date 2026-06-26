@@ -67,4 +67,4 @@ Allow: /
 Crawl-delay: 10
 
 # Sitemap
-Sitemap: https://burobig.coreweb.tr/sitemap.xml
+Sitemap: https://www.burobig.com.tr/sitemap.xml

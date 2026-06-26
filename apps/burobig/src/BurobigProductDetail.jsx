@@ -330,8 +330,27 @@ export default function BurobigProductDetail({ product }) {
     { name: 'ZS Kül Gri', color: '#929694' }
   ];
 
+  const productSchema = useMemo(() => {
+    return {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": productTitle,
+      "image": product?.coverImageUrl ? `https://www.burobig.com.tr${product.coverImageUrl}` : undefined,
+      "description": productSummary || productDescription.replace(/<[^>]*>/g, '').substring(0, 160),
+      "category": product?.category,
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "TRY",
+        "lowPrice": "0",
+        "offerCount": "1",
+        "availability": "https://schema.org/InStock"
+      }
+    };
+  }, [productTitle, product, productSummary, productDescription]);
+
   return (
     <main className="product-page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
       {/* Product Hero Premium (Full-Bleed Showcase) */}
       <section className="product-hero-premium">
         {/* Soft background only for now — will be replaced by a fixed image later */}

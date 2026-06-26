@@ -1,6 +1,18 @@
 import { useEffect } from 'react';
+import { useSite } from './layouts/SiteLayout';
+import { updateSEOMeta } from '../../utils/seo';
 
 export default function BurobigSustainability() {
+  const { activeLang } = useSite();
+
+  useEffect(() => {
+    updateSEOMeta({
+      title: activeLang === 'tr' ? 'Sürdürülebilirlik' : 'Sustainability',
+      description: activeLang === 'tr' ? 'Geleceği korumayı merkeze alan çevre odaklı premium ofis mobilyası üretim anlayışımız.' : 'Our environment-oriented premium office furniture production approach centered on protecting the future.',
+      companyName: 'Bürobig Mobilya'
+    });
+  }, [activeLang]);
+
   useEffect(() => {
     // Reveal Animation
     const observer = new IntersectionObserver((entries, obs) => {

@@ -6,6 +6,26 @@ export default defineConfig({
   plugins: [react()],
   base: '/',
   publicDir: 'public',
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('firebase')) {
+              return 'firebase-core';
+            }
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router') || id.includes('react-helmet-async')) {
+              return 'framework';
+            }
+            if (id.includes('lucide-react')) {
+              return 'ui-icons';
+            }
+            return 'vendor';
+          }
+        }
+      }
+    }
+  },
   resolve: {
     alias: {
       '../../layouts/SiteLayout': path.resolve(__dirname, './src/layouts/SiteLayout.jsx'),

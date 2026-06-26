@@ -131,7 +131,7 @@ export default function BurobigHome() {
 
   // Set custom document title and description using updateSEOMeta
   useEffect(() => {
-    const seoTitle = settings?.seo?.title || (activeLang === 'tr' ? "Premium Mobilya | Modern Ofis ve Yaşam Alanları" : "Premium Furniture | Modern Office & Living Spaces");
+    const seoTitle = settings?.seo?.title || (activeLang === 'tr' ? "Bürobig Mobilya | Her Alan İçin Bir Vizyon" : "Burobig Furniture | A Vision for Every Space");
     const seoDesc = settings?.seo?.description || (activeLang === 'tr' 
       ? 'Çalışma ve yaşam alanlarınız için ilham veren, zamansız dokunuşlar. Modern ofis ve ev mobilyaları koleksiyonunu keşfedin.'
       : 'Inspiring, timeless touches for your work and living spaces. Discover the modern office and home furniture collection.');
