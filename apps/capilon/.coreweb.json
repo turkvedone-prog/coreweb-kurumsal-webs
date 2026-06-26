@@ -1,0 +1,7 @@
+{
+  "clientName": "Capilon",
+  "tenantId": "capilon",
+  "productionDomain": null,
+  "stagingDomain": "capilon.coreweb.tr",
+  "status": "development"
+}

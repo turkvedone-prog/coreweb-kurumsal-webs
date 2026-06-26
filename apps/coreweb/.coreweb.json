@@ -1,0 +1,8 @@
+{
+  "clientName": "CoreWeb",
+  "tenantId": "coreweb",
+  "productionDomain": null,
+  "stagingDomain": null,
+  "status": "template",
+  "note": "Ana şablon proje - müşterilere klonlanır"
+}

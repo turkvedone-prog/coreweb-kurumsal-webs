@@ -1,0 +1,8 @@
+{
+  "clientName": "Bürobig",
+  "tenantId": "burobig",
+  "productionDomain": "www.burobig.com.tr",
+  "stagingDomain": "burobig.coreweb.tr",
+  "status": "live",
+  "redirectOldDomain": true
+}

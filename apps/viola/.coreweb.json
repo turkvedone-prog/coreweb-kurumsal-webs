@@ -1,0 +1,7 @@
+{
+  "clientName": "Viola",
+  "tenantId": "viola",
+  "productionDomain": null,
+  "stagingDomain": "viola.coreweb.tr",
+  "status": "development"
+}
