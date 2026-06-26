@@ -2788,7 +2788,7 @@ body, html, ul, ol {
     .product-grid .product-card {
         padding: 2rem 1.5rem 2.5rem;
         min-height: 400px;
-        border-right: none;
+        border-right: 1px solid rgba(0, 0, 0, 0.06);
     }
     .category-hero {
         padding: 130px 5% 30px;
