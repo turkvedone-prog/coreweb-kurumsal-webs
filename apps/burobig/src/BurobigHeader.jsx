@@ -477,14 +477,16 @@ export default function BurobigHeader() {
                     </svg>
                   </button>
                   <div className={`mobile-nav__accordion-content ${activeSubmenu === 'kurumsal' ? 'active' : ''}`}>
-                    <ul>
-                      <li><Link to={getLocalizedPath('/hikayemiz')} onClick={() => setIsMobileMenuOpen(false)}>Hikayemiz</Link></li>
-                      <li><Link to={getLocalizedPath('/tasarim-sureci')} onClick={() => setIsMobileMenuOpen(false)}>Tasarım Süreci</Link></li>
-                      <li><Link to={getLocalizedPath('/manifesto')} onClick={() => setIsMobileMenuOpen(false)}>Manifesto</Link></li>
-                      <li><Link to={getLocalizedPath('/tasarim-felsefesi')} onClick={() => setIsMobileMenuOpen(false)}>Tasarım Felsefesi</Link></li>
-                      <li><Link to={getLocalizedPath('/kalite-politikamiz')} onClick={() => setIsMobileMenuOpen(false)}>Kalite Politikamız</Link></li>
-                      <li><Link to={getLocalizedPath('/surdurulebilirlik')} onClick={() => setIsMobileMenuOpen(false)}>Sürdürülebilirlik</Link></li>
-                    </ul>
+                    <div className="mobile-submenu__section" style={{ marginTop: '0.75rem' }}>
+                      <ul>
+                        <li><Link to={getLocalizedPath('/hikayemiz')} onClick={() => setIsMobileMenuOpen(false)}>Hikayemiz</Link></li>
+                        <li><Link to={getLocalizedPath('/tasarim-sureci')} onClick={() => setIsMobileMenuOpen(false)}>Tasarım Süreci</Link></li>
+                        <li><Link to={getLocalizedPath('/manifesto')} onClick={() => setIsMobileMenuOpen(false)}>Manifesto</Link></li>
+                        <li><Link to={getLocalizedPath('/tasarim-felsefesi')} onClick={() => setIsMobileMenuOpen(false)}>Tasarım Felsefesi</Link></li>
+                        <li><Link to={getLocalizedPath('/kalite-politikamiz')} onClick={() => setIsMobileMenuOpen(false)}>Kalite Politikamız</Link></li>
+                        <li><Link to={getLocalizedPath('/surdurulebilirlik')} onClick={() => setIsMobileMenuOpen(false)}>Sürdürülebilirlik</Link></li>
+                      </ul>
+                    </div>
                   </div>
                 </li>
 
