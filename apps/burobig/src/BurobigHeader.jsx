@@ -164,8 +164,13 @@ export default function BurobigHeader() {
           const currentScrollY = window.scrollY;
           header.classList.toggle('scrolled', currentScrollY > 50);
 
-          if (currentScrollY > lastScrollY && currentScrollY > 150) {
-            header.classList.add('hidden'); // Scroll down -> Hide
+          if (currentScrollY > lastScrollY) {
+            // Close dropdowns on any downward scroll/movement
+            setIsUrunlerOpen(false);
+            setIsKurumsalOpen(false);
+            if (currentScrollY > 150) {
+              header.classList.add('hidden'); // Scroll down -> Hide
+            }
           } else if (currentScrollY < lastScrollY) {
             header.classList.remove('hidden'); // Scroll up -> Show
           }
@@ -211,8 +216,6 @@ export default function BurobigHeader() {
               <li 
                 id="nav-urunler-li" 
                 className={`has-dropdown ${isUrunlerOpen ? 'is-open' : ''}`}
-                onMouseEnter={() => setIsUrunlerOpen(true)}
-                onMouseLeave={() => setIsUrunlerOpen(false)}
               >
                 <a 
                   href="#" 
@@ -222,6 +225,7 @@ export default function BurobigHeader() {
                   onClick={(e) => {
                     e.preventDefault();
                     setIsUrunlerOpen(!isUrunlerOpen);
+                    setIsKurumsalOpen(false);
                   }}
                 >
                   Ürünler
@@ -291,15 +295,19 @@ export default function BurobigHeader() {
               <li 
                 id="nav-kurumsal-li"
                 className={`has-dropdown ${isKurumsalOpen ? 'is-open' : ''}`}
-                onMouseEnter={() => setIsKurumsalOpen(true)}
-                onMouseLeave={() => setIsKurumsalOpen(false)}
               >
                 <Link 
                   to={getLocalizedPath('/hikayemiz')} 
                   id="nav-kurumsal" 
                   aria-haspopup="true" 
                   aria-expanded={isKurumsalOpen}
-                  onClick={() => setIsKurumsalOpen(!isKurumsalOpen)}
+                  onClick={(e) => {
+                    if (window.innerWidth > 900) {
+                      e.preventDefault();
+                      setIsKurumsalOpen(!isKurumsalOpen);
+                      setIsUrunlerOpen(false);
+                    }
+                  }}
                 >
                   Kurumsal
                   <svg className="nav__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
