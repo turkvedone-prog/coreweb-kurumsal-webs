@@ -119,7 +119,6 @@ export default function BurobigProductDetail({ product }) {
   const FALLBACK_IMAGE = '/assets/burobig/images/INKA 01.jpg';
 
   const [relatedProducts, setRelatedProducts] = useState([]);
-  const [activeHeroIdx, setActiveHeroIdx] = useState(0);
   const [activeDetailImage, setActiveDetailImage] = useState(product?.coverImageUrl || FALLBACK_IMAGE);
   const [activeDetailIdx, setActiveDetailIdx] = useState(0);
   const [thumbStartIndex, setThumbStartIndex] = useState(0);
@@ -134,7 +133,6 @@ export default function BurobigProductDetail({ product }) {
     setPrevProduct(product);
     setActiveDetailImage(product.coverImageUrl || FALLBACK_IMAGE);
     setActiveDetailIdx(0);
-    setActiveHeroIdx(0);
     setThumbStartIndex(0);
   }
 
@@ -212,19 +210,6 @@ export default function BurobigProductDetail({ product }) {
 
   const getLocalizedPath = (path) => `/${activeLang}${path}`;
 
-  // Determine Hero image slider list — tüm ürünler Firebase gallery kullanır
-  const heroImages = useMemo(() => {
-    if (product?.customPageSettings?.backgroundImageUrl) {
-      return [product.customPageSettings.backgroundImageUrl];
-    }
-    const galleryImages = (product?.gallery || [])
-      .map(img => img?.url)
-      .filter(Boolean);
-    return galleryImages.length > 0 
-      ? galleryImages 
-      : [product?.coverImageUrl || FALLBACK_IMAGE];
-  }, [product]);
-
   const detailGallery = useMemo(() => {
     if (!product) return [];
     const images = [];
@@ -251,15 +236,6 @@ export default function BurobigProductDetail({ product }) {
       setActiveDetailIdx(idx);
     }
   };
-
-  // Auto-cycle Hero slider (every 8 seconds)
-  useEffect(() => {
-    if (heroImages.length <= 1) return;
-    const interval = setInterval(() => {
-      setActiveHeroIdx(prev => (prev + 1) % heroImages.length);
-    }, 8000);
-    return () => clearInterval(interval);
-  }, [heroImages]);
 
   // Auto-cycle Detail gallery thumbnails (every 8 seconds)
   useEffect(() => {
@@ -358,16 +334,15 @@ export default function BurobigProductDetail({ product }) {
         className="product-hero-premium"
         style={product.customPageSettings?.backgroundColor ? { backgroundColor: product.customPageSettings.backgroundColor } : {}}
       >
-        <div className="product-premium-gallery">
-          {heroImages.map((img, idx) => (
+        {product.customPageSettings?.backgroundImageUrl && (
+          <div className="product-premium-gallery">
             <img
-              key={idx}
-              src={img}
-              alt={`${productTitle} Hero ${idx + 1}`}
-              className={`hero-premium-img ${idx === activeHeroIdx ? 'active' : ''}`}
+              src={product.customPageSettings.backgroundImageUrl}
+              alt={`${productTitle} Background`}
+              className="hero-premium-img active"
             />
-          ))}
-        </div>
+          </div>
+        )}
       </section>
 
       {/* Product Detail Showcase Section */}
