@@ -340,7 +340,7 @@ export default function BurobigProductDetail({ product }) {
               src={product.customPageSettings?.backgroundImageUrl || product.coverImageUrl}
               alt={`${productTitle} Hero`}
               className="hero-premium-img active"
-              style={!product.customPageSettings?.backgroundImageUrl ? { objectFit: 'contain', width: '100%', height: '100%' } : {}}
+              style={!product.customPageSettings?.backgroundImageUrl ? { objectFit: 'contain', width: '100%', height: '100%', mixBlendMode: 'multiply' } : {}}
             />
           </div>
         )}
