@@ -334,12 +334,13 @@ export default function BurobigProductDetail({ product }) {
         className="product-hero-premium"
         style={product.customPageSettings?.backgroundColor ? { backgroundColor: product.customPageSettings.backgroundColor } : {}}
       >
-        {product.customPageSettings?.backgroundImageUrl && (
+        {(product.customPageSettings?.backgroundImageUrl || product.coverImageUrl) && (
           <div className="product-premium-gallery">
             <img
-              src={product.customPageSettings.backgroundImageUrl}
-              alt={`${productTitle} Background`}
+              src={product.customPageSettings?.backgroundImageUrl || product.coverImageUrl}
+              alt={`${productTitle} Hero`}
               className="hero-premium-img active"
+              style={!product.customPageSettings?.backgroundImageUrl ? { objectFit: 'contain', width: '100%', height: '100%' } : {}}
             />
           </div>
         )}
