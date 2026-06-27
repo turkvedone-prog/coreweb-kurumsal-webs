@@ -346,7 +346,15 @@ export default function BurobigProductDetail({ product }) {
               src={product.customPageSettings?.backgroundImageUrl || product.coverImageUrl}
               alt={`${productTitle} Hero`}
               className="hero-premium-img active"
-              style={!product.customPageSettings?.backgroundImageUrl ? { objectFit: 'contain', objectPosition: 'center', width: '100%', height: '100%', mixBlendMode: 'multiply' } : {}}
+              style={!product.customPageSettings?.backgroundImageUrl ? { 
+                objectFit: 'contain', 
+                objectPosition: 'right center', 
+                width: '100%', 
+                height: '100%', 
+                mixBlendMode: 'multiply',
+                transform: 'scale(1.2)',
+                transformOrigin: 'right center'
+              } : {}}
             />
           </div>
         )}
