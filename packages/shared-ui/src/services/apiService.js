@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_PUBLIC_API_BASE_URL || 'http://localhost:5001/coreweb-panel/us-central1';
+const BASE_URL = import.meta.env.VITE_PUBLIC_API_BASE_URL || 'https://us-central1-coreweb-panel.cloudfunctions.net';
 
 /**
  * Submits a contact form lead payload to the submitLead REST endpoint.

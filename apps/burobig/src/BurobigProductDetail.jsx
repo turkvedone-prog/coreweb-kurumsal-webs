@@ -163,6 +163,8 @@ export default function BurobigProductDetail({ product }) {
 
   // Proposal modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [allProducts, setAllProducts] = useState([]);
+  const [selectedExtraProducts, setSelectedExtraProducts] = useState([]);
   const [proposalData, setProposalData] = useState({
     name: '', email: '', phone: '', message: '', website_dummy: ''
   });
@@ -185,6 +187,7 @@ export default function BurobigProductDetail({ product }) {
     setProposalError(null);
     setProposalConsent(false);
     setProposalData({ name: '', email: '', phone: '', message: '', website_dummy: '' });
+    setSelectedExtraProducts([]);
   }
 
   useEffect(() => {
@@ -251,6 +254,7 @@ export default function BurobigProductDetail({ product }) {
         }
 
         setRelatedProducts(filtered.slice(0, 10));
+        setAllProducts(localized);
       })
       .catch(e => console.error(e));
   }, [tenantId, productSlug, activeLang, product?.category, product?.subcategory]);
@@ -290,6 +294,20 @@ export default function BurobigProductDetail({ product }) {
 
   const handleProposalChange = (e) => {
     setProposalData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleAddExtraProduct = (e) => {
+    const selectedSlug = e.target.value;
+    if (!selectedSlug) return;
+    const found = allProducts.find(p => (p.slug || p.id) === selectedSlug);
+    if (found && !selectedExtraProducts.some(p => (p.slug || p.id) === selectedSlug)) {
+      setSelectedExtraProducts(prev => [...prev, found]);
+    }
+    e.target.value = ''; // reset dropdown
+  };
+
+  const handleRemoveExtraProduct = (slug) => {
+    setSelectedExtraProducts(prev => prev.filter(p => (p.slug || p.id) !== slug));
   };
 
   const handleProposalSubmit = async (e) => {
@@ -352,7 +370,8 @@ export default function BurobigProductDetail({ product }) {
         status: 'new',
         extraData: {
           "Ürün Adı": productTitle,
-          "Ürün Linki": window.location.href
+          "Ürün Linki": window.location.href,
+          "Ek Ürünler": selectedExtraProducts.map(p => p.title || p.id).join(', ') || translate('Yok', 'None')
         }
       };
 
@@ -821,121 +840,183 @@ export default function BurobigProductDetail({ product }) {
                 </button>
               </div>
             ) : (
-              <>
-                <h3 className="proposal-modal__title">{translate('Fiyat Teklifi Al', 'Get a Quote')}</h3>
-                <p className="proposal-modal__subtitle">
-                  {translate(
-                    'Aşağıdaki formu doldurarak İnka Üst Yönetici için özel fiyat teklifi talep edebilirsiniz.',
-                    'Fill out the form below to request a custom price quote for İnka Üst Yönetici.'
-                  ).replace('İnka Üst Yönetici', productTitle)}
-                </p>
+              <div className="proposal-modal__grid">
+                {/* Left Column: Product Selection & Info */}
+                <div className="proposal-modal__left">
+                  <h3 className="proposal-modal__title">{translate('Fiyat Teklifi Al', 'Get a Quote')}</h3>
+                  <p className="proposal-modal__subtitle" style={{ marginBottom: '1.5rem' }}>
+                    {translate(
+                      'Seçtiğiniz ürünler için özel fiyat teklifi talep edebilirsiniz.',
+                      'You can request a custom price quote for your selected products.'
+                    )}
+                  </p>
 
-                <form onSubmit={handleProposalSubmit} className="proposal-form">
-                  {proposalError && (
-                    <div className="proposal-form__error">
-                      <span>{proposalError}</span>
+                  <div className="proposal-product-label" style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>
+                    {translate('Seçili Ürün', 'Selected Product')}
+                  </div>
+                  <div className="proposal-product-preview">
+                    <img src={product.coverImageUrl || FALLBACK_IMAGE} alt={productTitle} />
+                    <div className="proposal-product-preview__info">
+                      <span className="proposal-product-preview__title">{productTitle}</span>
+                      <span className="proposal-product-preview__category">{(product.subcategory || product.category)?.toUpperCase()}</span>
+                    </div>
+                  </div>
+
+                  {/* Add Extra Products */}
+                  <div className="form-group" style={{ marginBottom: '1rem' }}>
+                    <label className="form-label">{translate('Ek Ürün Ekle (İsteğe Bağlı)', 'Add Extra Products (Optional)')}</label>
+                    <div className="proposal-select-wrapper">
+                      <select 
+                        className="proposal-select" 
+                        onChange={handleAddExtraProduct} 
+                        defaultValue=""
+                      >
+                        <option value="" disabled>{translate('-- Ürün Seçin --', '-- Select Product --')}</option>
+                        {allProducts
+                          .filter(p => (p.slug || p.id) !== productSlug && !selectedExtraProducts.some(sep => (sep.slug || sep.id) === (p.slug || p.id)))
+                          .map(p => (
+                            <option key={p.id || p.slug} value={p.slug || p.id}>
+                              {p.title}
+                            </option>
+                          ))
+                        }
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Chips for Selected Extra Products */}
+                  {selectedExtraProducts.length > 0 && (
+                    <div style={{ marginBottom: '1.5rem' }}>
+                      <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>
+                        {translate('Eklenen Diğer Ürünler:', 'Other Added Products:')}
+                      </div>
+                      <div className="proposal-chips-container">
+                        {selectedExtraProducts.map(p => (
+                          <span key={p.slug || p.id} className="proposal-chip">
+                            {p.title}
+                            <button 
+                              type="button" 
+                              onClick={() => handleRemoveExtraProduct(p.slug || p.id)}
+                              aria-label={translate('Kaldır', 'Remove')}
+                            >
+                              &times;
+                            </button>
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   )}
+                </div>
 
-                  {/* Honeypot field */}
-                  <input
-                    type="text"
-                    name="website_dummy"
-                    value={proposalData.website_dummy}
-                    onChange={handleProposalChange}
-                    style={{ display: 'none' }}
-                    tabIndex="-1"
-                    autoComplete="off"
-                  />
+                {/* Right Column: Contact Form */}
+                <div className="proposal-modal__right">
+                  <form onSubmit={handleProposalSubmit} className="proposal-form" style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+                    {proposalError && (
+                      <div className="proposal-form__error">
+                        <span>{proposalError}</span>
+                      </div>
+                    )}
 
-                  <div className="form-group">
-                    <label htmlFor="name" className="form-label">{translate('Ad Soyad *', 'Name *')}</label>
+                    {/* Honeypot field */}
                     <input
                       type="text"
-                      id="name"
-                      name="name"
-                      value={proposalData.name}
+                      name="website_dummy"
+                      value={proposalData.website_dummy}
                       onChange={handleProposalChange}
-                      className="form-input"
-                      required
+                      style={{ display: 'none' }}
+                      tabIndex="-1"
+                      autoComplete="off"
                     />
-                  </div>
 
-                  <div className="form-group">
-                    <label htmlFor="email" className="form-label">{translate('E-Posta *', 'Email *')}</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={proposalData.email}
-                      onChange={handleProposalChange}
-                      className="form-input"
-                      required
-                    />
-                  </div>
+                    <div className="form-group">
+                      <label htmlFor="name" className="form-label">{translate('Ad Soyad *', 'Name *')}</label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={proposalData.name}
+                        onChange={handleProposalChange}
+                        className="form-input"
+                        required
+                      />
+                    </div>
 
-                  <div className="form-group">
-                    <label htmlFor="phone" className="form-label">{translate('Telefon *', 'Phone *')}</label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={proposalData.phone}
-                      onChange={handleProposalChange}
-                      className="form-input"
-                      placeholder="05xx xxx xx xx"
-                      required
-                    />
-                  </div>
+                    <div className="form-group">
+                      <label htmlFor="email" className="form-label">{translate('E-Posta *', 'Email *')}</label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={proposalData.email}
+                        onChange={handleProposalChange}
+                        className="form-input"
+                        required
+                      />
+                    </div>
 
-                  <div className="form-group">
-                    <label htmlFor="message" className="form-label">{translate('Mesajınız *', 'Your Message *')}</label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={proposalData.message}
-                      onChange={handleProposalChange}
-                      className="form-textarea"
-                      placeholder={translate('Ürün hakkında sormak istedikleriniz...', 'Your questions about the product...')}
-                      required
-                    />
-                  </div>
+                    <div className="form-group">
+                      <label htmlFor="phone" className="form-label">{translate('Telefon *', 'Phone *')}</label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        value={proposalData.phone}
+                        onChange={handleProposalChange}
+                        className="form-input"
+                        placeholder="05xx xxx xx xx"
+                        required
+                      />
+                    </div>
 
-                  <label className="form-checkbox-label">
-                    <input
-                      type="checkbox"
-                      checked={proposalConsent}
-                      onChange={(e) => setProposalConsent(e.target.checked)}
-                      className="form-checkbox"
-                      required
-                    />
-                    <span>
-                      {translate(
-                        'KVKK kapsamında kişisel verilerimin işlenmesini ve iletişim bilgilerim üzerinden benimle iletişime geçilmesini kabul ediyorum.',
-                        'I accept the processing of my personal data under KVKK and consent to be contacted via my communication details.'
+                    <div className="form-group">
+                      <label htmlFor="message" className="form-label">{translate('Ek Not / Mesaj *', 'Extra Note / Message *')}</label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        value={proposalData.message}
+                        onChange={handleProposalChange}
+                        className="form-textarea"
+                        placeholder={translate('Talebinize eklemek istediğiniz notlar...', 'Notes you want to add to your request...')}
+                        required
+                      />
+                    </div>
+
+                    <label className="form-checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={proposalConsent}
+                        onChange={(e) => setProposalConsent(e.target.checked)}
+                        className="form-checkbox"
+                        required
+                      />
+                      <span>
+                        {translate(
+                          'KVKK kapsamında kişisel verilerimin işlenmesini ve iletişim bilgilerim üzerinden benimle iletişime geçilmesini kabul ediyorum.',
+                          'I accept the processing of my personal data under KVKK and consent to be contacted via my communication details.'
+                        )}
+                      </span>
+                    </label>
+
+                    <button
+                      type="submit"
+                      className="btn-submit"
+                      disabled={proposalLoading}
+                    >
+                      {proposalLoading ? (
+                        translate('Gönderiliyor...', 'Sending...')
+                      ) : (
+                        <>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: 'rotate(-45deg)', marginTop: '-2px' }}>
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                          </svg>
+                          {translate('Teklifi Gönder', 'Submit Request')}
+                        </>
                       )}
-                    </span>
-                  </label>
-
-                  <button
-                    type="submit"
-                    className="btn-submit"
-                    disabled={proposalLoading}
-                  >
-                    {proposalLoading ? (
-                      translate('Gönderiliyor...', 'Sending...')
-                    ) : (
-                      <>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: 'rotate(-45deg)', marginTop: '-2px' }}>
-                          <line x1="22" y1="2" x2="11" y2="13"></line>
-                          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                        </svg>
-                        {translate('Teklifi Gönder', 'Submit Request')}
-                      </>
-                    )}
-                  </button>
-                </form>
-              </>
+                    </button>
+                  </form>
+                </div>
+              </div>
             )}
           </div>
         </div>
