@@ -235,7 +235,7 @@ export default function BurobigHome() {
                       width="1920"
                       height="1080"
                       style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                      fetchPriority="high"
+                      fetchpriority="high"
                       loading="eager"
                       decoding="sync"
                     />
