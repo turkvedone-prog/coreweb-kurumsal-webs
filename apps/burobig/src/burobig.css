@@ -465,6 +465,10 @@ body, html, ul, ol {
     transition: opacity var(--transition-base);
 }
 
+.mobile-pay-btn {
+    display: none;
+}
+
 #util-shop,
 #util-portal,
 #util-pay {
@@ -1879,6 +1883,21 @@ body, html, ul, ol {
     /* Tablet: Nav + utility gizle, hamburger gelecek */
     .main-nav { display: none; }
     .header-utility .utility-link { display: none; }
+
+    .mobile-pay-btn {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--color-text);
+        text-decoration: none;
+        margin-right: 0.75rem;
+        transition: color var(--transition-base);
+    }
+    .mobile-pay-btn:hover {
+        color: var(--color-accent);
+    }
 
     /* Mobilde dil seçimi ve portal gizlenir, arama butonu görünür kalır */
     .utility-dropdown,

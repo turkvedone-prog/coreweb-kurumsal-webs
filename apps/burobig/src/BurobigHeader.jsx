@@ -390,6 +390,22 @@ export default function BurobigHeader() {
               </svg>
             </button>
 
+            {/* Mobile Pay Button */}
+            <a 
+              href="https://burobig.tahsilat.com.tr/auth/sign-in" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="mobile-pay-btn" 
+              id="mobile-util-pay"
+              aria-label="Pay"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ marginRight: '3px' }}>
+                <rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="2" y1="10" x2="22" y2="10"></line>
+              </svg>
+              Pay
+            </a>
+
             {/* Mobile Hamburger Menu Toggle Button */}
             <button 
               className={`menu-toggle ${isMobileMenuOpen ? 'active' : ''}`} 
