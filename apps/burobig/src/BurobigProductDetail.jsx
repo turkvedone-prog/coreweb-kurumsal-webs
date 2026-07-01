@@ -43,6 +43,57 @@ const getSubcategoryColor = (subcategory, category) => {
   return '#f3f1ec'; // Default fallback zemin color
 };
 
+const getLocalizedCategoryName = (name, lang) => {
+  if (!name) return '';
+  const clean = name.toLowerCase().trim()
+    .replace(/[ğĞ]/g, 'g')
+    .replace(/[üÜ]/g, 'u')
+    .replace(/[şŞ]/g, 's')
+    .replace(/[ıİ]/g, 'i')
+    .replace(/[öÖ]/g, 'o')
+    .replace(/[çÇ]/g, 'c');
+
+  const dict = {
+    // Categories
+    'masalar': { tr: 'Masalar', en: 'Desks', ar: 'طاولات' },
+    'ofis koltuklari': { tr: 'Ofis Koltukları', en: 'Office Chairs', ar: 'كراسي مكتب' },
+    'koltuklar / kanepeler': { tr: 'Koltuklar / Kanepeler', en: 'Armchairs / Sofas', ar: 'أرائك ومقاعد' },
+    'depolama sistemleri': { tr: 'Depolama Sistemleri', en: 'Storage Systems', ar: 'أنظمة التخزين' },
+    'tamamlayicilar': { tr: 'Tamamlayıcılar', en: 'Accessories', ar: 'إكسسوارات' },
+
+    // Subcategories
+    'ust yonetici': { tr: 'Üst Yönetici', en: 'Executive', ar: 'تنفيذي' },
+    'ust-yonetici': { tr: 'Üst Yönetici', en: 'Executive', ar: 'تنفيذي' },
+    'yonetici': { tr: 'Yönetici', en: 'Manager', ar: 'مدير' },
+    'calisma': { tr: 'Çalışma', en: 'Work', ar: 'عمل' },
+    'operasyonel': { tr: 'Operasyonel', en: 'Operational', ar: 'تشغيلي' },
+    'toplanti': { tr: 'Toplantı', en: 'Meeting', ar: 'اجتماعات' },
+    'yonetici koltuklari': { tr: 'Yönetici Koltukları', en: 'Executive Chairs', ar: 'كراسي مدير' },
+    'calisma koltuklari': { tr: 'Çalışma Koltukları', en: 'Task Chairs', ar: 'كراسي عمل' },
+    'misafir': { tr: 'Misafir ve Bekleme', en: 'Guest & Waiting', ar: 'ضيوف وانتظار' },
+    'bekleme': { tr: 'Bekleme', en: 'Waiting', ar: 'انتظار' },
+    'koltuklar': { tr: 'Koltuklar', en: 'Armchairs', ar: 'مقاعد' },
+    'kanepeler': { tr: 'Kanepeler', en: 'Sofas', ar: 'أرائك' },
+    'sandalyeler': { tr: 'Sandalyeler', en: 'Chairs', ar: 'كراسي' },
+    'bekleme alanlari': { tr: 'Bekleme Alanları', en: 'Waiting Areas', ar: 'مناطق الانتظار' },
+    'kesonlar': { tr: 'Kesonlar', en: 'Pedestals', ar: 'وحدات أدراج' },
+    'dolaplar': { tr: 'Dolaplar', en: 'Cabinets', ar: 'خزائن' },
+    'kitaplik ve raf sistemleri': { tr: 'Kitaplık ve Raf Sistemleri', en: 'Bookcases & Shelves', ar: 'رفوف ومكتبات' },
+    'sehpalar': { tr: 'Sehpalar', en: 'Coffee Tables', ar: 'طاولات قهوة' },
+    'puflar': { tr: 'Puflar', en: 'Poufs', ar: 'بوف' },
+    'askiliklar': { tr: 'Askılıklar', en: 'Coat Hangers', ar: 'علاقات ملابس' },
+    'elektrifikasyon': { tr: 'Elektrifikasyon', en: 'Electrification', ar: 'أنظمة كهرباء' }
+  };
+
+  for (const [key, val] of Object.entries(dict)) {
+    if (clean.includes(key)) {
+      return val[lang] || val['en'] || name;
+    }
+  }
+
+  return name;
+};
+
 export default function BurobigProductDetail({ product }) {
   const { tenantMapping, activeLang } = useSite();
   const { tenantId, tenantSlug } = tenantMapping;
@@ -610,7 +661,7 @@ export default function BurobigProductDetail({ product }) {
           <div className="detail-showcase__content">
             <h2 className="detail-showcase__title">{productTitle}</h2>
             <Link to={getLocalizedPath(categoryPath)} className="detail-showcase__subtitle">
-              {(product.subcategory || product.category)?.toUpperCase()}
+              {getLocalizedCategoryName(product.subcategory || product.category, activeLang)?.toUpperCase()}
             </Link>
             <div className="detail-showcase__desc">
               {productDescription ? (
@@ -876,7 +927,7 @@ export default function BurobigProductDetail({ product }) {
                     <img src={product.coverImageUrl || FALLBACK_IMAGE} alt={productTitle} />
                     <div className="proposal-product-preview__info">
                       <span className="proposal-product-preview__title">{productTitle}</span>
-                      <span className="proposal-product-preview__category">{(product.subcategory || product.category)?.toUpperCase()}</span>
+                      <span className="proposal-product-preview__category">{getLocalizedCategoryName(product.subcategory || product.category, activeLang)?.toUpperCase()}</span>
                     </div>
                   </div>
 
