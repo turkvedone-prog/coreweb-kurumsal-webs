@@ -5123,5 +5123,31 @@ body, html, ul, ol {
     line-height: 1.4;
 }
 
+/* reCAPTCHA Custom Notice & Badge Hiding */
+.grecaptcha-badge {
+    visibility: hidden !important;
+}
+
+.recaptcha-disclaimer {
+    font-size: 0.72rem;
+    color: #888888;
+    line-height: 1.4;
+    margin-top: 1.25rem;
+    text-align: left;
+    font-weight: 300;
+    width: 100%;
+}
+
+.recaptcha-disclaimer a {
+    color: #4b5563;
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+.recaptcha-disclaimer a:hover {
+    color: #1a1a1a;
+}
+
+
 
 

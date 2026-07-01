@@ -342,6 +342,22 @@ export default function BurobigContact({
                           </>
                         )}
                       </button>
+
+                      <div className="recaptcha-disclaimer">
+                        {activeLang === 'ar' ? (
+                          <>
+                            هذا الموقع محمي بواسطة reCAPTCHA وتطبق Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">سياسة الخصوصية</a> و<a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">شروط الخدمة</a>.
+                          </>
+                        ) : activeLang === 'en' ? (
+                          <>
+                            This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a> apply.
+                          </>
+                        ) : (
+                          <>
+                            Bu site reCAPTCHA ile korunmaktadır. Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Gizlilik Politikası</a> ve <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">Hizmet Şartları</a> geçerlidir.
+                          </>
+                        )}
+                      </div>
                     </form>
                   </>
                 )}
