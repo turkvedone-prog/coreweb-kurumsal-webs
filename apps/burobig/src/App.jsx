@@ -87,7 +87,8 @@ function BurobigBlogPage() {
     if (!dateStr) return '';
     const ts = dateStr?.seconds ? dateStr.seconds * 1000 : new Date(dateStr).getTime();
     try {
-      return new Date(ts).toLocaleDateString(activeLang === 'tr' ? 'tr-TR' : 'en-US', {
+      const locale = activeLang === 'ar' ? 'ar-EG' : (activeLang === 'tr' ? 'tr-TR' : 'en-US');
+      return new Date(ts).toLocaleDateString(locale, {
         year: 'numeric', month: 'long', day: 'numeric'
       });
     } catch { return ''; }
@@ -95,8 +96,8 @@ function BurobigBlogPage() {
 
   useEffect(() => {
     updateSEOMeta({
-      title: activeLang === 'tr' ? 'Blog & Haberler' : 'Blog & News',
-      description: activeLang === 'tr' ? 'Bürobig premium ofis mobilyaları hakkında en son haberler ve blog yazıları.' : 'Latest news and blog posts about Burobig premium office furniture.',
+      title: activeLang === 'ar' ? 'المدونة والأخبار' : (activeLang === 'tr' ? 'Blog & Haberler' : 'Blog & News'),
+      description: activeLang === 'ar' ? 'آخر الأخبار والمقالات حول أثاث مكتب بيروبيج الفاخر.' : (activeLang === 'tr' ? 'Bürobig premium ofis mobilyaları hakkında en son haberler ve blog yazıları.' : 'Latest news and blog posts about Burobig premium office furniture.'),
       companyName: 'Bürobig'
     });
   }, [activeLang]);

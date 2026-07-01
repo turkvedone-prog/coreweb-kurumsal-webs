@@ -1,15 +1,27 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, BookOpen } from 'lucide-react';
+import { useSite } from './layouts/SiteLayout';
 
 export default function BurobigBlogList({ blogs = [], formatDate, getLocalizedPath }) {
+  const { activeLang } = useSite();
+  const translate = (tr, en, ar) => {
+    if (activeLang === 'ar') return ar || en || tr;
+    if (activeLang === 'en') return en || tr;
+    return tr;
+  };
+
   return (
     <main id="main-content" className="blog-list-page">
       {/* Blog Header */}
       <section className="blog-list-header">
-        <h1 className="blog-list-title">Blog</h1>
+        <h1 className="blog-list-title">{translate('Blog', 'Blog', 'المدونة')}</h1>
         <p className="blog-list-subtitle">
-          Ofis yaşamı, çalışma trendleri, ergonomi ve premium tasarım dünyasına dair en son makale ve fikirlerimizi keşfedin.
+          {translate(
+            'Ofis yaşamı, çalışma trendleri, ergonomi ve premium tasarım dünyasına dair en son makale ve fikirlerimizi keşfedin.',
+            'Discover our latest articles and ideas on office life, working trends, ergonomics, and the world of premium design.',
+            'اكتشف أحدث مقالاتنا وأفكارنا حول حياة المكتب، واتجاهات العمل، وبيئة العمل، وعالم التصميم المتميز.'
+          )}
         </p>
       </section>
 
@@ -18,8 +30,8 @@ export default function BurobigBlogList({ blogs = [], formatDate, getLocalizedPa
         {blogs.length === 0 ? (
           <div className="text-center py-12" style={{ border: '1px solid #eaeaea', borderRadius: '12px', padding: '3rem', backgroundColor: '#ffffff', maxWidth: '400px', margin: '0 auto' }}>
             <BookOpen className="h-8 w-8 mx-auto text-slate-400 mb-4" />
-            <h3 className="text-lg font-medium text-slate-900 mb-2">Yazı Bulunmadı</h3>
-            <p className="text-sm text-slate-500">Henüz yayınlanmış bir yazı bulunmuyor.</p>
+            <h3 className="text-lg font-medium text-slate-900 mb-2">{translate('Yazı Bulunmadı', 'No Articles Found', 'لم يتم العثور على مقالات')}</h3>
+            <p className="text-sm text-slate-500">{translate('Henüz yayınlanmış bir yazı bulunmuyor.', 'There are no published articles yet.', 'لا توجد مقالات منشورة بعد.')}</p>
           </div>
         ) : (
           <div className="blog-list-grid">
@@ -60,7 +72,7 @@ export default function BurobigBlogList({ blogs = [], formatDate, getLocalizedPa
                       {blog.summary || (blog.content?.replace(/<[^>]*>/g, '').substring(0, 150) + '...')}
                     </p>
                     <Link to={detailPath} className="blog-list-read-more">
-                      <span>Hemen İncele</span>
+                      <span>{translate('Hemen İncele', 'Read More', 'اقرأ المزيد')}</span>
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>

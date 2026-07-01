@@ -13,13 +13,18 @@ export default function BurobigBlogDetail() {
   const [loading, setLoading] = useState(true);
 
   const getLocalizedPath = (path) => `/${activeLang}${path}`;
-  const translate = (tr, en) => (activeLang === 'tr' ? tr : en);
+  const translate = (tr, en, ar) => {
+    if (activeLang === 'ar') return ar || en || tr;
+    if (activeLang === 'en') return en || tr;
+    return tr;
+  };
 
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
     const ts = dateStr?.seconds ? dateStr.seconds * 1000 : new Date(dateStr).getTime();
     try {
-      return new Date(ts).toLocaleDateString(activeLang === 'tr' ? 'tr-TR' : 'en-US', {
+      const locale = activeLang === 'ar' ? 'ar-EG' : (activeLang === 'tr' ? 'tr-TR' : 'en-US');
+      return new Date(ts).toLocaleDateString(locale, {
         year: 'numeric', month: 'long', day: 'numeric'
       });
     } catch { return ''; }
@@ -75,11 +80,11 @@ export default function BurobigBlogDetail() {
     return (
       <main id="main-content" className="blog-detail-page">
         <div className="blog-detail-container" style={{ padding: '8rem 2rem', textAlign: 'center' }}>
-          <h2 className="blog-detail-notfound-title">{translate('Yazı Bulunamadı', 'Article Not Found')}</h2>
-          <p className="blog-detail-notfound-desc">{translate('Aradığınız blog yazısı mevcut değil veya yayından kaldırılmış.', 'The blog post you are looking for does not exist or has been unpublished.')}</p>
+          <h2 className="blog-detail-notfound-title">{translate('Yazı Bulunamadı', 'Article Not Found', 'لم يتم العثور على المقال')}</h2>
+          <p className="blog-detail-notfound-desc">{translate('Aradığınız blog yazısı mevcut değil veya yayından kaldırılmış.', 'The blog post you are looking for does not exist or has been unpublished.', 'مقال المدونة الذي تبحث عنه غير موجود أو تم إلغاء نشره.')}</p>
           <Link to={getLocalizedPath('/blog')} className="blog-detail-back-link" style={{ marginTop: '2rem', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
             <ChevronLeft size={16} />
-            <span>{translate('Tüm Yazılara Dön', 'Back to All Articles')}</span>
+            <span>{translate('Tüm Yazılara Dön', 'Back to All Articles', 'العودة إلى جميع المقالات')}</span>
           </Link>
         </div>
       </main>
