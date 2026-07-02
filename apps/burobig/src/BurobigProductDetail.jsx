@@ -166,11 +166,17 @@ export default function BurobigProductDetail({ product }) {
 
   const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LdUHg0tAAAAADUPLdrFQSEnyjWs6DbHXtjnROuK';
 
+  const productTitle = resolveField(product, activeLang, 'title') || resolveField(product, activeLang, 'name') || '';
+
   useEffect(() => {
     loadRecaptchaScript(siteKey);
   }, [siteKey]);
 
-  const productTitle = resolveField(product, activeLang, 'title') || resolveField(product, activeLang, 'name') || '';
+  useEffect(() => {
+    if (product?.id) {
+      logProductView(tenantId, product.id, productTitle);
+    }
+  }, [product?.id, tenantId, productTitle]);
   const productSummary = resolveField(product, activeLang, 'summary') || '';
   const productDescription = resolveField(product, activeLang, 'description') || resolveField(product, activeLang, 'content') || '';
   const technicalDetails = resolveField(product, activeLang, 'technicalDetails') || product?.technicalDetails || '';

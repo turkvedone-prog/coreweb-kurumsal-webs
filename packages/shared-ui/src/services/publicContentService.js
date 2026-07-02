@@ -419,6 +419,8 @@ export async function logPublicEvent(tenantId, type) {
     else if (type === 'quote') updateObj.quoteSubmissions = increment(1);
     else if (type === 'contact') updateObj.contactSubmissions = increment(1);
     else if (type === 'newsletter') updateObj.newsletterSubmissions = increment(1);
+    else if (type === 'mobile') updateObj.deviceMobile = increment(1);
+    else if (type === 'desktop') updateObj.deviceDesktop = increment(1);
     
     await updateDoc(docRef, updateObj);
   } catch (error) {
@@ -427,7 +429,8 @@ export async function logPublicEvent(tenantId, type) {
       try {
         const initData = { 
           visitors: 0, whatsappClicks: 0, phoneClicks: 0,
-          quoteSubmissions: 0, contactSubmissions: 0, newsletterSubmissions: 0 
+          quoteSubmissions: 0, contactSubmissions: 0, newsletterSubmissions: 0,
+          deviceMobile: 0, deviceDesktop: 0
         };
         if (type === 'visitor') initData.visitors = 1;
         else if (type === 'whatsapp') initData.whatsappClicks = 1;
@@ -435,12 +438,36 @@ export async function logPublicEvent(tenantId, type) {
         else if (type === 'quote') initData.quoteSubmissions = 1;
         else if (type === 'contact') initData.contactSubmissions = 1;
         else if (type === 'newsletter') initData.newsletterSubmissions = 1;
+        else if (type === 'mobile') initData.deviceMobile = 1;
+        else if (type === 'desktop') initData.deviceDesktop = 1;
         await setDoc(docRef, initData);
       } catch (err) {
         console.warn("Failed to initialize public counters:", err.message);
       }
     } else {
       console.warn("Failed to log public event:", error.message);
+    }
+  }
+}
+
+export async function logProductView(tenantId, productId, productTitle) {
+  if (!tenantId || !productId) return;
+  const docRef = doc(db, 'tenants', tenantId, 'productViews', productId);
+  try {
+    await updateDoc(docRef, { views: increment(1) });
+  } catch (error) {
+    if (error.code === 'not-found') {
+      try {
+        await setDoc(docRef, {
+          productId,
+          productTitle: productTitle || productId,
+          views: 1
+        });
+      } catch (err) {
+        console.warn("Failed to initialize product view counter:", err.message);
+      }
+    } else {
+      console.warn("Failed to log product view:", error.message);
     }
   }
 }

@@ -48,12 +48,16 @@ export default function SiteLayout({ children, activeLang }) {
       });
   }, [tenantMapping.tenantId]);
 
-  // Ziyaretçi takibi (sessionStorage ile tekil ziyaretçi)
+  // Ziyaretçi takibi (sessionStorage ile tekil ziyaretçi & Cihaz tipi)
   useEffect(() => {
     const isTracked = sessionStorage.getItem('cw_tracked');
     if (!isTracked) {
       sessionStorage.setItem('cw_tracked', 'true');
       logPublicEvent(tenantMapping.tenantId, 'visitor');
+
+      // Cihaz tipi algılama ve takibi
+      const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
+      logPublicEvent(tenantMapping.tenantId, isMobile ? 'mobile' : 'desktop');
     }
   }, [tenantMapping.tenantId]);
 
