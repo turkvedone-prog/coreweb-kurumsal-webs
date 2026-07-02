@@ -421,6 +421,9 @@ export async function logPublicEvent(tenantId, type) {
     else if (type === 'newsletter') updateObj.newsletterSubmissions = increment(1);
     else if (type === 'mobile') updateObj.deviceMobile = increment(1);
     else if (type === 'desktop') updateObj.deviceDesktop = increment(1);
+    else if (type === 'lang_tr') updateObj.langTr = increment(1);
+    else if (type === 'lang_en') updateObj.langEn = increment(1);
+    else if (type === 'lang_ar') updateObj.langAr = increment(1);
     
     await updateDoc(docRef, updateObj);
   } catch (error) {
@@ -430,7 +433,8 @@ export async function logPublicEvent(tenantId, type) {
         const initData = { 
           visitors: 0, whatsappClicks: 0, phoneClicks: 0,
           quoteSubmissions: 0, contactSubmissions: 0, newsletterSubmissions: 0,
-          deviceMobile: 0, deviceDesktop: 0
+          deviceMobile: 0, deviceDesktop: 0,
+          langTr: 0, langEn: 0, langAr: 0
         };
         if (type === 'visitor') initData.visitors = 1;
         else if (type === 'whatsapp') initData.whatsappClicks = 1;
@@ -440,6 +444,9 @@ export async function logPublicEvent(tenantId, type) {
         else if (type === 'newsletter') initData.newsletterSubmissions = 1;
         else if (type === 'mobile') initData.deviceMobile = 1;
         else if (type === 'desktop') initData.deviceDesktop = 1;
+        else if (type === 'lang_tr') initData.langTr = 1;
+        else if (type === 'lang_en') initData.langEn = 1;
+        else if (type === 'lang_ar') initData.langAr = 1;
         await setDoc(docRef, initData);
       } catch (err) {
         console.warn("Failed to initialize public counters:", err.message);

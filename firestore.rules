@@ -448,13 +448,18 @@ service cloud.firestore {
     match /tenants/{tenantId}/publicStats/{docId} {
       allow read: if true;
       allow create: if true;
-      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visitors', 'whatsappClicks', 'phoneClicks', 'quoteSubmissions', 'contactSubmissions', 'newsletterSubmissions']) &&
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visitors', 'whatsappClicks', 'phoneClicks', 'quoteSubmissions', 'contactSubmissions', 'newsletterSubmissions', 'deviceMobile', 'deviceDesktop', 'langTr', 'langEn', 'langAr']) &&
                     (request.resource.data.visitors == resource.data.visitors || request.resource.data.visitors == resource.data.visitors + 1) &&
                     (request.resource.data.whatsappClicks == resource.data.whatsappClicks || request.resource.data.whatsappClicks == resource.data.whatsappClicks + 1) &&
                     (request.resource.data.phoneClicks == resource.data.phoneClicks || request.resource.data.phoneClicks == resource.data.phoneClicks + 1) &&
                     (request.resource.data.quoteSubmissions == resource.data.quoteSubmissions || request.resource.data.quoteSubmissions == resource.data.quoteSubmissions + 1) &&
                     (request.resource.data.contactSubmissions == resource.data.contactSubmissions || request.resource.data.contactSubmissions == resource.data.contactSubmissions + 1) &&
-                    (request.resource.data.newsletterSubmissions == resource.data.newsletterSubmissions || request.resource.data.newsletterSubmissions == resource.data.newsletterSubmissions + 1);
+                    (request.resource.data.newsletterSubmissions == resource.data.newsletterSubmissions || request.resource.data.newsletterSubmissions == resource.data.newsletterSubmissions + 1) &&
+                    (request.resource.data.deviceMobile == resource.data.deviceMobile || request.resource.data.deviceMobile == resource.data.deviceMobile + 1) &&
+                    (request.resource.data.deviceDesktop == resource.data.deviceDesktop || request.resource.data.deviceDesktop == resource.data.deviceDesktop + 1) &&
+                    (request.resource.data.langTr == resource.data.langTr || request.resource.data.langTr == resource.data.langTr + 1) &&
+                    (request.resource.data.langEn == resource.data.langEn || request.resource.data.langEn == resource.data.langEn + 1) &&
+                    (request.resource.data.langAr == resource.data.langAr || request.resource.data.langAr == resource.data.langAr + 1);
     }
 
     // 4. tenantData Koleksiyonu

@@ -48,7 +48,7 @@ export default function SiteLayout({ children, activeLang }) {
       });
   }, [tenantMapping.tenantId]);
 
-  // Ziyaretçi takibi (sessionStorage ile tekil ziyaretçi & Cihaz tipi)
+  // Ziyaretçi takibi (sessionStorage ile tekil ziyaretçi & Cihaz tipi & Dil tercihi)
   useEffect(() => {
     const isTracked = sessionStorage.getItem('cw_tracked');
     if (!isTracked) {
@@ -58,8 +58,12 @@ export default function SiteLayout({ children, activeLang }) {
       // Cihaz tipi algılama ve takibi
       const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
       logPublicEvent(tenantMapping.tenantId, isMobile ? 'mobile' : 'desktop');
+
+      // Dil tercihi takibi
+      const currentLang = activeLang || 'tr';
+      logPublicEvent(tenantMapping.tenantId, `lang_${currentLang}`);
     }
-  }, [tenantMapping.tenantId]);
+  }, [tenantMapping.tenantId, activeLang]);
 
   useEffect(() => {
     if (activeLang) {
