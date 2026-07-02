@@ -163,11 +163,14 @@ function BurobigProductDetailPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setProduct(null);
+    setLoading(true);
+    setActivePageTranslations(null);
     getActiveProductBySlug(tenantMapping.tenantId, slug, activeLang)
       .then((data) => setProduct(data || null))
       .catch(() => setProduct(null))
       .finally(() => setLoading(false));
-  }, [slug, activeLang, tenantMapping.tenantId]);
+  }, [slug, activeLang, tenantMapping.tenantId, setActivePageTranslations]);
 
   useEffect(() => {
     if (product) {

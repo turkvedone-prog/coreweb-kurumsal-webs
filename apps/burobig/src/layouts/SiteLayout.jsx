@@ -33,10 +33,6 @@ export default function SiteLayout({ children, activeLang }) {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  // Reset translations on route change to prevent stale mappings
-  useEffect(() => {
-    setActivePageTranslations(null);
-  }, [location.pathname]);
 
   useEffect(() => {
     getCompanySettings(tenantMapping.tenantId)

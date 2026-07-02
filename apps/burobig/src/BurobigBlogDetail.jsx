@@ -31,6 +31,11 @@ export default function BurobigBlogDetail() {
   };
 
   useEffect(() => {
+    setBlog(null);
+    setLoading(true);
+    if (setActivePageTranslations) {
+      setActivePageTranslations(null);
+    }
     const tenantId = tenantMapping?.tenantId || 'burobig';
     getPublishedBlogBySlug(tenantId, slug, activeLang)
       .then((data) => {
@@ -48,7 +53,7 @@ export default function BurobigBlogDetail() {
       })
       .catch(() => setBlog(null))
       .finally(() => setLoading(false));
-  }, [slug, activeLang, tenantMapping]);
+  }, [slug, activeLang, tenantMapping, setActivePageTranslations]);
 
   useEffect(() => {
     if (blog) {

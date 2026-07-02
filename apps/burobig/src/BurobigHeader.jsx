@@ -75,9 +75,24 @@ const getCategorySlug = (name, lang, catalogMeta) => {
   const categories = catalogMeta?.categories || STATIC_CATALOG_METADATA.categories;
   const subcategories = catalogMeta?.subcategories || STATIC_CATALOG_METADATA.subcategories;
   const all = [...categories, ...subcategories];
-  const matched = all.find(c => c.name === name || c.slug === name);
+  
+  const matched = all.find(c => {
+    if (c.name === name || c.slug === name) return true;
+    for (const l in c.translations) {
+      if (c.translations[l]?.slug === name) return true;
+    }
+    return false;
+  });
+
   if (matched) {
-    return matched.translations?.[lang]?.slug || matched.slug;
+    const slug = matched.translations?.[lang]?.slug || matched.slug;
+    
+    // Map back to legacy slug for TR if applicable to preserve original Turkish URLs
+    if (lang === 'tr') {
+      const legacyKey = Object.keys(LEGACY_REVERSE_MAP).find(key => LEGACY_REVERSE_MAP[key] === slug);
+      if (legacyKey) return legacyKey;
+    }
+    return slug;
   }
   return name;
 };
