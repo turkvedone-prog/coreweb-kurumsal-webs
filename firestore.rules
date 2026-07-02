@@ -448,10 +448,13 @@ service cloud.firestore {
     match /tenants/{tenantId}/publicStats/{docId} {
       allow read: if true;
       allow create: if true;
-      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visitors', 'whatsappClicks', 'phoneClicks']) &&
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visitors', 'whatsappClicks', 'phoneClicks', 'quoteSubmissions', 'contactSubmissions', 'newsletterSubmissions']) &&
                     (request.resource.data.visitors == resource.data.visitors || request.resource.data.visitors == resource.data.visitors + 1) &&
                     (request.resource.data.whatsappClicks == resource.data.whatsappClicks || request.resource.data.whatsappClicks == resource.data.whatsappClicks + 1) &&
-                    (request.resource.data.phoneClicks == resource.data.phoneClicks || request.resource.data.phoneClicks == resource.data.phoneClicks + 1);
+                    (request.resource.data.phoneClicks == resource.data.phoneClicks || request.resource.data.phoneClicks == resource.data.phoneClicks + 1) &&
+                    (request.resource.data.quoteSubmissions == resource.data.quoteSubmissions || request.resource.data.quoteSubmissions == resource.data.quoteSubmissions + 1) &&
+                    (request.resource.data.contactSubmissions == resource.data.contactSubmissions || request.resource.data.contactSubmissions == resource.data.contactSubmissions + 1) &&
+                    (request.resource.data.newsletterSubmissions == resource.data.newsletterSubmissions || request.resource.data.newsletterSubmissions == resource.data.newsletterSubmissions + 1);
     }
 
     // 4. tenantData Koleksiyonu

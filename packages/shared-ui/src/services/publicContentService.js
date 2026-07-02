@@ -416,16 +416,25 @@ export async function logPublicEvent(tenantId, type) {
     if (type === 'visitor') updateObj.visitors = increment(1);
     else if (type === 'whatsapp') updateObj.whatsappClicks = increment(1);
     else if (type === 'phone') updateObj.phoneClicks = increment(1);
+    else if (type === 'quote') updateObj.quoteSubmissions = increment(1);
+    else if (type === 'contact') updateObj.contactSubmissions = increment(1);
+    else if (type === 'newsletter') updateObj.newsletterSubmissions = increment(1);
     
     await updateDoc(docRef, updateObj);
   } catch (error) {
     // If document doesn't exist, initialize it
     if (error.code === 'not-found') {
       try {
-        const initData = { visitors: 0, whatsappClicks: 0, phoneClicks: 0 };
+        const initData = { 
+          visitors: 0, whatsappClicks: 0, phoneClicks: 0,
+          quoteSubmissions: 0, contactSubmissions: 0, newsletterSubmissions: 0 
+        };
         if (type === 'visitor') initData.visitors = 1;
         else if (type === 'whatsapp') initData.whatsappClicks = 1;
         else if (type === 'phone') initData.phoneClicks = 1;
+        else if (type === 'quote') initData.quoteSubmissions = 1;
+        else if (type === 'contact') initData.contactSubmissions = 1;
+        else if (type === 'newsletter') initData.newsletterSubmissions = 1;
         await setDoc(docRef, initData);
       } catch (err) {
         console.warn("Failed to initialize public counters:", err.message);

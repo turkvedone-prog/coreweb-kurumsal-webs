@@ -1,10 +1,19 @@
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSite } from '../../layouts/SiteLayout';
+import { logPublicEvent } from '@coreweb/shared-ui';
 import './burobig.css';
 
 export default function BurobigFooter() {
   const { tenantMapping, activeLang, settings } = useSite();
+  const [subscribed, setSubscribed] = useState(false);
   const getLocalizedPath = (path) => `/${activeLang}${path}`;
+
+  const handleNewsletterSubmit = (e) => {
+    e.preventDefault();
+    setSubscribed(true);
+    logPublicEvent(tenantMapping?.tenantId, 'newsletter');
+  };
   const translate = (tr, en, ar) => {
     if (activeLang === 'ar') return ar || en || tr;
     if (activeLang === 'en') return en || tr;
@@ -129,20 +138,30 @@ export default function BurobigFooter() {
                   'كن أول من يعرف عن الابتكارات ومجموعاتنا الخاصة.'
                 )}
               </p>
-              <form className="newsletter-form" onSubmit={(e) => e.preventDefault()}>
-                <input 
-                  type="email" 
-                  placeholder={translate('E-posta adresiniz', 'Your email address', 'عنوان بريدك الإلكتروني')} 
-                  required 
-                  aria-label={translate('E-posta adresiniz', 'Your email address', 'عنوان بريدك الإلكتروني')} 
-                />
-                <button type="submit" aria-label={translate('Kayıt Ol', 'Subscribe', 'اشتراك')}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </button>
-              </form>
+              {subscribed ? (
+                <p className="newsletter-success-text" style={{ color: '#1CB5BD', fontWeight: 500, fontSize: '0.9rem', marginTop: '1rem' }}>
+                  {translate(
+                    'Bülten aboneliğiniz başarıyla gerçekleştirildi!',
+                    'Your newsletter subscription has been successfully completed!',
+                    'تم إكمال اشتراكك في النشرة الإخبارية بنجاح!'
+                  )}
+                </p>
+              ) : (
+                <form className="newsletter-form" onSubmit={handleNewsletterSubmit}>
+                  <input 
+                    type="email" 
+                    placeholder={translate('E-posta adresiniz', 'Your email address', 'عنوان بريدك الإلكتروني')} 
+                    required 
+                    aria-label={translate('E-posta adresiniz', 'Your email address', 'عنوان brيدك الإلكتروني')} 
+                  />
+                  <button type="submit" aria-label={translate('Kayıt Ol', 'Subscribe', 'اشتراك')}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </button>
+                </form>
+              )}
             </div>
           </div>
 

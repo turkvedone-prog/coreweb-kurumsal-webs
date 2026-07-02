@@ -597,7 +597,7 @@ function BurobigLangWrapper() {
 
 // ─── Contact Page (self-contained state) ─────────────────────────────────────
 function BurobigContactPage() {
-  const { activeLang, settings } = useSite();
+  const { activeLang, settings, tenantMapping } = useSite();
   const translate = (tr, en) => (activeLang === 'tr' ? tr : en);
 
   const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LdUHg0tAAAAADUPLdrFQSEnyjWs6DbHXtjnROuK';
@@ -699,6 +699,7 @@ function BurobigContactPage() {
 
       await submitLead(payload);
       setSuccess(true);
+      logPublicEvent(tenantMapping?.tenantId, 'contact');
     } catch (err) {
       setError(err.message || translate(
         'Bir hata oluştu, lütfen tekrar deneyin.',

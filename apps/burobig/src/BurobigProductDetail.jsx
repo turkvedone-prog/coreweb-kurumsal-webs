@@ -6,7 +6,7 @@ import BurobigEcoBanner from './BurobigEcoBanner';
 
 import { getActiveProducts } from '../../services/publicContentService';
 import { getLocalizedContent } from '../../utils/i18nContent';
-import { resolveField, submitLead, loadRecaptchaScript, executeRecaptcha } from '@coreweb/shared-ui';
+import { resolveField, submitLead, loadRecaptchaScript, executeRecaptcha, logPublicEvent } from '@coreweb/shared-ui';
 
 const STATIC_CATALOG_METADATA = {
   categories: [
@@ -510,6 +510,7 @@ export default function BurobigProductDetail({ product }) {
 
       await submitLead(payload);
       setProposalSuccess(true);
+      logPublicEvent(tenantMapping?.tenantId, 'quote');
     } catch (err) {
       setProposalError(err.message || translate(
         'Bir hata oluştu, lütfen tekrar deneyin.',
