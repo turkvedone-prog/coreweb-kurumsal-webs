@@ -6,7 +6,7 @@ import BurobigEcoBanner from './BurobigEcoBanner';
 
 import { getActiveProducts } from '../../services/publicContentService';
 import { getLocalizedContent } from '../../utils/i18nContent';
-import { resolveField, submitLead, loadRecaptchaScript, executeRecaptcha, logPublicEvent } from '@coreweb/shared-ui';
+import { resolveField, submitLead, loadRecaptchaScript, executeRecaptcha, logPublicEvent, logProductView } from '@coreweb/shared-ui';
 
 const STATIC_CATALOG_METADATA = {
   categories: [
